@@ -51,7 +51,8 @@ namespace appie
             Application.EnableVisualStyles();
             //Application.Run(new fMedia());
             //Application.Run(new fMain());
-            Application.Run(new fEdit());
+            //Application.Run(new fEdit());
+            Application.Run(new fCrawler());
         }
     }
 
