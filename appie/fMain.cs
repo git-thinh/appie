@@ -52,7 +52,7 @@ namespace appie
                     label_ElementDES.Text = "DES: " + e.toElement.outerHTML;
                     break;
                 case "click":
-                    label_Event.Text = e.type + " = " + e.srcElement.tagName; 
+                    label_Event.Text = e.type + " = " + e.srcElement.tagName;
                     label_ElementSRC.Text = "SRC: " + e.srcElement.outerHTML;
                     label_ElementDES.Text = "DES: " + e.toElement.outerHTML;
                     break;
@@ -61,7 +61,7 @@ namespace appie
             e.returnValue = false;
             //e.returnValue = true;
         }
-        
+
         //Function is as follows:
         //This will be raised when mousedown event is fired
         //....when user try to click..(downs the mouse button)
@@ -77,7 +77,8 @@ namespace appie
         public fMain()
         {
             #region [ UI ]
-            txt_URL = new TextBox() {
+            txt_URL = new TextBox()
+            {
                 Dock = DockStyle.Top
             };
             txt_URL.KeyDown += f_url_textBox_KeyDown;
@@ -86,7 +87,7 @@ namespace appie
                 Dock = DockStyle.Right,
                 Multiline = true,
                 ScrollBars = ScrollBars.Vertical,
-                BorderStyle = BorderStyle.None, 
+                BorderStyle = BorderStyle.None,
             };
 
             wbMaster = new System.Windows.Forms.WebBrowser()
@@ -150,10 +151,10 @@ namespace appie
                 panel_Header,
                 label_Message,
                 txt_URL,
-                new Splitter(){ Dock = DockStyle.Right }, 
+                new Splitter(){ Dock = DockStyle.Right },
                 txt_Log,
             });
-            
+
             #endregion
 
             this.Shown += (se, ev) =>
@@ -167,7 +168,7 @@ namespace appie
                 //var axWbMainV1 = (SHDocVw.WebBrowser_V1)wbMaster.ActiveXInstance;
                 //var axWbSlaveV1 = (SHDocVw.WebBrowser_V1)wbSlave.ActiveXInstance;
 
-                axWbMainV1 =  (SHDocVw.WebBrowser_V1)wbMaster.ActiveXInstance;
+                axWbMainV1 = (SHDocVw.WebBrowser_V1)wbMaster.ActiveXInstance;
                 axWbSlaveV1 = (SHDocVw.WebBrowser_V1)wbSlave.ActiveXInstance;
 
                 axWbMainV1.DownloadComplete += () =>
@@ -245,7 +246,7 @@ namespace appie
                                 }
                             }
                             catch { }
-                        } 
+                        }
                     }
 
                     /////////////////////////////////////////////////////////////////////////////////////
@@ -306,9 +307,9 @@ namespace appie
 
         private void f_web_loadHTML()
         {
-            string s = File.ReadAllText("demo.html"),
-                    htm = string.Empty;
-            
+            string s = File.ReadAllText("demo.html");
+            string htm = string.Empty, page = string.Empty;
+
             HtmlAgilityPack.HtmlDocument docAgi = new HtmlAgilityPack.HtmlDocument();
             docAgi.LoadHtml(s);
 
@@ -322,15 +323,21 @@ namespace appie
                 htm = htm.Replace(@">"">", ">");
 
                 List<string> lsClass = new List<string>();
-                var mts = Regex.Matches(htm, " class=([\"'])(?:(?=(\\\\?))\\2.)*?\\1"); 
-                if (mts.Count > 0) {
+                var mts = Regex.Matches(htm, " class=([\"'])(?:(?=(\\\\?))\\2.)*?\\1");
+                if (mts.Count > 0)
+                {
                     for (int i = 0; i < mts.Count; i++)
                         lsClass.Add(mts[i].Value.Substring(7).Replace(@"""", string.Empty).Trim());
                     lsClass = lsClass.Distinct().ToList();
                 }
+
+                string template = File.ReadAllText("template.html"), css = string.Empty, js = string.Empty;
+                page = string.Format(template, css, htm, js);
             }
 
-            wbMaster.DocumentText = htm;
+            wbMaster.DocumentText = page;
+
+            File.WriteAllText("result.html", page);
         }
 
         string RemoveAttributes(string value)

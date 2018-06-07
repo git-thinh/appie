@@ -271,6 +271,8 @@
     <None Include="LIB\HtmlAgilityPack.CssSelectors\README.md" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="bin\Debug\demo.html" />
+    <Content Include="bin\Debug\template.html" />
     <EmbeddedResource Include="DLL\AxInterop.WMPLib.dll" />
     <EmbeddedResource Include="DLL\Interop.WMPLib.dll" />
     <EmbeddedResource Include="DLL\Microsoft.mshtml.dll" />
