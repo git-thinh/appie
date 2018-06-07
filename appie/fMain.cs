@@ -10,11 +10,16 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Linq;
+using System.Security.Permissions;
 
 namespace appie
 {
+    [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
+    [System.Runtime.InteropServices.ComVisibleAttribute(true)]
     public class fMain : Form
     {
+        bool browser_run_debug_mode = false;
+
         #region [ VARIABLE ]
 
         //const string url = "http://www.w3.org/";
@@ -171,6 +176,12 @@ namespace appie
             this.WindowState = FormWindowState.Maximized;
             txt_Log.Width = this.Width / 2;
 
+            // Ensure that ScriptErrorsSuppressed is set to false.
+            wbMaster.ScriptErrorsSuppressed = browser_run_debug_mode ? false : true;
+             
+            // Set the WebBrowser to use an instance of the ScriptManager to handle method calls to C#.
+            wbMaster.ObjectForScripting = new ScriptManager(this);
+
             //wbMaster.Navigated += (se, ev) => { HideScriptErrors(wbMaster, true); };
             //wbSlave.Navigated += (se, ev) => { HideScriptErrors(wbSlave, true); }; 
 
@@ -181,7 +192,7 @@ namespace appie
             axWbSlaveV1 = (SHDocVw.WebBrowser_V1)wbSlave.ActiveXInstance;
 
 
-            axWbMainV1.DownloadComplete += f_axWbMainV1__DownloadComplete;
+            //axWbMainV1.DownloadComplete += f_axWbMainV1__DownloadComplete;
 
 
 
@@ -403,6 +414,68 @@ namespace appie
                 axWbMainV1.Navigate(txt_URL.Text.Trim());
             }
         }
+
+         
+        public void f_browser_main_document_Ready()
+        {
+            txt_Log.Text += Environment.NewLine + "====>>> DOCUMENT READY ...";
+
+            wbMaster.Document.InvokeScript("test_js", new String[] { "called from client code" });
+        }
+
+        public void f_log_Write(string text)
+        {
+            txt_Log.Text += Environment.NewLine + text;
+        }
+
+        #region [ JAVASCRIPT ]
+
+        // This nested class must be ComVisible for the JavaScript to be able to call it.
+        [ComVisible(true)]
+        public class ScriptManager
+        {
+            // Variable to store the form of type Form1.
+            private fMain mForm;
+
+            // Constructor.
+            public ScriptManager(fMain form)
+            {
+                // Save the form so it can be referenced later.
+                mForm = form;
+            }
+
+            public void log(string message)
+            {
+                mForm.f_log_Write(message);
+            }
+
+            public void document_Ready()
+            {
+                mForm.f_browser_main_document_Ready();
+            }
+
+            // This method can be called from JavaScript.
+            public void MethodToCallFromScript()
+            {
+                // Call a method on the form.
+                mForm.DoSomething();
+            }
+
+            // This method can also be called from JavaScript.
+            public void AnotherMethod(string message)
+            {
+                MessageBox.Show(message);
+            }
+        }
+
+        // This method will be called by the other method (MethodToCallFromScript) that gets called by JavaScript.
+        public void DoSomething()
+        {
+            // Indicate success.
+            txt_Log.Text += Environment.NewLine + "It worked!";
+        }
+
+        #endregion
     }
 
     #region
@@ -433,4 +506,5 @@ namespace appie
     }
 
     #endregion
+
 }
