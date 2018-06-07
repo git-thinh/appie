@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using System.Linq;
 
 namespace appie
 {
@@ -299,24 +300,37 @@ namespace appie
                 manualNavigation = false;
                 //axWbMainV1.Navigate(url);
 
-                string s = File.ReadAllText("demo.html"),
-                        htm = string.Empty;
-
-
-                HtmlAgilityPack.HtmlDocument docAgi = new HtmlAgilityPack.HtmlDocument();
-                docAgi.LoadHtml(s);
-
-                var eleContent = docAgi.DocumentNode.QuerySelector("article div.body.entry-content");
-                if (eleContent != null) {                    
-                    htm = eleContent.OuterHtml;
-                    //htm = RemoveAttributes(htm);
-
-                    htm = Regex.Replace(htm, @"<([^>]*)(\sstyle="".+?""(\s|))(.*?)>", string.Empty);
-                    htm = htm.Replace(@">"">", ">");
-                }
-
-                wbMaster.DocumentText = htm;
+                f_web_loadHTML();
             };
+        }
+
+        private void f_web_loadHTML()
+        {
+            string s = File.ReadAllText("demo.html"),
+                    htm = string.Empty;
+            
+            HtmlAgilityPack.HtmlDocument docAgi = new HtmlAgilityPack.HtmlDocument();
+            docAgi.LoadHtml(s);
+
+            var eleContent = docAgi.DocumentNode.QuerySelector("article div.body.entry-content");
+            if (eleContent != null)
+            {
+                htm = eleContent.OuterHtml;
+                //htm = RemoveAttributes(htm);
+
+                htm = Regex.Replace(htm, @"<([^>]*)(\sstyle="".+?""(\s|))(.*?)>", string.Empty);
+                htm = htm.Replace(@">"">", ">");
+
+                List<string> lsClass = new List<string>();
+                var mts = Regex.Matches(htm, " class=([\"'])(?:(?=(\\\\?))\\2.)*?\\1"); 
+                if (mts.Count > 0) {
+                    for (int i = 0; i < mts.Count; i++)
+                        lsClass.Add(mts[i].Value.Substring(7).Replace(@"""", string.Empty).Trim());
+                    lsClass = lsClass.Distinct().ToList();
+                }
+            }
+
+            wbMaster.DocumentText = htm;
         }
 
         string RemoveAttributes(string value)
@@ -340,6 +354,8 @@ namespace appie
             }
         }
     }
+
+    #region
 
     // From http://west-wind.com/WebLog/posts/393.aspx
     // The delegate:
@@ -365,4 +381,6 @@ namespace appie
             Handler(Document.parentWindow.@event);
         }
     }
+
+    #endregion
 }
