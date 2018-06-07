@@ -49,7 +49,8 @@ namespace appie
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | (SecurityProtocolType)3072 | (SecurityProtocolType)0x00000C00 | SecurityProtocolType.Tls;
 
             Application.EnableVisualStyles();
-            Application.Run(new fMedia());
+            //Application.Run(new fMedia());
+            Application.Run(new fMain());
         }
     }
 
