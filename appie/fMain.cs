@@ -15,6 +15,8 @@ namespace appie
 {
     public class fMain : Form
     {
+        #region [ VARIABLE ]
+
         //const string url = "http://www.w3.org/";
         //const string url = "https://pronuncian.com/podcasts/episode221";
         //const string url = "https://www.youtube.com/watch?v=KN2jyw6D1ak";
@@ -34,6 +36,8 @@ namespace appie
         SHDocVw.WebBrowser_V1 axWbMainV1;
         SHDocVw.WebBrowser_V1 axWbSlaveV1;
         bool manualNavigation = false;
+
+        #endregion
 
         private void Browser_ContextMenuStandardEvent(mshtml.IHTMLEventObj e)
         {
@@ -319,7 +323,7 @@ namespace appie
                 htm = eleContent.OuterHtml;
                 //htm = RemoveAttributes(htm);
 
-                htm = Regex.Replace(htm, @"<([^>]*)(\sstyle="".+?""(\s|))(.*?)>", string.Empty);
+                htm = Regex.Replace(htm, @"<([^>]*)(\sstyle="".+?""(\s|))(.*?)>", string.Empty); 
                 htm = htm.Replace(@">"">", ">");
 
                 List<string> lsClass = new List<string>();
@@ -332,7 +336,7 @@ namespace appie
                 }
 
                 string template = File.ReadAllText("template.html"), css = string.Empty, js = string.Empty;
-                page = string.Format(template, css, htm, js);
+                page = template.Replace("/*[{CSS}]*/", css).Replace("<!--[{HTML}]-->", htm).Replace("/*[{JS}]*/", js);
             }
 
             wbMaster.DocumentText = page;
