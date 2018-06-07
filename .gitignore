@@ -17,3 +17,5 @@ appie/obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache
 .vs/appie/v15/Server/sqlite3/storage.ide-shm
 .vs/appie/v15/Server/sqlite3/storage.ide-wal
 appie/obj/Debug/appie.csproj.CoreCompileInputs.cache
+appie/obj/Debug/appie.csproj.CoreCompileInputs.cache
+*.cache
