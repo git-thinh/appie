@@ -276,6 +276,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="bin\Debug\demo.html" />
+    <Content Include="bin\Debug\edit.html" />
+    <Content Include="bin\Debug\xpath.html" />
     <Content Include="bin\Debug\template.html" />
     <EmbeddedResource Include="DLL\AxInterop.WMPLib.dll" />
     <EmbeddedResource Include="DLL\Interop.WMPLib.dll" />

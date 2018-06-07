@@ -1,0 +1,172 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style type="text/css">
+        body {
+            padding: 20px 10px;
+            margin: 0;
+            font-size: 1.5em;
+        }
+
+        p {
+            line-height: 1.7em;
+        }
+
+        a {
+            text-decoration: none;
+        } 
+        /*[{CSS}]*/
+    </style>
+     
+</head>
+<body>
+    <!--[{HTML}]-->
+    <!--[{INPUT_LOAD_COMPLETE}]-->
+
+    <script type="text/javascript">
+        var text_selection_current = '';
+        var timer_send_api_speech = null;
+
+        if (typeof jQuery != 'undefined') {
+            log('JQUERY VESION; ', jQuery.fn.jquery);
+        }
+
+        jQuery(document).ready(function () {
+            log("ready!");
+
+            jQuery(document).dblclick(function () {
+                log('-> dblclick');
+
+                //var selectedText = getSelected();
+                //if (selectedText == false) {
+                //    log('selectedText NULLL');
+                //} else {
+                //    log('selectedText', selectedText);
+                //}
+            });
+
+            jQuery(document).mouseup(function () {
+                log('-> mouseup');
+
+                if (timer_send_api_speech != null) {
+                    clearTimeout(timer_send_api_speech);
+                    timer_send_api_speech = null;
+                }
+
+                timer_send_api_speech = setTimeout(function () {
+                    var selectedText = getSelected();
+                    if (selectedText == false) {
+                        log('mouseup: selectedText NULLL');
+                        text_selection_current = '';
+                    } else {
+                        if (text_selection_current == selectedText) {
+                            speech();
+                        } else {
+                            log('mouseup: selectedText', selectedText);
+                            text_selection_current = selectedText;
+                            speech();
+                        }
+                    }
+
+                    clearTimeout(timer_send_api_speech);
+                    timer_send_api_speech = null;
+                }, 300);
+            });
+        });
+
+        function getSelected() {
+            var text = "";
+            if (window.getSelection
+                && window.getSelection().toString()
+                && $(window.getSelection()).attr('type') != "Caret") {
+                text = window.getSelection();
+                return text;
+            }
+            else if (document.getSelection
+                && document.getSelection().toString()
+                && $(document.getSelection()).attr('type') != "Caret") {
+                text = document.getSelection();
+                return text;
+            }
+            else {
+                var selection = document.selection && document.selection.createRange();
+
+                if (!(typeof selection === "undefined")
+                    && selection.text
+                    && selection.text.toString()) {
+                    text = selection.text;
+                    return text;
+                }
+            }
+            return false;
+        }
+
+        function test_js(message) {
+            //alert(message);
+            log('TEST CALL FROM C# TO JAVASCRIPT: DONE ...', '');
+        }
+
+        function log(title, value) {
+            var s = '';
+
+            if (JSON === null) {
+                window.external.log('JS: JSON is null');
+                return;
+            }
+
+            if (title != null) {
+                if (typeof title == 'string' || typeof title == 'number' || typeof title == 'boolean') {
+                    s = title.toString();
+                } else {
+                    s = JSON.stringify(title);
+                }
+            }
+
+            if (value != undefined) {
+                if (typeof value == 'string' || typeof value == 'number' || typeof title == 'boolean') {
+                    s += ' ===== ' + value.toString();
+                } else {
+                    s += ' ===== ' + JSON.stringify(value);
+                }
+            }
+
+            s = '\r\n' + s + '\r\n';
+            window.external.log(s);
+        }
+
+        log('test log: ', [1, 2, 3, 4, 5]);
+        log('test Array.from: ', Array.from([{ a: 1, b: 2 }]));
+
+        var imgs = '';
+        Array.from(document.querySelectorAll('img')).forEach(function (it) {
+            log(it.outerHTML);
+            it.style.display = 'none';
+        });
+
+        /*[{JS}]*/
+
+
+        Array.from(document.querySelectorAll('*')).forEach(function (it) {
+            switch (it.tagName) {
+                case 'HTML': case 'BODY':
+                    break;
+                default:
+                    //log(it.tagName, it.childNodes.length);
+                    //log(it.outerHTML);
+                    break;
+            }
+        });
+
+
+        function speech() {
+            window.external.speech(text_selection_current);
+        }
+
+        //log(document.body.innerHTML);
+        window.external.document_Ready();
+    </script>
+</body>
+</html>

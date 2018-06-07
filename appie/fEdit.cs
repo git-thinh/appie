@@ -19,6 +19,8 @@ namespace appie
     public class fEdit : Form
     {
         bool browser_run_debug_mode = false;
+        Panel panel_Footer;
+        Label label_XPath;
 
         #region [ VARIABLE ]
 
@@ -44,42 +46,6 @@ namespace appie
         bool manualNavigation = false;
 
         #endregion
-
-        private void Browser_ContextMenuStandardEvent(mshtml.IHTMLEventObj e)
-        {
-            label_Event.Text = string.Empty;
-            label_ElementSRC.Text = string.Empty;
-            label_ElementDES.Text = string.Empty;
-            //label_Message.Text = "Context Menu Action (Event Object) Hooked: " + e.type + " = " + e.srcElement.innerHTML;
-
-            switch (e.type)
-            {
-                case "mouseover":
-                    break;
-                case "contextmenu":
-                    label_Event.Text = e.type + " = " + e.srcElement.tagName;
-                    label_ElementSRC.Text = "SRC: " + e.srcElement.outerHTML;
-                    label_ElementDES.Text = "DES: " + e.toElement.outerHTML;
-                    break;
-                case "click":
-                    label_Event.Text = e.type + " = " + e.srcElement.tagName;
-                    label_ElementSRC.Text = "SRC: " + e.srcElement.outerHTML;
-                    label_ElementDES.Text = "DES: " + e.toElement.outerHTML;
-                    break;
-            }
-
-            e.returnValue = false;
-            //e.returnValue = true;
-        }
-
-        void MyToolBar_onmousedown(IHTMLEventObj e)
-        {
-            label_Event.Text = e.type + " = " + e.srcElement.tagName;
-            label_ElementSRC.Text = "SRC: " + e.srcElement.outerHTML;
-            label_ElementDES.Text = "DES: " + e.toElement.outerHTML;
-
-            //e.srcElement.style.backgroundColor = "yellow";
-        }
 
         public fEdit()
         {
@@ -148,11 +114,35 @@ namespace appie
                 TextAlign = ContentAlignment.TopLeft,
                 Padding = new Padding(5),
             };
+            label_XPath = new Label() { Dock = DockStyle.Top, AutoSize = false, Text = "XPATH: ...", Height = 55, BackColor = Color.Orange };
             panel_Header.Controls.AddRange(new Control[] {
                 label_ElementDES,
                 label_ElementSRC,
                 label_Event,
+                label_XPath,
             });
+
+            panel_Footer = new Panel()
+            {
+                Dock = DockStyle.Bottom,
+                Height = 24,
+                BackColor = Color.DeepSkyBlue,
+            };
+            Button btn_ele_save = new Button() { Text = "SAVE", Dock = DockStyle.Left, BackColor = Color.LightGray, };
+            Button btn_ele_get_xpath_next = new Button() { Text = "Get XPath NEXT >>>", Dock = DockStyle.Left, BackColor = Color.LightGray, Width = 199 };
+            Button btn_ele_get_xpath_prev = new Button() { Text = "<<< Get XPath PREV", Dock = DockStyle.Left, BackColor = Color.LightGray, Width = 199, };
+            Button btn_ele_set_style = new Button() { Text = "Set Style", Dock = DockStyle.Left, BackColor = Color.LightGray, };
+            panel_Footer.Controls.AddRange(new Control[] { 
+                btn_ele_save,
+                btn_ele_get_xpath_next,
+                btn_ele_get_xpath_prev,
+                btn_ele_set_style,
+            });
+            btn_ele_get_xpath_next.MouseClick += Btn_ele_get_xpath_next_MouseClick;
+            btn_ele_get_xpath_prev.MouseClick += Btn_ele_get_xpath_prev_MouseClick;
+            btn_ele_save.MouseClick += Btn_ele_save_MouseClick;
+            btn_ele_set_style.MouseClick += Btn_ele_set_style_MouseClick;
+
             this.Controls.AddRange(new Control[] {
                 wbMaster,
                 wbSlave,
@@ -161,12 +151,67 @@ namespace appie
                 txt_URL,
                 new Splitter(){ Dock = DockStyle.Right },
                 txt_Log,
+                panel_Footer,
             });
 
             #endregion
 
             this.Shown += f_form_Shown;
         }
+
+        private void Btn_ele_set_style_MouseClick(object sender, MouseEventArgs e)
+        {
+        }
+
+        private void f_save_XPATH()
+        { 
+            string s = File.ReadAllText("demo.html");
+            string htm = string.Empty, page = string.Empty;
+
+            HtmlAgilityPack.HtmlDocument docAgi = new HtmlAgilityPack.HtmlDocument();
+            docAgi.LoadHtml(s);
+
+            //var eleContent = docAgi.DocumentNode.QuerySelector("article div.body.entry-content");
+            var eleContent = docAgi.DocumentNode.QuerySelector(XPATH_RUNTIME);
+            if (eleContent != null)
+            {
+                htm = eleContent.OuterHtml;
+                //htm = RemoveAttributes(htm);
+
+                htm = Regex.Replace(htm, @"</?(?i:base|ins|svg|iframe)(.|\n|\s)*?>", string.Empty, RegexOptions.Singleline | RegexOptions.IgnoreCase);
+
+                htm = Regex.Replace(htm, @"<([^>]*)(\sstyle="".+?""(\s|))(.*?)>", string.Empty);
+                htm = htm.Replace(@">"">", ">");
+
+                List<string> lsClass = new List<string>();
+                var mts = Regex.Matches(htm, " class=([\"'])(?:(?=(\\\\?))\\2.)*?\\1");
+                if (mts.Count > 0)
+                {
+                    for (int i = 0; i < mts.Count; i++)
+                        lsClass.Add(mts[i].Value.Substring(7).Replace(@"""", string.Empty).Trim());
+                    lsClass = lsClass.Distinct().ToList();
+                }
+
+                htm = htm.Replace("><", ">" + Environment.NewLine + "<");
+
+                string template = File.ReadAllText("template.html"), css = string.Empty, js = string.Empty;
+                page = template
+                    .Replace("/*[{CSS}]*/", css)
+                    .Replace("<!--[{HTML}]-->", htm)
+                    .Replace("/*[{JS}]*/", js)
+                    .Replace("<!--[{INPUT_LOAD_COMPLETE}]-->", @"<INPUT TYPE=""hidden"" ID=""_____INPUT_LOAD_COMPLETE"">");
+            }
+
+            browser_load_complete = false;
+            wbMaster.DocumentText = page;
+            File.WriteAllText("result.html", page);
+        }
+
+        private void Btn_ele_save_MouseClick(object sender, MouseEventArgs e)
+        {
+            f_save_XPATH();
+        }
+
 
         private void f_form_Shown(object sender, EventArgs e)
         {
@@ -239,6 +284,42 @@ namespace appie
             //wbMaster.Navigate("about:blank");
 
             f_web_loadHTML();
+        }
+
+        private void Browser_ContextMenuStandardEvent(mshtml.IHTMLEventObj e)
+        {
+            label_Event.Text = string.Empty;
+            label_ElementSRC.Text = string.Empty;
+            label_ElementDES.Text = string.Empty;
+            //label_Message.Text = "Context Menu Action (Event Object) Hooked: " + e.type + " = " + e.srcElement.innerHTML;
+
+            switch (e.type)
+            {
+                case "mouseover":
+                    break;
+                case "contextmenu":
+                    label_Event.Text = e.type + " = " + e.srcElement.tagName;
+                    label_ElementSRC.Text = "SRC: " + e.srcElement.outerHTML;
+                    label_ElementDES.Text = "DES: " + e.toElement.outerHTML;
+                    break;
+                case "click":
+                    label_Event.Text = e.type + " = " + e.srcElement.tagName;
+                    label_ElementSRC.Text = "SRC: " + e.srcElement.outerHTML;
+                    label_ElementDES.Text = "DES: " + e.toElement.outerHTML;
+                    break;
+            }
+
+            e.returnValue = false;
+            //e.returnValue = true;
+        }
+
+        void MyToolBar_onmousedown(IHTMLEventObj e)
+        {
+            label_Event.Text = e.type + " = " + e.srcElement.tagName;
+            label_ElementSRC.Text = "SRC: " + e.srcElement.outerHTML;
+            label_ElementDES.Text = "DES: " + e.toElement.outerHTML;
+
+            //e.srcElement.style.backgroundColor = "yellow";
         }
 
         bool browser_load_complete = false;
@@ -348,6 +429,24 @@ namespace appie
 
         private void f_web_loadHTML()
         {
+            string text = File.ReadAllText("demo.html"),
+                result = string.Empty;
+
+            RegexOptions options = RegexOptions.IgnoreCase | RegexOptions.Singleline;
+            Regex regx = new Regex(@"((?:.(?!<\s*body[^>]*>))+.<\s*body[^>]*>)|(<\s*/\s*body\s*\>.+)", options);
+
+            Match match = regx.Match(text);
+
+            if (match.Success)
+            {
+                result = text.Substring(match.Value.Length, text.Length - match.Value.Length);
+                result = File.ReadAllText("edit.html").Replace("<!--[{HTML}]-->", result);
+                
+                wbMaster.DocumentText = result;
+            }
+
+            return;
+
 
             string s = File.ReadAllText("demo.html");
             string htm = string.Empty, page = string.Empty;
@@ -387,7 +486,6 @@ namespace appie
 
             browser_load_complete = false;
             wbMaster.DocumentText = page;
-
             File.WriteAllText("result.html", page);
         }
 
@@ -418,7 +516,7 @@ namespace appie
             wbMaster.Document.InvokeScript("test_js", new String[] { "called from client code" });
 
             docMain = axWbMainV1.Document as HTMLDocument;
-            //((mshtml.HTMLDocumentEvents2_Event)docMain).onselectionchange += new HTMLDocumentEvents2_onselectionchangeEventHandler(f_event_browser_main_selectionchange);
+            //((mshtml.HTMLDocumentEvents2_Event)docMain).onmouseup += new HTMLDocumentEvents2_onmouseupEventHandler(f_event_browser_main_onMouseUp);
 
             ////HTMLDocument htmlDoc = axWbMainV1.Document as HTMLDocument;
             ////Explorer is Object of SHDocVw.WebBrowserClass
@@ -428,17 +526,35 @@ namespace appie
             ////inject Script
             ////docMain.parentWindow.execScript("alert('hello world !!')", "javascript");
             ////((mshtml.HTMLDocumentEvents2_Event)docMain).onmousedown += new HTMLDocumentEvents2_onmousedownEventHandler(MyToolBar_onmousedown);
-            //((mshtml.HTMLDocumentEvents2_Event)docMain).onmouseup += new HTMLDocumentEvents2_onmouseupEventHandler(MyToolBar_onmousedown);
+            //((mshtml.HTMLDocumentEvents2_Event)docMain).onmouseup += new HTMLDocumentEvents2_onmouseupEventHandler(MyToolBar_onmousedown); 
 
+
+            //IWebBrowser2 b = (IWebBrowser2)pDisp;
+            //HTMLDocument doc2 = axWbMainV1.Document as HTMLDocument;
+            DHTMLEventHandler eventHandler = new DHTMLEventHandler(docMain);
+            eventHandler.Handler += new DHTMLEvent(this.f_event_browser_main_onMouseOver);
+            //////Not triggered 
+            ////((mshtml.DispHTMLDocument)docMain).onclick = eventHandler;
+            //////Following works fine 
+            ////((mshtml.DispHTMLDocument)docMain).oncontextmenu = eventHandler;
+            ((mshtml.DispHTMLDocument)docMain).onmouseover = eventHandler;
         }
 
-        private void f_event_browser_main_selectionchange(IHTMLEventObj e)
+        public string browser_main_ele_current_id = string.Empty;
+        public string browser_main_ele_current_tagName = string.Empty;
+        private void f_event_browser_main_onMouseOver(IHTMLEventObj e)
         {
+            browser_main_ele_current_tagName = e.srcElement.tagName;
+            browser_main_ele_current_id = Guid.NewGuid().ToString();
+            e.srcElement.setAttribute("xpath_id", browser_main_ele_current_id);
+
             label_Event.Text = e.type + " = " + e.srcElement.tagName;
             label_ElementSRC.Text = "SRC: " + e.srcElement.outerHTML;
             label_ElementDES.Text = "DES: " + e.toElement.outerHTML;
-        }
 
+            this.Text = browser_main_ele_current_id;
+        }
+        
         public void f_log_Write(string text)
         {
             txt_Log.Text += Environment.NewLine + text;
@@ -448,6 +564,114 @@ namespace appie
         {
             txt_Log.Text += Environment.NewLine + "API SPEECH: " + text;
         }
+
+        public void f_browser_xpath_update(string xpath) {
+            XPATH_SELECT_CURRENT = xpath;
+            label_XPath.Text = xpath;
+
+            //int len = 2;
+            //string html = File.ReadAllText("demo.html");
+
+
+            //HtmlAgilityPack.HtmlDocument docAgi = new HtmlAgilityPack.HtmlDocument();
+            //docAgi.LoadHtml(html);
+
+            //HtmlAgilityPack.HtmlNode node = getNodeByXpath(docAgi, xpath, len);
+
+            //if (node != null)
+            //{
+            //    this.Text = XPATH_RUNTIME;
+            //    string src = node.OuterHtml;
+            //    //txt_Log.Text = src;
+            //    wbSlave.DocumentText = src;
+            //}
+            //else {
+            //    this.Text = "CANNOT FIND: " + XPATH_RUNTIME;
+            //}
+        }
+
+        string XPATH_SELECT_CURRENT = string.Empty;
+        string XPATH_RUNTIME = string.Empty;
+        int XPATH_RUNTIME_LEN = 0;
+        HtmlAgilityPack.HtmlNode getNodeByXpath(HtmlAgilityPack.HtmlDocument docAgi, string xpath, int len)
+        {
+            //txt_Log.Text = string.Empty;
+
+            try
+            {
+                string[] a = xpath.Split('/');
+
+                if (a.Length <= len) return null;
+
+                XPATH_RUNTIME = string.Join("/", a.Where((x, k) => k < a.Length - len).ToArray());
+                HtmlAgilityPack.HtmlNode node = docAgi.DocumentNode.SelectNodes(XPATH_RUNTIME).First();
+                XPATH_RUNTIME_LEN = len;
+
+                return node;
+            }
+            catch {
+                len++;
+                return getNodeByXpath(docAgi, xpath, len);
+            }
+
+            return null;
+        }
+
+        private void Btn_ele_get_xpath_next_MouseClick(object sender, MouseEventArgs e)
+        {
+        }
+
+        private void Btn_ele_get_xpath_prev_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (string.IsNullOrEmpty(XPATH_SELECT_CURRENT)) return;
+
+            wbMaster.DocumentText = string.Empty;
+            txt_Log.Text = string.Empty;
+
+            
+            string html = File.ReadAllText("demo.html");
+
+            string[] a = XPATH_SELECT_CURRENT.Split('/').Where(x => x.Contains(".") == true).ToArray();
+            if (XPATH_RUNTIME_LEN <= 0)
+                XPATH_RUNTIME_LEN = a.Length - 1;
+            else
+                XPATH_RUNTIME_LEN = XPATH_RUNTIME_LEN - 1;
+
+            if (XPATH_RUNTIME_LEN <= 0) return;
+
+            XPATH_RUNTIME = a[XPATH_RUNTIME_LEN];
+
+            HtmlAgilityPack.HtmlDocument docAgi = new HtmlAgilityPack.HtmlDocument();
+            docAgi.LoadHtml(html);
+
+            label_Message.Text = XPATH_RUNTIME;
+            try
+            {
+                HtmlAgilityPack.HtmlNode node = docAgi.DocumentNode.QuerySelector(XPATH_RUNTIME);
+                if (node != null)
+                {
+                    string src = node.OuterHtml;
+                    //txt_Log.Text = XPATH_RUNTIME;
+                    txt_Log.Text += Environment.NewLine + Environment.NewLine + XPATH_SELECT_CURRENT;
+                    txt_Log.Text += Environment.NewLine + Environment.NewLine + src;
+
+                    string htm = src;
+                    htm = Regex.Replace(htm, @"</?(?i:base|ins|svg|iframe)(.|\n|\s)*?>", string.Empty, RegexOptions.Singleline | RegexOptions.IgnoreCase); 
+                    htm = Regex.Replace(htm, @"<([^>]*)(\sstyle="".+?""(\s|))(.*?)>", string.Empty);
+                    htm = htm.Replace(@">"">", ">");
+
+                    wbMaster.DocumentText = @"<style type=""text/css""> body { padding: 20px 10px; margin: 0; font-size: 1.5em; } p { line-height: 1.7em; } a { text-decoration: none; } </style>" + htm;
+                }
+                else
+                {
+                    txt_Log.Text += Environment.NewLine + Environment.NewLine + "CANNOT FIND: " + XPATH_RUNTIME;
+                    this.Text = "CANNOT FIND: " + XPATH_RUNTIME;
+                }
+            }
+            catch { }
+
+        }
+
 
         #region [ JAVASCRIPT ]
 
@@ -465,9 +689,19 @@ namespace appie
                 mForm = form;
             }
 
+            public string get_ele_current_id()
+            {
+                return string.Format(@"{0}[xpath_id=""{1}""]", mForm.browser_main_ele_current_tagName, mForm.browser_main_ele_current_id);
+            }
+
             public void log(string message)
             {
                 mForm.f_log_Write(message);
+            }
+
+            public void update_XPath(string xpath)
+            {
+                mForm.f_browser_xpath_update(xpath);
             }
 
             public void speech(string message)
@@ -503,5 +737,5 @@ namespace appie
 
         #endregion
     }
-    
+
 }
