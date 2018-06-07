@@ -81,7 +81,7 @@ namespace appie
             label_ElementSRC.Text = "SRC: " + e.srcElement.outerHTML;
             label_ElementDES.Text = "DES: " + e.toElement.outerHTML;
 
-            e.srcElement.style.backgroundColor = "yellow";
+            //e.srcElement.style.backgroundColor = "yellow";
         }
 
         public fMain()
@@ -99,6 +99,7 @@ namespace appie
                 ScrollBars = ScrollBars.Vertical,
                 BorderStyle = BorderStyle.None,
             };
+            txt_Log.MouseDoubleClick += (se, ev) => { txt_Log.Text = string.Empty; };
 
             wbMaster = new System.Windows.Forms.WebBrowser()
             {
@@ -181,16 +182,14 @@ namespace appie
              
             // Set the WebBrowser to use an instance of the ScriptManager to handle method calls to C#.
             wbMaster.ObjectForScripting = new ScriptManager(this);
-
-            //wbMaster.Navigated += (se, ev) => { HideScriptErrors(wbMaster, true); };
-            //wbSlave.Navigated += (se, ev) => { HideScriptErrors(wbSlave, true); }; 
-
+            
             //var axWbMainV1 = (SHDocVw.WebBrowser_V1)wbMaster.ActiveXInstance;
             //var axWbSlaveV1 = (SHDocVw.WebBrowser_V1)wbSlave.ActiveXInstance;
 
             axWbMainV1 = (SHDocVw.WebBrowser_V1)wbMaster.ActiveXInstance;
             axWbSlaveV1 = (SHDocVw.WebBrowser_V1)wbSlave.ActiveXInstance;
 
+            
 
             //axWbMainV1.DownloadComplete += f_axWbMainV1__DownloadComplete;
 
@@ -419,13 +418,38 @@ namespace appie
         public void f_browser_main_document_Ready()
         {
             txt_Log.Text += Environment.NewLine + "====>>> DOCUMENT READY ...";
-
             wbMaster.Document.InvokeScript("test_js", new String[] { "called from client code" });
+
+            docMain = axWbMainV1.Document as HTMLDocument;
+            //((mshtml.HTMLDocumentEvents2_Event)docMain).onselectionchange += new HTMLDocumentEvents2_onselectionchangeEventHandler(f_event_browser_main_selectionchange);
+
+            ////HTMLDocument htmlDoc = axWbMainV1.Document as HTMLDocument;
+            ////Explorer is Object of SHDocVw.WebBrowserClass
+            ////HTMLDocument htmlDoc = (HTMLDocument)this.Explorer.IWebBrowser_Document;
+            ////HTMLDocument htmlDoc = axWbMainV1.Document as HTMLDocument;
+
+            ////inject Script
+            ////docMain.parentWindow.execScript("alert('hello world !!')", "javascript");
+            ////((mshtml.HTMLDocumentEvents2_Event)docMain).onmousedown += new HTMLDocumentEvents2_onmousedownEventHandler(MyToolBar_onmousedown);
+            //((mshtml.HTMLDocumentEvents2_Event)docMain).onmouseup += new HTMLDocumentEvents2_onmouseupEventHandler(MyToolBar_onmousedown);
+
+        }
+
+        private void f_event_browser_main_selectionchange(IHTMLEventObj e)
+        {
+            label_Event.Text = e.type + " = " + e.srcElement.tagName;
+            label_ElementSRC.Text = "SRC: " + e.srcElement.outerHTML;
+            label_ElementDES.Text = "DES: " + e.toElement.outerHTML;
         }
 
         public void f_log_Write(string text)
         {
             txt_Log.Text += Environment.NewLine + text;
+        }
+
+        public void f_speech(string text)
+        {
+            txt_Log.Text += Environment.NewLine + "API SPEECH: " + text;
         }
 
         #region [ JAVASCRIPT ]
@@ -447,6 +471,11 @@ namespace appie
             public void log(string message)
             {
                 mForm.f_log_Write(message);
+            }
+
+            public void speech(string message)
+            {
+                mForm.f_speech(message);
             }
 
             public void document_Ready()
