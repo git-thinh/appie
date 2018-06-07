@@ -42,17 +42,84 @@ namespace appie
             };
         }
 
+        static fCrawler fom;
+
+        static Dictionary<string, IthreadMsg> dicService = null;
+        static Dictionary<string, msg> dicResponses = null;
+
+        static Queue<msg> api_msg_queue = null;
+        static System.Threading.Timer api_msg_timer = null;
+
+        public static void postToAPI(msg m)
+        {
+            api_msg_queue.Enqueue(m);
+        }
+
+        public static void postToAPI(string api, string key, object input)
+        {
+            postToAPI(new msg() { API = api, KEY = key, Input = input });
+        }
+
         public static void RUN() {
             System.Net.ServicePointManager.DefaultConnectionLimit = 1000;
             // active SSL 1.1, 1.2, 1.3 for WebClient request HTTPS
             ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | (SecurityProtocolType)3072 | (SecurityProtocolType)0x00000C00 | SecurityProtocolType.Tls;
 
+
+
+
+            api_msg_queue = new Queue<msg>();
+            if (api_msg_timer == null)
+                api_msg_timer = new System.Threading.Timer(new System.Threading.TimerCallback((obj) =>
+                {
+                    if (api_msg_queue.Count > 0)
+                    {
+                        msg m = api_msg_queue.Dequeue();
+                        if(m != null)
+                        {
+                            if (!string.IsNullOrEmpty(m.API) && dicService.ContainsKey(m.API))
+                            {
+                                IthreadMsg sv;
+                                if (dicService.TryGetValue(m.API, out sv) && sv != null)
+                                {
+                                    ////new Thread(new ParameterizedThreadStart((object _sv) =>
+                                    ////{
+                                    ////    IthreadMsg so = (IthreadMsg)_sv;
+                                    ////    so.Execute(m);
+                                    ////})).Start(sv);
+                                    sv.Execute(m);
+                                }
+                            }
+                        }
+                    }
+                }), null, 100, 100);
+
+            dicResponses = new Dictionary<string, msg>();
+            dicService = new Dictionary<string, IthreadMsg>();
+
+            dicService.Add(_API.CRAWLER, new threadMsg(new api_crawler()));
+
+
+
+
+
+
+
+
+
+
+            fom = new fCrawler();
+
             Application.EnableVisualStyles();
             //Application.Run(new fMedia());
             //Application.Run(new fMain());
-            //Application.Run(new fEdit());
-            Application.Run(new fCrawler());
+            //Application.Run(new fEdit()); 
+            Application.Run(fom);
+        }
+
+        public static IFORM get_Main() {
+            return fom;
         }
     }
 

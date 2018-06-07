@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -69,6 +70,10 @@
       <HintPath>DLL\Microsoft.mshtml.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>DLL\Newtonsoft.Json.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="SHDocVw">
       <HintPath>DLL\SHDocVw.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
@@ -77,11 +82,24 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Speech">
+      <HintPath>DLL\System.Speech.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\api_base.cs" />
+    <Compile Include="API\api_crawler.cs" />
     <Compile Include="API\DHTMLEventHandler.cs" />
+    <Compile Include="API\htmlToText.cs" />
+    <Compile Include="API\IAPI.cs" />
+    <Compile Include="API\IFORM.cs" />
+    <Compile Include="API\msg.cs" />
+    <Compile Include="API\threadMsg.cs" />
+    <Compile Include="API\_API.cs" />
     <Compile Include="FORM\fCrawler.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -202,6 +220,88 @@
     <Compile Include="LIB\mustache\VariableFoundEventArgs.cs" />
     <Compile Include="LIB\mustache\WithTagDefinition.cs" />
     <Compile Include="LIB\mustache\_config.cs" />
+    <Compile Include="LIB\ProtoBuf\BclHelpers.cs" />
+    <Compile Include="LIB\ProtoBuf\BufferExtension.cs" />
+    <Compile Include="LIB\ProtoBuf\BufferPool.cs" />
+    <Compile Include="LIB\ProtoBuf\CallbackAttributes.cs" />
+    <Compile Include="LIB\ProtoBuf\Compiler\CompilerContext.cs" />
+    <Compile Include="LIB\ProtoBuf\Compiler\CompilerDelegates.cs" />
+    <Compile Include="LIB\ProtoBuf\Compiler\Local.cs" />
+    <Compile Include="LIB\ProtoBuf\DataFormat.cs" />
+    <Compile Include="LIB\ProtoBuf\Extensible.cs" />
+    <Compile Include="LIB\ProtoBuf\ExtensibleUtil.cs" />
+    <Compile Include="LIB\ProtoBuf\GlobalSuppressions.cs" />
+    <Compile Include="LIB\ProtoBuf\Helpers.cs" />
+    <Compile Include="LIB\ProtoBuf\IExtensible.cs" />
+    <Compile Include="LIB\ProtoBuf\IExtension.cs" />
+    <Compile Include="LIB\ProtoBuf\ImplicitFields.cs" />
+    <Compile Include="LIB\ProtoBuf\KeyValuePairProxy.cs" />
+    <Compile Include="LIB\ProtoBuf\Meta\AttributeMap.cs" />
+    <Compile Include="LIB\ProtoBuf\Meta\BasicList.cs" />
+    <Compile Include="LIB\ProtoBuf\Meta\CallbackSet.cs" />
+    <Compile Include="LIB\ProtoBuf\Meta\MetaType.cs" />
+    <Compile Include="LIB\ProtoBuf\Meta\RuntimeTypeModel.cs" />
+    <Compile Include="LIB\ProtoBuf\Meta\SubType.cs" />
+    <Compile Include="LIB\ProtoBuf\Meta\TypeFormatEventArgs.cs" />
+    <Compile Include="LIB\ProtoBuf\Meta\TypeModel.cs" />
+    <Compile Include="LIB\ProtoBuf\Meta\ValueMember.cs" />
+    <Compile Include="LIB\ProtoBuf\NetObjectCache.cs" />
+    <Compile Include="LIB\ProtoBuf\PrefixStyle.cs" />
+    <Compile Include="LIB\ProtoBuf\ProtoContractAttribute.cs" />
+    <Compile Include="LIB\ProtoBuf\ProtoEnumAttribute.cs" />
+    <Compile Include="LIB\ProtoBuf\ProtoException.cs" />
+    <Compile Include="LIB\ProtoBuf\ProtoIgnoreAttribute.cs" />
+    <Compile Include="LIB\ProtoBuf\ProtoIncludeAttribute.cs" />
+    <Compile Include="LIB\ProtoBuf\ProtoMemberAttribute.cs" />
+    <Compile Include="LIB\ProtoBuf\ProtoReader.cs" />
+    <Compile Include="LIB\ProtoBuf\ProtoWriter.cs" />
+    <Compile Include="LIB\ProtoBuf\SerializationContext.cs" />
+    <Compile Include="LIB\ProtoBuf\Serializer.cs" />
+    <Compile Include="LIB\ProtoBuf\Serializers\ArrayDecorator.cs" />
+    <Compile Include="LIB\ProtoBuf\Serializers\BlobSerializer.cs" />
+    <Compile Include="LIB\ProtoBuf\Serializers\BooleanSerializer.cs" />
+    <Compile Include="LIB\ProtoBuf\Serializers\ByteSerializer.cs" />
+    <Compile Include="LIB\ProtoBuf\Serializers\CharSerializer.cs" />
+    <Compile Include="LIB\ProtoBuf\Serializers\CompiledSerializer.cs" />
+    <Compile Include="LIB\ProtoBuf\Serializers\DateTimeSerializer.cs" />
+    <Compile Include="LIB\ProtoBuf\Serializers\DecimalSerializer.cs" />
+    <Compile Include="LIB\ProtoBuf\Serializers\DefaultValueDecorator.cs" />
+    <Compile Include="LIB\ProtoBuf\Serializers\DoubleSerializer.cs" />
+    <Compile Include="LIB\ProtoBuf\Serializers\EnumSerializer.cs" />
+    <Compile Include="LIB\ProtoBuf\Serializers\FieldDecorator.cs" />
+    <Compile Include="LIB\ProtoBuf\Serializers\GuidSerializer.cs" />
+    <Compile Include="LIB\ProtoBuf\Serializers\ImmutableCollectionDecorator.cs" />
+    <Compile Include="LIB\ProtoBuf\Serializers\Int16Serializer.cs" />
+    <Compile Include="LIB\ProtoBuf\Serializers\Int32Serializer.cs" />
+    <Compile Include="LIB\ProtoBuf\Serializers\Int64Serializer.cs" />
+    <Compile Include="LIB\ProtoBuf\Serializers\IProtoSerializer.cs" />
+    <Compile Include="LIB\ProtoBuf\Serializers\IProtoTypeSerializer.cs" />
+    <Compile Include="LIB\ProtoBuf\Serializers\ISerializerProxy.cs" />
+    <Compile Include="LIB\ProtoBuf\Serializers\KeyValuePairDecorator.cs" />
+    <Compile Include="LIB\ProtoBuf\Serializers\ListDecorator.cs" />
+    <Compile Include="LIB\ProtoBuf\Serializers\MemberSpecifiedDecorator.cs" />
+    <Compile Include="LIB\ProtoBuf\Serializers\NetObjectSerializer.cs" />
+    <Compile Include="LIB\ProtoBuf\Serializers\NullDecorator.cs" />
+    <Compile Include="LIB\ProtoBuf\Serializers\ParseableSerializer.cs" />
+    <Compile Include="LIB\ProtoBuf\Serializers\PropertyDecorator.cs" />
+    <Compile Include="LIB\ProtoBuf\Serializers\ProtoDecoratorBase.cs" />
+    <Compile Include="LIB\ProtoBuf\Serializers\SByteSerializer.cs" />
+    <Compile Include="LIB\ProtoBuf\Serializers\SingleSerializer.cs" />
+    <Compile Include="LIB\ProtoBuf\Serializers\StringSerializer.cs" />
+    <Compile Include="LIB\ProtoBuf\Serializers\SubItemSerializer.cs" />
+    <Compile Include="LIB\ProtoBuf\Serializers\SurrogateSerializer.cs" />
+    <Compile Include="LIB\ProtoBuf\Serializers\SystemTypeSerializer.cs" />
+    <Compile Include="LIB\ProtoBuf\Serializers\TagDecorator.cs" />
+    <Compile Include="LIB\ProtoBuf\Serializers\TimeSpanSerializer.cs" />
+    <Compile Include="LIB\ProtoBuf\Serializers\TupleSerializer.cs" />
+    <Compile Include="LIB\ProtoBuf\Serializers\TypeSerializer.cs" />
+    <Compile Include="LIB\ProtoBuf\Serializers\UInt16Serializer.cs" />
+    <Compile Include="LIB\ProtoBuf\Serializers\UInt32Serializer.cs" />
+    <Compile Include="LIB\ProtoBuf\Serializers\UInt64Serializer.cs" />
+    <Compile Include="LIB\ProtoBuf\Serializers\UriDecorator.cs" />
+    <Compile Include="LIB\ProtoBuf\SubItemToken.cs" />
+    <Compile Include="LIB\ProtoBuf\WireType.cs" />
+    <Compile Include="LIB\ProtoBuf\_demo.cs" />
     <Compile Include="LIB\System.Linq\Class1.cs" />
     <Compile Include="LIB\System.Linq\DeepCopy.Assign.cs" />
     <Compile Include="LIB\System.Linq\IsNumber.cs" />
@@ -272,6 +372,7 @@
     <Compile Include="LIB\System.Linq\Tuple\IStructuralEquatable.cs" />
     <Compile Include="LIB\System.Linq\Tuple\Tuple.cs" />
     <Compile Include="app.cs" />
+    <Compile Include="MODEL\oCrawler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -282,6 +383,9 @@
     <Content Include="bin\Debug\edit.html" />
     <Content Include="bin\Debug\xpath.html" />
     <Content Include="bin\Debug\template.html" />
+    <EmbeddedResource Include="DLL\Newtonsoft.Json.dll" />
+    <EmbeddedResource Include="DLL\System.Speech.dll" />
+    <Content Include="LIB\ProtoBuf\_ReadMe.txt" />
     <EmbeddedResource Include="DLL\AxInterop.WMPLib.dll" />
     <EmbeddedResource Include="DLL\Interop.WMPLib.dll" />
     <EmbeddedResource Include="DLL\Microsoft.mshtml.dll" />
