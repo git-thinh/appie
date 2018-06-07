@@ -7,6 +7,7 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace appie
@@ -154,7 +155,7 @@ namespace appie
             
             #endregion
 
-            this.Shown += (s, e) =>
+            this.Shown += (se, ev) =>
             {
                 this.WindowState = FormWindowState.Maximized;
                 txt_Log.Width = this.Width / 2;
@@ -298,8 +299,36 @@ namespace appie
                 manualNavigation = false;
                 //axWbMainV1.Navigate(url);
 
-                wbMaster.DocumentText = File.ReadAllText("demo.html");
+                string s = File.ReadAllText("demo.html"),
+                        htm = string.Empty;
+
+
+                HtmlAgilityPack.HtmlDocument docAgi = new HtmlAgilityPack.HtmlDocument();
+                docAgi.LoadHtml(s);
+
+                var eleContent = docAgi.DocumentNode.QuerySelector("article div.body.entry-content");
+                if (eleContent != null) {                    
+                    htm = eleContent.OuterHtml;
+                    //htm = RemoveAttributes(htm);
+
+                    htm = Regex.Replace(htm, @"<([^>]*)(\sstyle="".+?""(\s|))(.*?)>", string.Empty);
+                    htm = htm.Replace(@">"">", ">");
+                }
+
+                wbMaster.DocumentText = htm;
             };
+        }
+
+        string RemoveAttributes(string value)
+        {
+            var attributeClean = new System.Text.RegularExpressions.Regex(@"\<[a-z]+\b([^>]+?)\s?\/?\>", System.Text.RegularExpressions.RegexOptions.Multiline | System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+
+            while (attributeClean.IsMatch(value))
+            {
+                var match = attributeClean.Match(value);
+                value = value.Remove(match.Index, match.Length);
+            }
+            return value;
         }
 
         private void f_url_textBox_KeyDown(object sender, KeyEventArgs e)
