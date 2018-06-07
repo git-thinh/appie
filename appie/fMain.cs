@@ -33,6 +33,7 @@ namespace appie
         TextBox txt_URL;
         TextBox txt_Log;
 
+        HTMLDocument docMain = null;
         SHDocVw.WebBrowser_V1 axWbMainV1;
         SHDocVw.WebBrowser_V1 axWbSlaveV1;
         bool manualNavigation = false;
@@ -161,156 +162,185 @@ namespace appie
 
             #endregion
 
-            this.Shown += (se, ev) =>
+            this.Shown += f_form_Shown;
+        }
+
+        private void f_form_Shown(object sender, EventArgs e)
+        {
+
+            this.WindowState = FormWindowState.Maximized;
+            txt_Log.Width = this.Width / 2;
+
+            //wbMaster.Navigated += (se, ev) => { HideScriptErrors(wbMaster, true); };
+            //wbSlave.Navigated += (se, ev) => { HideScriptErrors(wbSlave, true); }; 
+
+            //var axWbMainV1 = (SHDocVw.WebBrowser_V1)wbMaster.ActiveXInstance;
+            //var axWbSlaveV1 = (SHDocVw.WebBrowser_V1)wbSlave.ActiveXInstance;
+
+            axWbMainV1 = (SHDocVw.WebBrowser_V1)wbMaster.ActiveXInstance;
+            axWbSlaveV1 = (SHDocVw.WebBrowser_V1)wbSlave.ActiveXInstance;
+
+
+            axWbMainV1.DownloadComplete += f_axWbMainV1__DownloadComplete;
+
+
+
+
+            ////manualNavigation = false;
+
+            ////// Use WebBrowser_V1 events as BeforeNavigate2 doesn't work with WPF WebBrowser
+            ////axWbMainV1.BeforeNavigate += (string URL, int Flags, string TargetFrameName, ref object PostData, string Headers, ref bool Cancel) =>
+            ////{
+            ////    if (!manualNavigation)
+            ////        return;
+            ////    Cancel = true;
+            ////    axWbMainV1.Stop();
+            ////    axWbSlaveV1.Navigate(URL, Flags, TargetFrameName, PostData, Headers);
+            ////};
+
+            ////axWbMainV1.FrameBeforeNavigate += (string URL, int Flags, string TargetFrameName, ref object PostData, string Headers, ref bool Cancel) =>
+            ////{
+            ////    if (!manualNavigation)
+            ////        return;
+            ////    Cancel = true;
+            ////    axWbMainV1.Stop();
+            ////    axWbSlaveV1.Navigate(URL, Flags, TargetFrameName, PostData, Headers);
+            ////};
+
+            ////axWbMainV1.NavigateComplete += (string URL) =>
+            ////{
+            ////    manualNavigation = true;
+            ////    txt_Log.Text += Environment.NewLine + Environment.NewLine + "=====> axWbMainV1.NavigateComplete";
+            ////};
+
+            ////axWbMainV1.FrameNavigateComplete += (string URL) =>
+            ////{
+            ////    manualNavigation = true;
+            ////};
+
+            ////axWbMainV1.NewWindow += (string URL, int Flags, string TargetFrameName, ref object PostData, string Headers, ref bool Processed) =>
+            ////{
+            ////    if (!manualNavigation)
+            ////        return;
+            ////    Processed = true;
+            ////    axWbMainV1.Stop();
+            ////    axWbSlaveV1.Navigate(URL, Flags, String.Empty, PostData, Headers);
+            ////};
+
+            ////manualNavigation = false;
+            //////axWbMainV1.Navigate(url);
+            //wbMaster.Navigate("about:blank");
+
+            f_web_loadHTML();
+        }
+
+        bool browser_load_complete = false;
+
+        private void f_axWbMainV1__DownloadComplete()
+        {
+            if(docMain == null) docMain = axWbMainV1.Document as HTMLDocument;
+            if (browser_load_complete) return;
+
+            IHTMLElement _____INPUT_LOAD_COMPLETE = docMain.getElementById("_____INPUT_LOAD_COMPLETE");
+            if (_____INPUT_LOAD_COMPLETE != null)
             {
-                this.WindowState = FormWindowState.Maximized;
-                txt_Log.Width = this.Width / 2;
+                txt_Log.Text += Environment.NewLine + Environment.NewLine + "=====> axWbMainV1.DownloadComplete";
 
-                //wbMaster.Navigated += (se, ev) => { HideScriptErrors(wbMaster, true); };
-                //wbSlave.Navigated += (se, ev) => { HideScriptErrors(wbSlave, true); }; 
+                browser_load_complete = true;
+                f_browser_main_documentReady();
+            }
+        }
 
-                //var axWbMainV1 = (SHDocVw.WebBrowser_V1)wbMaster.ActiveXInstance;
-                //var axWbSlaveV1 = (SHDocVw.WebBrowser_V1)wbSlave.ActiveXInstance;
-
-                axWbMainV1 = (SHDocVw.WebBrowser_V1)wbMaster.ActiveXInstance;
-                axWbSlaveV1 = (SHDocVw.WebBrowser_V1)wbSlave.ActiveXInstance;
-
-                axWbMainV1.DownloadComplete += () =>
-                {
-                    //////IWebBrowser2 b = (IWebBrowser2)pDisp;
-                    ////HTMLDocument doc2 = axWbMainV1.Document as HTMLDocument;
-                    ////DHTMLEventHandler eventHandler = new DHTMLEventHandler(doc2);
-                    ////eventHandler.Handler += new DHTMLEvent(this.Browser_ContextMenuStandardEvent);
-                    //////Not triggered 
-                    ////((mshtml.DispHTMLDocument)doc2).onclick = eventHandler;
-                    //////Following works fine 
-                    ////((mshtml.DispHTMLDocument)doc2).oncontextmenu = eventHandler;
-                    ////((mshtml.DispHTMLDocument)doc2).onmouseover = eventHandler;
-
-                    /////////////////////////////////////////////////////////////////////////////////////
-
-                    ////////Explorer is Object of SHDocVw.WebBrowserClass
-                    ////////HTMLDocument htmlDoc = (HTMLDocument)this.Explorer.IWebBrowser_Document;
-                    //////HTMLDocument htmlDoc = axWbMainV1.Document as HTMLDocument;
-                    ////////inject Script
-                    //////htmlDoc.parentWindow.execScript("alert('hello world !!')", "javascript");
-                    //////((mshtml.HTMLDocumentEvents2_Event)htmlDoc).onmousedown += new HTMLDocumentEvents2_onmousedownEventHandler(MyToolBar_onmousedown);
-
-                    /////////////////////////////////////////////////////////////////////////////////////
-
-                    txt_Log.Text = string.Empty;
-                    HTMLDocument htmlDoc = axWbMainV1.Document as HTMLDocument;
-                    ////////get all the images of document
-                    //////IHTMLElementCollection imgs = htmlDoc.images;
-                    //////foreach (HTMLImgClass imgTag in imgs)
-                    //////{
-                    //////    //MessageBox.Show(imgTag.src);
-                    //////    txt_Log.Text += Environment.NewLine + imgTag.src;
-                    //////}
-
-                    ////IHTMLElementCollection frames = (IHTMLElementCollection)htmlDoc.getElementsByTagName("frame"); 
-                    ////if (frames != null)
-                    ////{
-                    ////    foreach (IHTMLElement frm in frames)
-                    ////    {
-                    ////        txt_Log.Text += Environment.NewLine + Environment.NewLine + frm.outerHTML;
-                    ////        ((HTMLFrameElement)frm).contentWindow.execScript("alert('Hello From Frame')", "javascript");
-                    ////    }
-                    ////}
-
-                    //////IHTMLElementCollection elcol = htmlDoc.getElementsByTagName("iframe");
-                    //////foreach (IHTMLElement iel in elcol)
-                    //////{
-                    //////    txt_Log.Text += Environment.NewLine + Environment.NewLine + iel.outerHTML;
-                    //////    //HTMLFrameElement frm = (HTMLFrameElement)iel;
-                    //////    //DispHTMLDocument doc = (DispHTMLDocument)((SHDocVw.IWebBrowser2)frm).Document;
-                    //////    //DOMEventHandler onmousedownhandler = new DOMEventHandler(doc);
-                    //////    //onmousedownhandler।Handler += new DOMEvent(Mouse_Down);
-                    //////    //doc.onmousedown = onmousedownhandler;
-                    //////}
-
-                    IHTMLElement element = null;
-                    //element = htmlDoc.getElementById("article-56f5dc86ac962c7992bb9267");
-                    IHTMLElementCollection articles = htmlDoc.getElementsByTagName("article");
-                    if (articles.length > 0)
-                    {
-                        element = articles.item(null, 0) as IHTMLElement;
-                        if (element != null)
-                        {
-                            IHTMLDOMNode nd = (IHTMLDOMNode)element;
-                            IHTMLAttributeCollection attribs = (IHTMLAttributeCollection)nd.attributes;
-                            try
-                            {
-                                foreach (IHTMLDOMAttribute2 att in attribs)
-                                {
-                                    if (((IHTMLDOMAttribute)att).specified)
-                                    {
-                                        txt_Log.Text += Environment.NewLine + Environment.NewLine + att.name + " === " + att.value;
-                                    }
-                                }
-                            }
-                            catch { }
-                        }
-                    }
-
-                    /////////////////////////////////////////////////////////////////////////////////////
-
-                    /////////////////////////////////////////////////////////////////////////////////////
-
-                }; // end event document_load
+        void f_browser_main_documentReady() {
+            txt_Log.Text += Environment.NewLine + Environment.NewLine + Environment.NewLine + " DOCUMENT READY ...";
 
 
+            //////IWebBrowser2 b = (IWebBrowser2)pDisp;
+            ////HTMLDocument doc2 = axWbMainV1.Document as HTMLDocument;
+            ////DHTMLEventHandler eventHandler = new DHTMLEventHandler(doc2);
+            ////eventHandler.Handler += new DHTMLEvent(this.Browser_ContextMenuStandardEvent);
+            //////Not triggered 
+            ////((mshtml.DispHTMLDocument)doc2).onclick = eventHandler;
+            //////Following works fine 
+            ////((mshtml.DispHTMLDocument)doc2).oncontextmenu = eventHandler;
+            ////((mshtml.DispHTMLDocument)doc2).onmouseover = eventHandler;
+
+            /////////////////////////////////////////////////////////////////////////////////////
+
+            //HTMLDocument htmlDoc = axWbMainV1.Document as HTMLDocument;
+            ////////Explorer is Object of SHDocVw.WebBrowserClass
+            ////////HTMLDocument htmlDoc = (HTMLDocument)this.Explorer.IWebBrowser_Document;
+            //////HTMLDocument htmlDoc = axWbMainV1.Document as HTMLDocument;
+            ////////inject Script
+            //////htmlDoc.parentWindow.execScript("alert('hello world !!')", "javascript");
+            //////((mshtml.HTMLDocumentEvents2_Event)htmlDoc).onmousedown += new HTMLDocumentEvents2_onmousedownEventHandler(MyToolBar_onmousedown);
+
+            /////////////////////////////////////////////////////////////////////////////////////
+
+            //txt_Log.Text = string.Empty;
+            ////////get all the images of document
+            //////IHTMLElementCollection imgs = htmlDoc.images;
+            //////foreach (HTMLImgClass imgTag in imgs)
+            //////{
+            //////    //MessageBox.Show(imgTag.src);
+            //////    txt_Log.Text += Environment.NewLine + imgTag.src;
+            //////}
+
+            ////IHTMLElementCollection frames = (IHTMLElementCollection)htmlDoc.getElementsByTagName("frame"); 
+            ////if (frames != null)
+            ////{
+            ////    foreach (IHTMLElement frm in frames)
+            ////    {
+            ////        txt_Log.Text += Environment.NewLine + Environment.NewLine + frm.outerHTML;
+            ////        ((HTMLFrameElement)frm).contentWindow.execScript("alert('Hello From Frame')", "javascript");
+            ////    }
+            ////}
+
+            //////IHTMLElementCollection elcol = htmlDoc.getElementsByTagName("iframe");
+            //////foreach (IHTMLElement iel in elcol)
+            //////{
+            //////    txt_Log.Text += Environment.NewLine + Environment.NewLine + iel.outerHTML;
+            //////    //HTMLFrameElement frm = (HTMLFrameElement)iel;
+            //////    //DispHTMLDocument doc = (DispHTMLDocument)((SHDocVw.IWebBrowser2)frm).Document;
+            //////    //DOMEventHandler onmousedownhandler = new DOMEventHandler(doc);
+            //////    //onmousedownhandler।Handler += new DOMEvent(Mouse_Down);
+            //////    //doc.onmousedown = onmousedownhandler;
+            //////}
 
 
-                manualNavigation = false;
+            ////IHTMLElement element = null;
+            //////element = htmlDoc.getElementById("article-56f5dc86ac962c7992bb9267");
+            ////IHTMLElementCollection articles = htmlDoc.getElementsByTagName("article");
+            ////if (articles.length > 0)
+            ////{
+            ////    element = articles.item(null, 0) as IHTMLElement;
+            ////    if (element != null)
+            ////    {
+            ////        IHTMLDOMNode nd = (IHTMLDOMNode)element;
+            ////        IHTMLAttributeCollection attribs = (IHTMLAttributeCollection)nd.attributes;
+            ////        try
+            ////        {
+            ////            foreach (IHTMLDOMAttribute2 att in attribs)
+            ////            {
+            ////                if (((IHTMLDOMAttribute)att).specified)
+            ////                {
+            ////                    txt_Log.Text += Environment.NewLine + Environment.NewLine + att.name + " === " + att.value;
+            ////                }
+            ////            }
+            ////        }
+            ////        catch { }
+            ////    }
+            ////}
 
-                //////// Use WebBrowser_V1 events as BeforeNavigate2 doesn't work with WPF WebBrowser
-                //////axWbMainV1.BeforeNavigate += (string URL, int Flags, string TargetFrameName, ref object PostData, string Headers, ref bool Cancel) =>
-                //////{
-                //////    if (!manualNavigation)
-                //////        return;
-                //////    Cancel = true;
-                //////    axWbMainV1.Stop();
-                //////    axWbSlaveV1.Navigate(URL, Flags, TargetFrameName, PostData, Headers);
-                //////};
+            /////////////////////////////////////////////////////////////////////////////////////
 
-                //////axWbMainV1.FrameBeforeNavigate += (string URL, int Flags, string TargetFrameName, ref object PostData, string Headers, ref bool Cancel) =>
-                //////{
-                //////    if (!manualNavigation)
-                //////        return;
-                //////    Cancel = true;
-                //////    axWbMainV1.Stop();
-                //////    axWbSlaveV1.Navigate(URL, Flags, TargetFrameName, PostData, Headers);
-                //////};
+            /////////////////////////////////////////////////////////////////////////////////////
 
-                //////axWbMainV1.NavigateComplete += (string URL) =>
-                //////{
-                //////    manualNavigation = true;
-                //////};
-
-                //////axWbMainV1.FrameNavigateComplete += (string URL) =>
-                //////{
-                //////    manualNavigation = true;
-                //////};
-
-                //////axWbMainV1.NewWindow += (string URL, int Flags, string TargetFrameName, ref object PostData, string Headers, ref bool Processed) =>
-                //////{
-                //////    if (!manualNavigation)
-                //////        return;
-                //////    Processed = true;
-                //////    axWbMainV1.Stop();
-                //////    axWbSlaveV1.Navigate(URL, Flags, String.Empty, PostData, Headers);
-                //////};
-
-                manualNavigation = false;
-                //axWbMainV1.Navigate(url);
-
-                f_web_loadHTML();
-            };
         }
 
         private void f_web_loadHTML()
         {
+
             string s = File.ReadAllText("demo.html");
             string htm = string.Empty, page = string.Empty;
 
@@ -322,6 +352,8 @@ namespace appie
             {
                 htm = eleContent.OuterHtml;
                 //htm = RemoveAttributes(htm);
+
+                htm = Regex.Replace(htm, @"</?(?i:base|ins|svg|iframe)(.|\n|\s)*?>", string.Empty, RegexOptions.Singleline | RegexOptions.IgnoreCase);
 
                 htm = Regex.Replace(htm, @"<([^>]*)(\sstyle="".+?""(\s|))(.*?)>", string.Empty); 
                 htm = htm.Replace(@">"">", ">");
@@ -335,10 +367,17 @@ namespace appie
                     lsClass = lsClass.Distinct().ToList();
                 }
 
+                htm = htm.Replace("><", ">" + Environment.NewLine + "<");
+
                 string template = File.ReadAllText("template.html"), css = string.Empty, js = string.Empty;
-                page = template.Replace("/*[{CSS}]*/", css).Replace("<!--[{HTML}]-->", htm).Replace("/*[{JS}]*/", js);
+                page = template
+                    .Replace("/*[{CSS}]*/", css)
+                    .Replace("<!--[{HTML}]-->", htm)
+                    .Replace("/*[{JS}]*/", js)
+                    .Replace("<!--[{INPUT_LOAD_COMPLETE}]-->", @"<INPUT TYPE=""hidden"" ID=""_____INPUT_LOAD_COMPLETE"">");
             }
 
+            browser_load_complete = false; 
             wbMaster.DocumentText = page;
 
             File.WriteAllText("result.html", page);
