@@ -112,9 +112,13 @@
     <Compile Include="FORM\fMedia.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="LIB\ListLocked.cs" />
+    <Compile Include="LIB\ConcurrentList.cs" />
     <Compile Include="LIB\ControlTransparent.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="LIB\ConcurrentDictionary.cs" />
+    <Compile Include="LIB\System\ReaderWriterLockSlimExtensions.cs" />
     <Compile Include="LIB\System\CrossThreadExtensions.cs" />
     <Compile Include="LIB\HtmlAgilityPack.CssSelectors\CssSelector.cs" />
     <Compile Include="LIB\HtmlAgilityPack.CssSelectors\ExtensionMethods.cs" />
@@ -375,7 +379,8 @@
     <Compile Include="LIB\System.Linq\Tuple\IStructuralEquatable.cs" />
     <Compile Include="LIB\System.Linq\Tuple\Tuple.cs" />
     <Compile Include="app.cs" />
-    <Compile Include="LIB\System\ConcurrentDictionary.cs" />
+    <Compile Include="LIB\ConcurrentQueue.cs" />
+    <Compile Include="LIB\SynchronizedCacheString.cs" />
     <Compile Include="LIB\YYProject.RichTextBoxEx\InternalNativeMembers.cs" />
     <Compile Include="LIB\YYProject.RichTextBoxEx\RichTextBoxEx.cs">
       <SubType>Component</SubType>
@@ -395,6 +400,7 @@
     <Content Include="bin\Debug\edit.html" />
     <Content Include="bin\Debug\xpath.html" />
     <Content Include="bin\Debug\template.html" />
+    <Content Include="LIB\ReadMe.txt" />
     <EmbeddedResource Include="DLL\Newtonsoft.Json.dll" />
     <EmbeddedResource Include="DLL\System.Speech.dll" />
     <Content Include="LIB\ProtoBuf\_ReadMe.txt" />

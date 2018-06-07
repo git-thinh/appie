@@ -1,13 +1,13 @@
 ﻿using HtmlAgilityPack;
 using ProtoBuf;
 using System;
-using System.Collections; 
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net; 
+using System.Net;
 using System.Net.Security;
 using System.Net.Sockets;
 using System.Security.Authentication;
@@ -29,10 +29,9 @@ namespace appie
         static int crawlPending = 0;
         static int crawlResult = 0;
         const int crawlMaxThread = 5;
-        static Dictionary<string, string> dicHtml = new Dictionary<string, string>();
+        static SynchronizedCacheString dicHtml = new SynchronizedCacheString();
 
-        static List<string> listUrl = new List<string>();
-        static readonly object _lockUrl = new object();
+        static ConcurrentList<string> listUrl = new ConcurrentList<string>();
         static readonly BackgroundWorker[] tasks = new BackgroundWorker[crawlMaxThread];
 
         static string domain_current = string.Empty;
@@ -191,8 +190,7 @@ namespace appie
 
                                         var us = get_Urls(url, htm);
                                         if (us.Url_Html.Length > 0)
-                                            lock (_lockUrl)
-                                                listUrl.AddRange(us.Url_Html);
+                                            listUrl.AddRange(us.Url_Html);
                                     }
                                 }
                                 running = false;
@@ -244,9 +242,7 @@ namespace appie
 
         void f_CRAWLER_KEY_STOP_reset()
         {
-            lock (_lockUrl)
-                listUrl.Clear();
-
+            listUrl.Clear();
             Interlocked.Exchange(ref crawlCounter, 0);
         }
 
@@ -329,8 +325,7 @@ namespace appie
 
                             if (us.Url_Html.Length > 0)
                             {
-                                lock (_lockUrl)
-                                    listUrl.AddRange(us.Url_Html);
+                                listUrl.AddRange(us.Url_Html);
                                 Execute(new msg() { API = _API.CRAWLER, KEY = _API.CRAWLER_KEY_REQUEST_LINK });
                             }
                             else
@@ -350,14 +345,13 @@ namespace appie
 
             string[] urls = new string[] { };
             string[] uri_ok = dicHtml.Keys.ToArray();
-            lock (_lockUrl)
-            {
-                listUrl = listUrl.Where(x => !uri_ok.Any(o => o == x)).Distinct().ToList();
-                urls = listUrl.Take(crawlMaxThread).ToArray();
-                listUrl = listUrl.Where(x => !urls.Any(o => o == x)).ToList();
-                Interlocked.Exchange(ref crawlPending, listUrl.Count);
-                Interlocked.Exchange(ref crawlCounter, urls.Length);
-            }
+
+            listUrl.Truncate(x => !uri_ok.Any(o => o == x), true);
+            urls = listUrl.Take(crawlMaxThread);
+            listUrl.Truncate(x => !urls.Any(o => o == x));
+
+            Interlocked.Exchange(ref crawlPending, listUrl.Count);
+            Interlocked.Exchange(ref crawlCounter, urls.Length);
 
             //if (Interlocked.CompareExchange(ref crawlPending, 0, 0) == 0)
             if (Interlocked.CompareExchange(ref crawlCounter, 0, 0) == 0)
@@ -392,23 +386,25 @@ namespace appie
                     if (File.Exists(fi_name))
                         File.Delete(fi_name);
 
-                    // Using Protobuf-net, I suddenly got an exception about an unknown wire-type
-                    // https://stackoverflow.com/questions/2152978/using-protobuf-net-i-suddenly-got-an-exception-about-an-unknown-wire-type
-                    using (var file = new FileStream(fi_name, FileMode.Truncate))
-                    {
-                        // write
-                        Serializer.Serialize<Dictionary<string, string>>(file, dicHtml);
+                    dicHtml.WriteFile(fi_name, true);
 
-                        // SetLength after writing your data:
-                        // file.SetLength(file.Position);
-                    }
+                    ////// Using Protobuf-net, I suddenly got an exception about an unknown wire-type
+                    ////// https://stackoverflow.com/questions/2152978/using-protobuf-net-i-suddenly-got-an-exception-about-an-unknown-wire-type
+                    ////using (var file = new FileStream(fi_name, FileMode.Truncate))
+                    ////{
+                    ////    // write
+                    ////    Serializer.Serialize<Dictionary<string, string>>(file, dicHtml);
+
+                    ////    // SetLength after writing your data:
+                    ////    // file.SetLength(file.Position);
+                    ////}
 
                     //using (var file = File.Create(fi_name))
                     //{
                     //    Serializer.Serialize<Dictionary<string, string>>(file, dicHtml);
                     //    file.Close();
                     //}
-                    dicHtml.Clear();
+                    //dicHtml.Clear();
                 }
             }
             catch { }
@@ -423,14 +419,16 @@ namespace appie
                     fi_name += "___" + url_sub_path_current;
                 fi_name += ".htm";
 
-                if (File.Exists(fi_name))
-                {
-                    using (var file = File.OpenRead(fi_name))
-                    {
-                        dicHtml = Serializer.Deserialize<Dictionary<string, string>>(file);
-                        file.Close();
-                    }
-                }
+                dicHtml.ReadFile(fi_name);
+
+                //if (File.Exists(fi_name))
+                //{
+                //    using (var file = File.OpenRead(fi_name))
+                //    {
+                //        dicHtml = Serializer.Deserialize<Dictionary<string, string>>(file);
+                //        file.Close();
+                //    }
+                //}
             }
         }
 

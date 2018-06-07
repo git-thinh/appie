@@ -47,7 +47,7 @@ namespace appie
         static ConcurrentDictionary<string, IthreadMsg> dicService = null;
         static ConcurrentDictionary<string, msg> dicResponses = null;
 
-        static Queue<msg> api_msg_queue = null;
+        static ConcurrentQueue<msg> api_msg_queue = null;
         static System.Threading.Timer api_msg_timer = null;
 
         public static void postToAPI(msg m)
@@ -69,7 +69,7 @@ namespace appie
 
 
 
-            api_msg_queue = new Queue<msg>();
+            api_msg_queue = new ConcurrentQueue<msg>();
             if (api_msg_timer == null)
                 api_msg_timer = new System.Threading.Timer(new System.Threading.TimerCallback((obj) =>
                 {
@@ -80,8 +80,8 @@ namespace appie
                         {
                             if (!string.IsNullOrEmpty(m.API) && dicService.ContainsKey(m.API))
                             {
-                                IthreadMsg sv;
-                                if (dicService.TryGetValue(m.API, out sv) && sv != null)
+                                IthreadMsg sv = dicService.Get(m.API);
+                                if(sv != null)
                                 {
                                     ////new Thread(new ParameterizedThreadStart((object _sv) =>
                                     ////{

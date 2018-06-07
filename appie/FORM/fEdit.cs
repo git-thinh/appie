@@ -43,7 +43,7 @@ namespace appie
         HTMLDocument docMain = null;
         SHDocVw.WebBrowser_V1 axWbMainV1;
         SHDocVw.WebBrowser_V1 axWbSlaveV1;
-        bool manualNavigation = false;
+        //bool manualNavigation = false;
 
         #endregion
 
@@ -444,49 +444,47 @@ namespace appie
                 
                 wbMaster.DocumentText = result;
             }
+             
 
-            return;
+            //string s = File.ReadAllText("demo.html");
+            //string htm = string.Empty, page = string.Empty;
 
+            //HtmlAgilityPack.HtmlDocument docAgi = new HtmlAgilityPack.HtmlDocument();
+            //docAgi.LoadHtml(s);
 
-            string s = File.ReadAllText("demo.html");
-            string htm = string.Empty, page = string.Empty;
+            //var eleContent = docAgi.DocumentNode.QuerySelector("article div.body.entry-content");
+            //if (eleContent != null)
+            //{
+            //    htm = eleContent.OuterHtml;
+            //    //htm = RemoveAttributes(htm);
 
-            HtmlAgilityPack.HtmlDocument docAgi = new HtmlAgilityPack.HtmlDocument();
-            docAgi.LoadHtml(s);
+            //    htm = Regex.Replace(htm, @"</?(?i:base|ins|svg|iframe)(.|\n|\s)*?>", string.Empty, RegexOptions.Singleline | RegexOptions.IgnoreCase);
 
-            var eleContent = docAgi.DocumentNode.QuerySelector("article div.body.entry-content");
-            if (eleContent != null)
-            {
-                htm = eleContent.OuterHtml;
-                //htm = RemoveAttributes(htm);
+            //    htm = Regex.Replace(htm, @"<([^>]*)(\sstyle="".+?""(\s|))(.*?)>", string.Empty);
+            //    htm = htm.Replace(@">"">", ">");
 
-                htm = Regex.Replace(htm, @"</?(?i:base|ins|svg|iframe)(.|\n|\s)*?>", string.Empty, RegexOptions.Singleline | RegexOptions.IgnoreCase);
+            //    List<string> lsClass = new List<string>();
+            //    var mts = Regex.Matches(htm, " class=([\"'])(?:(?=(\\\\?))\\2.)*?\\1");
+            //    if (mts.Count > 0)
+            //    {
+            //        for (int i = 0; i < mts.Count; i++)
+            //            lsClass.Add(mts[i].Value.Substring(7).Replace(@"""", string.Empty).Trim());
+            //        lsClass = lsClass.Distinct().ToList();
+            //    }
 
-                htm = Regex.Replace(htm, @"<([^>]*)(\sstyle="".+?""(\s|))(.*?)>", string.Empty);
-                htm = htm.Replace(@">"">", ">");
+            //    htm = htm.Replace("><", ">" + Environment.NewLine + "<");
 
-                List<string> lsClass = new List<string>();
-                var mts = Regex.Matches(htm, " class=([\"'])(?:(?=(\\\\?))\\2.)*?\\1");
-                if (mts.Count > 0)
-                {
-                    for (int i = 0; i < mts.Count; i++)
-                        lsClass.Add(mts[i].Value.Substring(7).Replace(@"""", string.Empty).Trim());
-                    lsClass = lsClass.Distinct().ToList();
-                }
+            //    string template = File.ReadAllText("template.html"), css = string.Empty, js = string.Empty;
+            //    page = template
+            //        .Replace("/*[{CSS}]*/", css)
+            //        .Replace("<!--[{HTML}]-->", htm)
+            //        .Replace("/*[{JS}]*/", js)
+            //        .Replace("<!--[{INPUT_LOAD_COMPLETE}]-->", @"<INPUT TYPE=""hidden"" ID=""_____INPUT_LOAD_COMPLETE"">");
+            //}
 
-                htm = htm.Replace("><", ">" + Environment.NewLine + "<");
-
-                string template = File.ReadAllText("template.html"), css = string.Empty, js = string.Empty;
-                page = template
-                    .Replace("/*[{CSS}]*/", css)
-                    .Replace("<!--[{HTML}]-->", htm)
-                    .Replace("/*[{JS}]*/", js)
-                    .Replace("<!--[{INPUT_LOAD_COMPLETE}]-->", @"<INPUT TYPE=""hidden"" ID=""_____INPUT_LOAD_COMPLETE"">");
-            }
-
-            browser_load_complete = false;
-            wbMaster.DocumentText = page;
-            File.WriteAllText("result.html", page);
+            //browser_load_complete = false;
+            //wbMaster.DocumentText = page;
+            //File.WriteAllText("result.html", page);
         }
 
         string RemoveAttributes(string value)
@@ -505,7 +503,7 @@ namespace appie
         {
             if (e.KeyCode == Keys.Enter)
             {
-                manualNavigation = false;
+                //manualNavigation = false;
                 axWbMainV1.Navigate(txt_URL.Text.Trim());
             }
         }
@@ -593,29 +591,29 @@ namespace appie
         string XPATH_SELECT_CURRENT = string.Empty;
         string XPATH_RUNTIME = string.Empty;
         int XPATH_RUNTIME_LEN = 0;
-        HtmlAgilityPack.HtmlNode getNodeByXpath(HtmlAgilityPack.HtmlDocument docAgi, string xpath, int len)
-        {
-            //txt_Log.Text = string.Empty;
+        //HtmlAgilityPack.HtmlNode getNodeByXpath(HtmlAgilityPack.HtmlDocument docAgi, string xpath, int len)
+        //{
+        //    //txt_Log.Text = string.Empty;
 
-            try
-            {
-                string[] a = xpath.Split('/');
+        //    try
+        //    {
+        //        string[] a = xpath.Split('/');
 
-                if (a.Length <= len) return null;
+        //        if (a.Length <= len) return null;
 
-                XPATH_RUNTIME = string.Join("/", a.Where((x, k) => k < a.Length - len).ToArray());
-                HtmlAgilityPack.HtmlNode node = docAgi.DocumentNode.SelectNodes(XPATH_RUNTIME).First();
-                XPATH_RUNTIME_LEN = len;
+        //        XPATH_RUNTIME = string.Join("/", a.Where((x, k) => k < a.Length - len).ToArray());
+        //        HtmlAgilityPack.HtmlNode node = docAgi.DocumentNode.SelectNodes(XPATH_RUNTIME).First();
+        //        XPATH_RUNTIME_LEN = len;
 
-                return node;
-            }
-            catch {
-                len++;
-                return getNodeByXpath(docAgi, xpath, len);
-            }
+        //        return node;
+        //    }
+        //    catch {
+        //        len++;
+        //        return getNodeByXpath(docAgi, xpath, len);
+        //    }
 
-            return null;
-        }
+        //    return null;
+        //}
 
         private void Btn_ele_get_xpath_next_MouseClick(object sender, MouseEventArgs e)
         {

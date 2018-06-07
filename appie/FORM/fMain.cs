@@ -41,7 +41,7 @@ namespace appie
         HTMLDocument docMain = null;
         SHDocVw.WebBrowser_V1 axWbMainV1;
         SHDocVw.WebBrowser_V1 axWbSlaveV1;
-        bool manualNavigation = false;
+        //bool manualNavigation = false;
 
         #endregion
 
@@ -406,7 +406,7 @@ namespace appie
         {
             if (e.KeyCode == Keys.Enter)
             {
-                manualNavigation = false;
+                //manualNavigation = false;
                 axWbMainV1.Navigate(txt_URL.Text.Trim());
             }
         }
