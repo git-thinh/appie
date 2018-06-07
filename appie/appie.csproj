@@ -57,10 +57,12 @@
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>True</EmbedInteropTypes>
       <HintPath>DLL\Microsoft.mshtml.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="SHDocVw">
       <HintPath>DLL\SHDocVw.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -133,6 +135,53 @@
     <Compile Include="LIB\HtmlAgilityPack\Trace.FullFramework.cs" />
     <Compile Include="LIB\HtmlAgilityPack\Utilities.cs" />
     <Compile Include="LIB\LinqExt.cs" />
+    <Compile Include="LIB\MMF\FileMapIOException.cs" />
+    <Compile Include="LIB\MMF\MapViewStream.cs" />
+    <Compile Include="LIB\MMF\MemoryMappedFile.cs" />
+    <Compile Include="LIB\MMF\Win32APIs.cs" />
+    <Compile Include="LIB\mustache\ArgumentCollection.cs" />
+    <Compile Include="LIB\mustache\CompoundGenerator.cs" />
+    <Compile Include="LIB\mustache\ConditionTagDefinition.cs" />
+    <Compile Include="LIB\mustache\ContentTagDefinition.cs" />
+    <Compile Include="LIB\mustache\Context.cs" />
+    <Compile Include="LIB\mustache\ContextParameter.cs" />
+    <Compile Include="LIB\mustache\EachTagDefinition.cs" />
+    <Compile Include="LIB\mustache\ElifTagDefinition.cs" />
+    <Compile Include="LIB\mustache\ElseTagDefinition.cs" />
+    <Compile Include="LIB\mustache\FormatCompiler.cs" />
+    <Compile Include="LIB\mustache\Generator.cs" />
+    <Compile Include="LIB\mustache\HtmlFormatCompiler.cs" />
+    <Compile Include="LIB\mustache\IArgument.cs" />
+    <Compile Include="LIB\mustache\IfTagDefinition.cs" />
+    <Compile Include="LIB\mustache\IGenerator.cs" />
+    <Compile Include="LIB\mustache\IndexTagDefinition.cs" />
+    <Compile Include="LIB\mustache\InlineGenerator.cs" />
+    <Compile Include="LIB\mustache\InlineTagDefinition.cs" />
+    <Compile Include="LIB\mustache\KeyFoundEventArgs.cs" />
+    <Compile Include="LIB\mustache\KeyGenerator.cs" />
+    <Compile Include="LIB\mustache\KeyNotFoundEventArgs.cs" />
+    <Compile Include="LIB\mustache\MasterTagDefinition.cs" />
+    <Compile Include="LIB\mustache\NestedContext.cs" />
+    <Compile Include="LIB\mustache\NewlineTagDefinition.cs" />
+    <Compile Include="LIB\mustache\NumberArgument.cs" />
+    <Compile Include="LIB\mustache\PlaceholderArgument.cs" />
+    <Compile Include="LIB\mustache\PlaceholderFoundEventArgs.cs" />
+    <Compile Include="LIB\mustache\PropertyDictionary.cs" />
+    <Compile Include="LIB\mustache\RegexHelper.cs" />
+    <Compile Include="LIB\mustache\Scope.cs" />
+    <Compile Include="LIB\mustache\SetTagDefinition.cs" />
+    <Compile Include="LIB\mustache\StaticGenerator.cs" />
+    <Compile Include="LIB\mustache\StringArgument.cs" />
+    <Compile Include="LIB\mustache\Substitution.cs" />
+    <Compile Include="LIB\mustache\TagDefinition.cs" />
+    <Compile Include="LIB\mustache\TagFormattedEventArgs.cs" />
+    <Compile Include="LIB\mustache\TagParameter.cs" />
+    <Compile Include="LIB\mustache\UpcastDictionary.cs" />
+    <Compile Include="LIB\mustache\ValueRequestEventArgs.cs" />
+    <Compile Include="LIB\mustache\VariableArgument.cs" />
+    <Compile Include="LIB\mustache\VariableFoundEventArgs.cs" />
+    <Compile Include="LIB\mustache\WithTagDefinition.cs" />
+    <Compile Include="LIB\mustache\_config.cs" />
     <Compile Include="LIB\System.Linq\Class1.cs" />
     <Compile Include="LIB\System.Linq\DeepCopy.Assign.cs" />
     <Compile Include="LIB\System.Linq\IsNumber.cs" />
@@ -202,14 +251,19 @@
     <Compile Include="LIB\System.Linq\Tuple\IStructuralComparable.cs" />
     <Compile Include="LIB\System.Linq\Tuple\IStructuralEquatable.cs" />
     <Compile Include="LIB\System.Linq\Tuple\Tuple.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="app.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="DLL\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="LIB\HtmlAgilityPack.CssSelectors\README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="DLL\Microsoft.mshtml.dll" />
+    <EmbeddedResource Include="DLL\SHDocVw.dll" />
+    <Content Include="LIB\MMF\ReadMe.txt" />
+    <Content Include="LIB\mustache\mustache-sharp.csproj" />
+    <Content Include="LIB\mustache\_ReadMe.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

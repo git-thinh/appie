@@ -26,33 +26,66 @@ namespace appie
         Label label_ElementDES;
         Label label_Event;
         Label label_Message;
+        TextBox txt_URL;
+        TextBox txt_Log;
+
+        SHDocVw.WebBrowser_V1 axWbMainV1;
+        SHDocVw.WebBrowser_V1 axWbSlaveV1;
+        bool manualNavigation = false;
 
         private void Browser_ContextMenuStandardEvent(mshtml.IHTMLEventObj e)
         {
+            label_Event.Text = string.Empty;
+            label_ElementSRC.Text = string.Empty;
+            label_ElementDES.Text = string.Empty;
             //label_Message.Text = "Context Menu Action (Event Object) Hooked: " + e.type + " = " + e.srcElement.innerHTML;
+
             switch (e.type)
             {
                 case "mouseover":
                     break;
                 case "contextmenu":
-                    label_Event.Text = e.type;
-                    label_ElementSRC.Text = "SRC: " + e.srcElement.innerHTML;
-                    label_ElementDES.Text = "DES: " + e.toElement.innerHTML;
+                    label_Event.Text = e.type + " = " + e.srcElement.tagName;
+                    label_ElementSRC.Text = "SRC: " + e.srcElement.outerHTML;
+                    label_ElementDES.Text = "DES: " + e.toElement.outerHTML;
                     break;
                 case "click":
-                    label_Event.Text = e.type; 
-                    label_ElementSRC.Text = "SRC: " + e.fromElement.innerHTML;
-                    label_ElementDES.Text = "DES: " + e.toElement.innerHTML;
+                    label_Event.Text = e.type + " = " + e.srcElement.tagName; 
+                    label_ElementSRC.Text = "SRC: " + e.srcElement.outerHTML;
+                    label_ElementDES.Text = "DES: " + e.toElement.outerHTML;
                     break;
             }
 
             e.returnValue = false;
             //e.returnValue = true;
         }
+        
+        //Function is as follows:
+        //This will be raised when mousedown event is fired
+        //....when user try to click..(downs the mouse button)
+        void MyToolBar_onmousedown(IHTMLEventObj e)
+        {
+            label_Event.Text = e.type + " = " + e.srcElement.tagName;
+            label_ElementSRC.Text = "SRC: " + e.srcElement.outerHTML;
+            label_ElementDES.Text = "DES: " + e.toElement.outerHTML;
+
+            e.srcElement.style.backgroundColor = "yellow";
+        }
 
         public fMain()
         {
             #region [ UI ]
+            txt_URL = new TextBox() {
+                Dock = DockStyle.Top
+            };
+            txt_URL.KeyDown += f_url_textBox_KeyDown;
+            txt_Log = new TextBox()
+            {
+                Dock = DockStyle.Right,
+                Multiline = true,
+                ScrollBars = ScrollBars.Vertical,
+                BorderStyle = BorderStyle.None, 
+            };
 
             wbMaster = new System.Windows.Forms.WebBrowser()
             {
@@ -114,6 +147,9 @@ namespace appie
                 wbSlave,
                 panel_Header,
                 label_Message,
+                txt_URL,
+                new Splitter(){ Dock = DockStyle.Right }, 
+                txt_Log,
             });
             
             #endregion
@@ -121,27 +157,105 @@ namespace appie
             this.Shown += (s, e) =>
             {
                 this.WindowState = FormWindowState.Maximized;
+                txt_Log.Width = this.Width / 2;
 
                 //wbMaster.Navigated += (se, ev) => { HideScriptErrors(wbMaster, true); };
                 //wbSlave.Navigated += (se, ev) => { HideScriptErrors(wbSlave, true); }; 
 
-                var axWbMainV1 = (SHDocVw.WebBrowser_V1)wbMaster.ActiveXInstance;
-                var axWbSlaveV1 = (SHDocVw.WebBrowser_V1)wbSlave.ActiveXInstance;
+                //var axWbMainV1 = (SHDocVw.WebBrowser_V1)wbMaster.ActiveXInstance;
+                //var axWbSlaveV1 = (SHDocVw.WebBrowser_V1)wbSlave.ActiveXInstance;
+
+                axWbMainV1 =  (SHDocVw.WebBrowser_V1)wbMaster.ActiveXInstance;
+                axWbSlaveV1 = (SHDocVw.WebBrowser_V1)wbSlave.ActiveXInstance;
 
                 axWbMainV1.DownloadComplete += () =>
                 {
-                    //IWebBrowser2 b = (IWebBrowser2)pDisp;
-                    HTMLDocument doc2 = axWbMainV1.Document as HTMLDocument;
-                    DHTMLEventHandler eventHandler = new DHTMLEventHandler(doc2);
-                    eventHandler.Handler += new DHTMLEvent(this.Browser_ContextMenuStandardEvent);
-                    //Not triggered 
-                    ((mshtml.DispHTMLDocument)doc2).onclick = eventHandler;
-                    //Following works fine 
-                    ((mshtml.DispHTMLDocument)doc2).oncontextmenu = eventHandler;
-                    ((mshtml.DispHTMLDocument)doc2).onmouseover = eventHandler;
-                };
+                    //////IWebBrowser2 b = (IWebBrowser2)pDisp;
+                    ////HTMLDocument doc2 = axWbMainV1.Document as HTMLDocument;
+                    ////DHTMLEventHandler eventHandler = new DHTMLEventHandler(doc2);
+                    ////eventHandler.Handler += new DHTMLEvent(this.Browser_ContextMenuStandardEvent);
+                    //////Not triggered 
+                    ////((mshtml.DispHTMLDocument)doc2).onclick = eventHandler;
+                    //////Following works fine 
+                    ////((mshtml.DispHTMLDocument)doc2).oncontextmenu = eventHandler;
+                    ////((mshtml.DispHTMLDocument)doc2).onmouseover = eventHandler;
 
-                var manualNavigation = false;
+                    /////////////////////////////////////////////////////////////////////////////////////
+
+                    ////////Explorer is Object of SHDocVw.WebBrowserClass
+                    ////////HTMLDocument htmlDoc = (HTMLDocument)this.Explorer.IWebBrowser_Document;
+                    //////HTMLDocument htmlDoc = axWbMainV1.Document as HTMLDocument;
+                    ////////inject Script
+                    //////htmlDoc.parentWindow.execScript("alert('hello world !!')", "javascript");
+                    //////((mshtml.HTMLDocumentEvents2_Event)htmlDoc).onmousedown += new HTMLDocumentEvents2_onmousedownEventHandler(MyToolBar_onmousedown);
+
+                    /////////////////////////////////////////////////////////////////////////////////////
+
+                    txt_Log.Text = string.Empty;
+                    HTMLDocument htmlDoc = axWbMainV1.Document as HTMLDocument;
+                    ////////get all the images of document
+                    //////IHTMLElementCollection imgs = htmlDoc.images;
+                    //////foreach (HTMLImgClass imgTag in imgs)
+                    //////{
+                    //////    //MessageBox.Show(imgTag.src);
+                    //////    txt_Log.Text += Environment.NewLine + imgTag.src;
+                    //////}
+
+                    ////IHTMLElementCollection frames = (IHTMLElementCollection)htmlDoc.getElementsByTagName("frame"); 
+                    ////if (frames != null)
+                    ////{
+                    ////    foreach (IHTMLElement frm in frames)
+                    ////    {
+                    ////        txt_Log.Text += Environment.NewLine + Environment.NewLine + frm.outerHTML;
+                    ////        ((HTMLFrameElement)frm).contentWindow.execScript("alert('Hello From Frame')", "javascript");
+                    ////    }
+                    ////}
+
+                    //////IHTMLElementCollection elcol = htmlDoc.getElementsByTagName("iframe");
+                    //////foreach (IHTMLElement iel in elcol)
+                    //////{
+                    //////    txt_Log.Text += Environment.NewLine + Environment.NewLine + iel.outerHTML;
+                    //////    //HTMLFrameElement frm = (HTMLFrameElement)iel;
+                    //////    //DispHTMLDocument doc = (DispHTMLDocument)((SHDocVw.IWebBrowser2)frm).Document;
+                    //////    //DOMEventHandler onmousedownhandler = new DOMEventHandler(doc);
+                    //////    //onmousedownhandler।Handler += new DOMEvent(Mouse_Down);
+                    //////    //doc.onmousedown = onmousedownhandler;
+                    //////}
+
+                    IHTMLElement element = null;
+                    //element = htmlDoc.getElementById("article-56f5dc86ac962c7992bb9267");
+                    IHTMLElementCollection articles = htmlDoc.getElementsByTagName("article");
+                    if (articles.length > 0)
+                    {
+                        element = articles.item(null, 0) as IHTMLElement;
+                        if (element != null)
+                        {
+                            IHTMLDOMNode nd = (IHTMLDOMNode)element;
+                            IHTMLAttributeCollection attribs = (IHTMLAttributeCollection)nd.attributes;
+                            try
+                            {
+                                foreach (IHTMLDOMAttribute2 att in attribs)
+                                {
+                                    if (((IHTMLDOMAttribute)att).specified)
+                                    {
+                                        txt_Log.Text += Environment.NewLine + Environment.NewLine + att.name + " === " + att.value;
+                                    }
+                                }
+                            }
+                            catch { }
+                        } 
+                    }
+
+                    /////////////////////////////////////////////////////////////////////////////////////
+
+                    /////////////////////////////////////////////////////////////////////////////////////
+
+                }; // end event document_load
+
+
+
+
+                manualNavigation = false;
 
                 //////// Use WebBrowser_V1 events as BeforeNavigate2 doesn't work with WPF WebBrowser
                 //////axWbMainV1.BeforeNavigate += (string URL, int Flags, string TargetFrameName, ref object PostData, string Headers, ref bool Cancel) =>
@@ -188,7 +302,14 @@ namespace appie
             };
         }
 
-
+        private void f_url_textBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                manualNavigation = false;
+                axWbMainV1.Navigate(txt_URL.Text.Trim());
+            }
+        }
     }
 
     // From http://west-wind.com/WebLog/posts/393.aspx
