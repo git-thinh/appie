@@ -44,8 +44,8 @@ namespace appie
 
         static fCrawler fom;
 
-        static Dictionary<string, IthreadMsg> dicService = null;
-        static Dictionary<string, msg> dicResponses = null;
+        static ConcurrentDictionary<string, IthreadMsg> dicService = null;
+        static ConcurrentDictionary<string, msg> dicResponses = null;
 
         static Queue<msg> api_msg_queue = null;
         static System.Threading.Timer api_msg_timer = null;
@@ -95,8 +95,8 @@ namespace appie
                     }
                 }), null, 100, 100);
 
-            dicResponses = new Dictionary<string, msg>();
-            dicService = new Dictionary<string, IthreadMsg>();
+            dicResponses = new ConcurrentDictionary<string, msg>();
+            dicService = new ConcurrentDictionary<string, IthreadMsg>();
 
             dicService.Add(_API.CRAWLER, new threadMsg(new api_crawler()));
 
@@ -114,7 +114,7 @@ namespace appie
             Application.EnableVisualStyles();
             //Application.Run(new fMedia());
             //Application.Run(new fMain());
-            //Application.Run(new fEdit()); 
+            //Application.Run(new fEdit());
             Application.Run(fom);
         }
 

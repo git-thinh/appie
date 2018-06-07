@@ -112,6 +112,10 @@
     <Compile Include="FORM\fMedia.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="LIB\ControlTransparent.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="LIB\System\CrossThreadExtensions.cs" />
     <Compile Include="LIB\HtmlAgilityPack.CssSelectors\CssSelector.cs" />
     <Compile Include="LIB\HtmlAgilityPack.CssSelectors\ExtensionMethods.cs" />
     <Compile Include="LIB\HtmlAgilityPack.CssSelectors\NodeExtensionMethods.cs" />
@@ -172,7 +176,7 @@
     <Compile Include="LIB\HtmlAgilityPack\Trace.cs" />
     <Compile Include="LIB\HtmlAgilityPack\Trace.FullFramework.cs" />
     <Compile Include="LIB\HtmlAgilityPack\Utilities.cs" />
-    <Compile Include="LIB\LinqExt.cs" />
+    <Compile Include="LIB\System.Linq\LinqExt.cs" />
     <Compile Include="LIB\MMF\FileMapIOException.cs" />
     <Compile Include="LIB\MMF\MapViewStream.cs" />
     <Compile Include="LIB\MMF\MemoryMappedFile.cs" />
@@ -302,11 +306,10 @@
     <Compile Include="LIB\ProtoBuf\SubItemToken.cs" />
     <Compile Include="LIB\ProtoBuf\WireType.cs" />
     <Compile Include="LIB\ProtoBuf\_demo.cs" />
-    <Compile Include="LIB\System.Linq\Class1.cs" />
     <Compile Include="LIB\System.Linq\DeepCopy.Assign.cs" />
-    <Compile Include="LIB\System.Linq\IsNumber.cs" />
-    <Compile Include="LIB\System.Linq\Lucene.Net.cs" />
-    <Compile Include="LIB\System.Linq\ReaderWriterLockSlim.cs" />
+    <Compile Include="LIB\System\IsNumber.cs" />
+    <Compile Include="LIB\System\Lucene.Net.cs" />
+    <Compile Include="LIB\System\ReaderWriterLockSlim.cs" />
     <Compile Include="LIB\System.Linq\System.Collections.Generic\HashSet.cs" />
     <Compile Include="LIB\System.Linq\System.Collections.Generic\ISet.cs" />
     <Compile Include="LIB\System.Linq\System.Data.Linq\MonoTODOAttribute.cs" />
@@ -372,6 +375,15 @@
     <Compile Include="LIB\System.Linq\Tuple\IStructuralEquatable.cs" />
     <Compile Include="LIB\System.Linq\Tuple\Tuple.cs" />
     <Compile Include="app.cs" />
+    <Compile Include="LIB\System\ConcurrentDictionary.cs" />
+    <Compile Include="LIB\YYProject.RichTextBoxEx\InternalNativeMembers.cs" />
+    <Compile Include="LIB\YYProject.RichTextBoxEx\RichTextBoxEx.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="LIB\YYProject.RichTextBoxEx\RTBLineSpacing.cs" />
+    <Compile Include="LIB\YYProject.RichTextBoxEx\RTBLineSpacingRule.cs" />
+    <Compile Include="LIB\YYProject.RichTextBoxEx\RTBParaSpacing.cs" />
+    <Compile Include="LIB\YYProject.RichTextBoxEx\RTBReadOnlyMode.cs" />
     <Compile Include="MODEL\oCrawler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
