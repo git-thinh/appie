@@ -71,10 +71,7 @@ namespace appie
             e.returnValue = false;
             //e.returnValue = true;
         }
-
-        //Function is as follows:
-        //This will be raised when mousedown event is fired
-        //....when user try to click..(downs the mouse button)
+        
         void MyToolBar_onmousedown(IHTMLEventObj e)
         {
             label_Event.Text = e.type + " = " + e.srcElement.tagName;
@@ -413,8 +410,7 @@ namespace appie
                 axWbMainV1.Navigate(txt_URL.Text.Trim());
             }
         }
-
-         
+                 
         public void f_browser_main_document_Ready()
         {
             txt_Log.Text += Environment.NewLine + "====>>> DOCUMENT READY ...";

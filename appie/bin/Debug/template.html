@@ -306,29 +306,35 @@
 
     <script type="text/javascript">
         var text_selection_current = '';
+        var timer_send_api_speech = null;
 
         if (typeof jQuery != 'undefined') {
             log('JQUERY VESION; ', jQuery.fn.jquery);
         }
 
-        
         jQuery(document).ready(function () {
             log("ready!");
 
-            //jQuery(document).dblclick(function () {
-            //    log('dblclick');
+            jQuery(document).dblclick(function () {
+                log('-> dblclick');
 
-            //    var selectedText = getSelected();
-            //    if (selectedText == false) {
-            //        log('selectedText NULLL');
-            //    } else {
-            //        log('selectedText', selectedText);
-            //    }
-            //});
+                //var selectedText = getSelected();
+                //if (selectedText == false) {
+                //    log('selectedText NULLL');
+                //} else {
+                //    log('selectedText', selectedText);
+                //}
+            });
 
             jQuery(document).mouseup(function () {
-                //log('mouseup ... ');           
-                setTimeout(function () {
+                log('-> mouseup');
+
+                if (timer_send_api_speech != null) {
+                    clearTimeout(timer_send_api_speech);
+                    timer_send_api_speech = null;
+                }
+
+                timer_send_api_speech = setTimeout(function () {
                     var selectedText = getSelected();
                     if (selectedText == false) {
                         log('mouseup: selectedText NULLL');
@@ -342,6 +348,9 @@
                             speech();
                         }
                     }
+
+                    clearTimeout(timer_send_api_speech);
+                    timer_send_api_speech = null;
                 }, 300);
             });
         });
@@ -369,7 +378,7 @@
                     text = selection.text;
                     return text;
                 }
-            } 
+            }
             return false;
         }
 
@@ -387,15 +396,15 @@
             }
 
             if (title != null) {
-                if (typeof title == 'string' || typeof title == 'number') {
-                    s = title;
+                if (typeof title == 'string' || typeof title == 'number' || typeof title == 'boolean') {
+                    s = title.toString();
                 } else {
                     s = JSON.stringify(title);
                 }
             }
 
-            if (value != null && value != undefined && value != '') {
-                if (typeof value == 'string' || typeof value == 'number') {
+            if (value != undefined) {
+                if (typeof value == 'string' || typeof value == 'number' || typeof title == 'boolean') {
                     s += ' ===== ' + value.toString();
                 } else {
                     s += ' ===== ' + JSON.stringify(value);
