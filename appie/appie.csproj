@@ -100,6 +100,9 @@
     <Compile Include="API\msg.cs" />
     <Compile Include="API\threadMsg.cs" />
     <Compile Include="API\_API.cs" />
+    <Compile Include="FORM\fBrowser.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="FORM\fCrawler.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -112,12 +115,14 @@
     <Compile Include="FORM\fMedia.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="LIB\System.Threading\EntityCache.cs" />
     <Compile Include="LIB\System.Threading\ListLocked.cs" />
     <Compile Include="LIB\System.Threading\ConcurrentList.cs" />
     <Compile Include="LIB\ControlTransparent.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="LIB\System.Threading\ConcurrentDictionary.cs" />
+    <Compile Include="LIB\System.Threading\SynchronizedDictionary.cs" />
     <Compile Include="LIB\System\ReaderWriterLockSlimExtensions.cs" />
     <Compile Include="LIB\System\CrossThreadExtensions.cs" />
     <Compile Include="LIB\HtmlAgilityPack.CssSelectors\CssSelector.cs" />

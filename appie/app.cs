@@ -44,11 +44,11 @@ namespace appie
 
         static fCrawler fom;
 
-        static ConcurrentDictionary<string, IthreadMsg> dicService = null;
-        static ConcurrentDictionary<string, msg> dicResponses = null;
-
         static ConcurrentQueue<msg> api_msg_queue = null;
-        static System.Threading.Timer api_msg_timer = null;
+        //static System.Threading.Timer api_msg_timer = null;
+        //static ConcurrentDictionary<string, IthreadMsg> dicService = null;
+        //static ConcurrentDictionary<string, msg> dicResponses = null;
+
 
         public static void postToAPI(msg m)
         {
@@ -69,36 +69,36 @@ namespace appie
 
 
 
-            api_msg_queue = new ConcurrentQueue<msg>();
-            if (api_msg_timer == null)
-                api_msg_timer = new System.Threading.Timer(new System.Threading.TimerCallback((obj) =>
-                {
-                    if (api_msg_queue.Count > 0)
-                    {
-                        msg m = api_msg_queue.Dequeue();
-                        if(m != null)
-                        {
-                            if (!string.IsNullOrEmpty(m.API) && dicService.ContainsKey(m.API))
-                            {
-                                IthreadMsg sv = dicService.Get(m.API);
-                                if(sv != null)
-                                {
-                                    ////new Thread(new ParameterizedThreadStart((object _sv) =>
-                                    ////{
-                                    ////    IthreadMsg so = (IthreadMsg)_sv;
-                                    ////    so.Execute(m);
-                                    ////})).Start(sv);
-                                    sv.Execute(m);
-                                }
-                            }
-                        }
-                    }
-                }), null, 100, 100);
+            //api_msg_queue = new ConcurrentQueue<msg>();
+            //if (api_msg_timer == null)
+            //    api_msg_timer = new System.Threading.Timer(new System.Threading.TimerCallback((obj) =>
+            //    {
+            //        if (api_msg_queue.Count > 0)
+            //        {
+            //            msg m = api_msg_queue.Dequeue();
+            //            if(m != null)
+            //            {
+            //                if (!string.IsNullOrEmpty(m.API) && dicService.ContainsKey(m.API))
+            //                {
+            //                    IthreadMsg sv = dicService.Get(m.API);
+            //                    if(sv != null)
+            //                    {
+            //                        ////new Thread(new ParameterizedThreadStart((object _sv) =>
+            //                        ////{
+            //                        ////    IthreadMsg so = (IthreadMsg)_sv;
+            //                        ////    so.Execute(m);
+            //                        ////})).Start(sv);
+            //                        sv.Execute(m);
+            //                    }
+            //                }
+            //            }
+            //        }
+            //    }), null, 100, 100);
 
-            dicResponses = new ConcurrentDictionary<string, msg>();
-            dicService = new ConcurrentDictionary<string, IthreadMsg>();
+            //dicResponses = new ConcurrentDictionary<string, msg>();
+            //dicService = new ConcurrentDictionary<string, IthreadMsg>();
 
-            dicService.Add(_API.CRAWLER, new threadMsg(new api_crawler()));
+            //dicService.Add(_API.CRAWLER, new threadMsg(new api_crawler()));
 
 
 
@@ -115,7 +115,7 @@ namespace appie
             //Application.Run(new fMedia());
             //Application.Run(new fMain());
             //Application.Run(new fEdit());
-            Application.Run(fom);
+            Application.Run(new fBrowser());
         }
 
         public static IFORM get_Main() {
