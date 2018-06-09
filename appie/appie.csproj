@@ -81,6 +81,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Speech">
       <HintPath>DLL\System.Speech.dll</HintPath>
@@ -386,6 +387,25 @@
     <Compile Include="app.cs" />
     <Compile Include="LIB\System.Threading\ConcurrentQueue.cs" />
     <Compile Include="LIB\System.Threading\SynchronizedCacheString.cs" />
+    <Compile Include="LIB\TabStrip\BaseClasses\BaseStyledPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="LIB\TabStrip\Control\FATabStrip.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="LIB\TabStrip\Control\FATabStripCloseButton.cs" />
+    <Compile Include="LIB\TabStrip\Control\FATabStripItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="LIB\TabStrip\Control\FATabStripItemCollection.cs" />
+    <Compile Include="LIB\TabStrip\Control\FATabStripMenuGlyph.cs" />
+    <Compile Include="LIB\TabStrip\Delegates.cs" />
+    <Compile Include="LIB\TabStrip\Design\FATabStripDesigner.cs" />
+    <Compile Include="LIB\TabStrip\Design\FATabStripItemDesigner.cs" />
+    <Compile Include="LIB\TabStrip\Design\ICaptionSupport.cs" />
+    <Compile Include="LIB\TabStrip\Enums.cs" />
+    <Compile Include="LIB\TabStrip\Helpers\CollectionWithEvents.cs" />
+    <Compile Include="LIB\TabStrip\_CONST_TAB.cs" />
     <Compile Include="LIB\YYProject.RichTextBoxEx\InternalNativeMembers.cs" />
     <Compile Include="LIB\YYProject.RichTextBoxEx\RichTextBoxEx.cs">
       <SubType>Component</SubType>
