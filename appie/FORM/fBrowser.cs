@@ -29,7 +29,8 @@ namespace appie
 
         TextBox m_url_textBox;
         TabControl m_tab;
-        System.Windows.Forms.WebBrowser m_browser;
+        System.Windows.Forms.WebBrowser m_brow_web;
+        System.Windows.Forms.WebBrowser m_brow_media;
         Panel m_header;
         Panel m_footer;
         TabPage m_tab_Browser;
@@ -74,7 +75,7 @@ namespace appie
                 Text = URL_DEFAULT,
             };
 
-            m_browser = new System.Windows.Forms.WebBrowser()
+            m_brow_web = new System.Windows.Forms.WebBrowser()
             {
                 Dock = DockStyle.Fill,
                 ScriptErrorsSuppressed = true,
@@ -120,6 +121,7 @@ namespace appie
 
             btn_google.MouseClick += f_browser_google_MouseClick;
             btn_open.MouseClick += (se,ev)=> { f_package_openFile(); };
+            
             #endregion
 
             #region [ TAB ]
@@ -138,7 +140,7 @@ namespace appie
             FATabStripItem tab_BookMark   = new FATabStripItem("★", false);
             FATabStripItem tab_Search        = new FATabStripItem("Find", false);
             FATabStripItem tab_History    = new FATabStripItem("History", false);
-            FATabStripItem tab_Media      = new FATabStripItem("Media", false);
+            FATabStripItem tab_Resource      = new FATabStripItem("Resource", false);
 
             tab_Log.Controls.Add(m_log_Text);
 
@@ -150,7 +152,7 @@ namespace appie
                 tab_BookMark,
                 tab_Search,
                 tab_History,
-                tab_Media,
+                tab_Resource,
                 tab_Log ,
             });
             #endregion
@@ -210,6 +212,15 @@ namespace appie
 
             #endregion
 
+            #region [ MEDIA ]
+
+            m_brow_media = new System.Windows.Forms.WebBrowser() {
+                Dock = DockStyle.Fill,
+                ScriptErrorsSuppressed = false,
+            };
+
+            #endregion
+
             #region [ Add Control -> UI ]
 
             m_header.Controls.AddRange(new Control[] {
@@ -225,7 +236,7 @@ namespace appie
             m_footer.Controls.AddRange(new Control[] {
                 m_browser_MessageLabel,
             });
-            m_tab_Browser.Controls.Add(m_browser);
+            m_tab_Browser.Controls.Add(m_brow_web);
             m_tab.Controls.AddRange(new Control[] {
                 m_tab_Browser,
             });
@@ -297,7 +308,7 @@ namespace appie
             string page = format_HTML(htm);
             page = File.ReadAllText("browser.html") + page;
             log(page);
-            m_browser.DocumentText = page;
+            m_brow_web.DocumentText = page;
             File.WriteAllText("result_.html", page);
         }
 
@@ -325,7 +336,7 @@ namespace appie
 
 
 
-            m_browser_ax = (SHDocVw.WebBrowser_V1)m_browser.ActiveXInstance;
+            m_browser_ax = (SHDocVw.WebBrowser_V1)m_brow_web.ActiveXInstance;
             //m_browser.DocumentCompleted += (se, ev) =>
             //{
             //    if (m_browser.Document != null)
@@ -380,7 +391,7 @@ namespace appie
             url = "https://pronuncian.com/";
 
             log("GO: " + url);
-            m_browser.Navigate(url);
+            m_brow_web.Navigate(url);
         }
 
         private void f_browser_google_MouseClick(object sender, MouseEventArgs e)
@@ -418,7 +429,7 @@ namespace appie
             string page = format_HTML(htm);
             page = File.ReadAllText("browser.html") + page;
             log(page);
-            m_browser.DocumentText =  page;
+            m_brow_web.DocumentText =  page;
             File.WriteAllText("result_.html", page);
         }
 
