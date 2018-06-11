@@ -15,12 +15,7 @@ using System.Windows.Forms;
 namespace appie
 {
     public class fBrowser : Form
-    {
-        //const string URL_DEFAULT = "https://pronuncian.com/";
-        //const string URL_DEFAULT = "https://pronuncian.com/";
-        //const string URL_DEFAULT = "https://pronuncian.com/podcasts/";
-        const string URL_DEFAULT = "https://pronuncian.com/podcasts/episode219";
-
+    { 
         #region [ VARIABLE ]
 
         readonly Font font_Title = new Font("Arial", 11f, FontStyle.Regular);
@@ -51,9 +46,19 @@ namespace appie
 
         #endregion
 
+        #region [ VAR: SETTING ]
+
+        TextBox setting_maxThread_textBox;
+        CheckBox setting_autoFetchHistory_checkBox;
+
+        #endregion
+
+        #region [ CONTRACTOR - MAIN ]
+
         public fBrowser()
         {
             this.Shown += f_form_Shown;
+            this.FormClosing += f_form_Closing;
 
             #region [ Browser UI ]
 
@@ -71,8 +76,8 @@ namespace appie
                 Dock = DockStyle.Fill,
                 BorderStyle = BorderStyle.None,
                 Height = 17,
-                BackColor = Color.WhiteSmoke,
-                Text = URL_DEFAULT,
+                //BackColor = Color.WhiteSmoke,
+                Text = string.Empty,
             };
 
             m_brow_web = new System.Windows.Forms.WebBrowser()
@@ -93,7 +98,7 @@ namespace appie
             {
                 Dock = DockStyle.Top,
                 Height = 25,
-                //BackColor = Color.DeepSkyBlue,
+                BackColor = Color.White,
             };
             m_footer = new Panel()
             {
@@ -108,7 +113,10 @@ namespace appie
             Button btn_next = new Button() { Dock = DockStyle.Right, Text = "Next", Width = 69, };
             Button btn_google = new Button() { Dock = DockStyle.Right, Text = "Google", Width = 69, };
             Button btn_open = new Button() { Dock = DockStyle.Right, Text = "Open", Width = 69, };
-            Panel panel_address = new Panel() { Dock = DockStyle.Fill, Padding = new Padding(0, 2, 0, 2), };
+            Panel panel_address = new Panel() {
+                Dock = DockStyle.Fill,
+                Padding = new Padding(0, 2, 0, 2),
+            };
             panel_address.Controls.AddRange(new Control[] {
                 m_url_textBox,
                 new Label() { Dock = DockStyle.Top, Height = 5 },
@@ -128,7 +136,7 @@ namespace appie
 
             FATabStrip tab_detail = new FATabStrip() {
                 Dock = DockStyle.Right,
-                Width = 500,
+                Width = 555,
                 AlwaysShowClose = false,
                 AlwaysShowMenuGlyph = false,
             };
@@ -141,6 +149,7 @@ namespace appie
             FATabStripItem tab_Search        = new FATabStripItem("Find", false);
             FATabStripItem tab_History    = new FATabStripItem("History", false);
             FATabStripItem tab_Resource      = new FATabStripItem("Resource", false);
+            FATabStripItem tab_Setting      = new FATabStripItem("Setting", false);
 
             tab_Log.Controls.Add(m_log_Text);
 
@@ -153,9 +162,13 @@ namespace appie
                 tab_Search,
                 tab_History,
                 tab_Resource,
-                tab_Log ,
+                tab_Log,
+                tab_Setting
             });
+
             #endregion
+
+            ///////////////////////////////////
 
             #region [ LINK ]
 
@@ -221,6 +234,35 @@ namespace appie
 
             #endregion
 
+            #region [ TAB SETTING ]
+
+            setting_autoFetchHistory_checkBox = new CheckBox()
+            {
+                Dock = DockStyle.Top,
+                Text = "Auto cache by history",
+                Checked = true,
+            };
+            setting_maxThread_textBox = new TextBox() {
+                Dock = DockStyle.Top,
+                Text = "9",
+            };
+
+            tab_Setting.Padding = new Padding(20);
+            tab_Setting.Controls.AddRange(new Control[] {
+                setting_autoFetchHistory_checkBox,
+                new Label(){ Dock = DockStyle.Top, Height = 9 },
+                setting_maxThread_textBox,
+                new Label(){
+                    Dock = DockStyle.Top,
+                    Text = "Max thread",
+                    TextAlign = ContentAlignment.BottomLeft,
+                },
+            });
+
+            #endregion
+
+            ///////////////////////////////////
+
             #region [ Add Control -> UI ]
 
             m_header.Controls.AddRange(new Control[] {
@@ -236,7 +278,10 @@ namespace appie
             m_footer.Controls.AddRange(new Control[] {
                 m_browser_MessageLabel,
             });
-            m_tab_Browser.Controls.Add(m_brow_web);
+            m_tab_Browser.Controls.AddRange(new Control[] {
+                m_brow_web,
+                m_header,
+            });
             m_tab.Controls.AddRange(new Control[] {
                 m_tab_Browser,
             });
@@ -246,14 +291,84 @@ namespace appie
                     Dock = DockStyle.Right
                 },
                 tab_detail,
-                m_header,
                 m_footer,
             });
 
             #endregion            
         }
 
-        private void f_history_items_selectIndexChange(object sender, EventArgs e)
+        void f_form_Closing(object sender, FormClosingEventArgs e)
+        {
+        }
+
+        void f_form_Shown(object sender, EventArgs e)
+        {
+            this.WindowState = FormWindowState.Maximized;
+            //m_tab.Width = 999;
+
+            // Set the WebBrowser to use an instance of the ScriptManager to handle method calls to C#.
+            // wbMaster.ObjectForScripting = new ScriptManager(this);
+
+            //var axWbMainV1 = (SHDocVw.WebBrowser_V1)wbMaster.ActiveXInstance;
+            //var axWbSlaveV1 = (SHDocVw.WebBrowser_V1)wbSlave.ActiveXInstance;
+
+
+
+            m_browser_ax = (SHDocVw.WebBrowser_V1)m_brow_web.ActiveXInstance;
+            //m_browser.DocumentCompleted += (se, ev) =>
+            //{
+            //    if (m_browser.Document != null)
+            //    {
+            //        string url = m_browser.Url.ToString();
+            //        m_tab_Browser.Text = m_browser.Document.Title;
+            //        m_url_textBox.Text = url;
+            //        m_browser_MessageLabel.Text = "Page loaded";
+            //        log("DONE: " + url);
+
+            //        m_browser_doc = m_browser_ax.Document as HTMLDocument;
+            //        //DHTMLEventHandler eventHandler = new DHTMLEventHandler(docMain);
+            //        //eventHandler.Handler += new DHTMLEvent(this.f_browser_document_onMouseOver);
+            //        //((mshtml.DispHTMLDocument)docMain).onmouseover = eventHandler;
+            //    }
+            //};
+
+            //// Use WebBrowser_V1 events as BeforeNavigate2 doesn't work with WPF WebBrowser
+            //m_browser_ax.BeforeNavigate += (string URL, int Flags, string TargetFrameName, ref object PostData, string Headers, ref bool Cancel) =>
+            //{
+            //    //Cancel = true;
+            //    //axWbMainV1.Stop();
+            //    //axWbSlaveV1.Navigate(URL, Flags, TargetFrameName, PostData, Headers);
+            //};
+
+            //m_browser_ax.FrameBeforeNavigate += (string URL, int Flags, string TargetFrameName, ref object PostData, string Headers, ref bool Cancel) =>
+            //{
+            //    if (URL == "about:blank") return;
+
+            //    log("FRAME GO: " + TargetFrameName + " = " + URL);
+            //    Cancel = true;
+            //    m_browser_ax.Stop();
+            //    //axWbSlaveV1.Navigate(URL, Flags, TargetFrameName, PostData, Headers);
+            //};
+
+
+
+            //f_browser_google_MouseClick(null, null);
+        }
+         
+
+        #endregion
+
+        #region
+
+        oSetting f_setting_Get() {
+            return new oSetting()
+            {
+                AutoFetchHistory = setting_autoFetchHistory_checkBox.Checked,
+                MaxThread = int.Parse(setting_maxThread_textBox.Text.Trim()),
+            };
+        }
+
+        void f_history_items_selectIndexChange(object sender, EventArgs e)
         { 
         }
 
@@ -323,61 +438,6 @@ namespace appie
             }
         }
 
-        private void f_form_Shown(object sender, EventArgs e)
-        {
-            this.WindowState = FormWindowState.Maximized;
-            //m_tab.Width = 999;
-
-            // Set the WebBrowser to use an instance of the ScriptManager to handle method calls to C#.
-            // wbMaster.ObjectForScripting = new ScriptManager(this);
-
-            //var axWbMainV1 = (SHDocVw.WebBrowser_V1)wbMaster.ActiveXInstance;
-            //var axWbSlaveV1 = (SHDocVw.WebBrowser_V1)wbSlave.ActiveXInstance;
-
-
-
-            m_browser_ax = (SHDocVw.WebBrowser_V1)m_brow_web.ActiveXInstance;
-            //m_browser.DocumentCompleted += (se, ev) =>
-            //{
-            //    if (m_browser.Document != null)
-            //    {
-            //        string url = m_browser.Url.ToString();
-            //        m_tab_Browser.Text = m_browser.Document.Title;
-            //        m_url_textBox.Text = url;
-            //        m_browser_MessageLabel.Text = "Page loaded";
-            //        log("DONE: " + url);
-
-            //        m_browser_doc = m_browser_ax.Document as HTMLDocument;
-            //        //DHTMLEventHandler eventHandler = new DHTMLEventHandler(docMain);
-            //        //eventHandler.Handler += new DHTMLEvent(this.f_browser_document_onMouseOver);
-            //        //((mshtml.DispHTMLDocument)docMain).onmouseover = eventHandler;
-            //    }
-            //};
-
-            //// Use WebBrowser_V1 events as BeforeNavigate2 doesn't work with WPF WebBrowser
-            //m_browser_ax.BeforeNavigate += (string URL, int Flags, string TargetFrameName, ref object PostData, string Headers, ref bool Cancel) =>
-            //{
-            //    //Cancel = true;
-            //    //axWbMainV1.Stop();
-            //    //axWbSlaveV1.Navigate(URL, Flags, TargetFrameName, PostData, Headers);
-            //};
-
-            //m_browser_ax.FrameBeforeNavigate += (string URL, int Flags, string TargetFrameName, ref object PostData, string Headers, ref bool Cancel) =>
-            //{
-            //    if (URL == "about:blank") return;
-
-            //    log("FRAME GO: " + TargetFrameName + " = " + URL);
-            //    Cancel = true;
-            //    m_browser_ax.Stop();
-            //    //axWbSlaveV1.Navigate(URL, Flags, TargetFrameName, PostData, Headers);
-            //};
-
-
-
-            f_browser_google_MouseClick(null, null);
-        }
-         
-
         void log(string text, bool clean = false)
         {
             if (clean) m_log_Text.Text = string.Empty;
@@ -394,7 +454,7 @@ namespace appie
             m_brow_web.Navigate(url);
         }
 
-        private void f_browser_google_MouseClick(object sender, MouseEventArgs e)
+        void f_browser_google_MouseClick(object sender, MouseEventArgs e)
         {
             const string url = "https://pronuncian.com/";
             // const string url = "https://pronuncian.com/podcasts/";
@@ -433,12 +493,12 @@ namespace appie
             File.WriteAllText("result_.html", page);
         }
 
-        private void f_browser_document_onMouseOver(IHTMLEventObj e)
+        void f_browser_document_onMouseOver(IHTMLEventObj e)
         {
             log("MOUSE_OVER DOM: " + e.srcElement.tagName + " === " + e.srcElement.outerHTML);
         }
 
-        private static string format_HTML(string s)
+        string format_HTML(string s)
         {
             string si = string.Empty;
             s = Regex.Replace(s, @"<script[^>]*>[\s\S]*?</script>", string.Empty);
@@ -512,5 +572,7 @@ namespace appie
             //si = string.Join(Environment.NewLine, lines);
             //return si;
         }
+
+        #endregion
     }
 }

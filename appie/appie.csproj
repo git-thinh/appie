@@ -92,14 +92,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="API\api_base.cs" />
-    <Compile Include="API\api_crawler.cs" />
+    <Compile Include="API\ApiFetch.cs" />
+    <Compile Include="API\ApiChannel.cs" />
     <Compile Include="API\DHTMLEventHandler.cs" />
-    <Compile Include="API\htmlToText.cs" />
     <Compile Include="API\IAPI.cs" />
     <Compile Include="API\IFORM.cs" />
     <Compile Include="API\msg.cs" />
-    <Compile Include="API\threadMsg.cs" />
     <Compile Include="API\_API.cs" />
     <Compile Include="FORM\fBrowser.cs">
       <SubType>Form</SubType>
@@ -415,6 +413,7 @@
     <Compile Include="LIB\YYProject.RichTextBoxEx\RTBParaSpacing.cs" />
     <Compile Include="LIB\YYProject.RichTextBoxEx\RTBReadOnlyMode.cs" />
     <Compile Include="MODEL\oCrawler.cs" />
+    <Compile Include="MODEL\oSetting.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -7,7 +7,7 @@ namespace appie
 {
     public interface IFORM
     {
-        void api_responseMsg(object sender, threadMsgEventArgs e);
-        void f_form_freeResource();
+        //void api_responseMsg(object sender, threadMsgEventArgs e);
+        //void f_form_freeResource();
     }
 }

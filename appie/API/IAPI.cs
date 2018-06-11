@@ -7,10 +7,14 @@ namespace appie
 {
     public interface IAPI
     {
+        int Id { set; get; } 
         bool Open { set; get; }
+        ApiChannelCanceler Canceler { set; get; }
 
         void Init();
-        msg Execute(msg msg);
+        void PostMessage(object data);
+        void Run();
+        void Pause();
         void Close();
     }
 }

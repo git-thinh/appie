@@ -122,7 +122,7 @@ namespace appie
         }
 
         public static IFORM get_Main() {
-            return fom;
+            return null;
         }
     }
 
