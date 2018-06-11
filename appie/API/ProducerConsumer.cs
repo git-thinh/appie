@@ -12,7 +12,7 @@ namespace appie
     {
         static ProducerConsumer queue;
 
-        static void Main()
+        static void RUN()
         {
             queue = new ProducerConsumer();
             new Thread(new ThreadStart(ConsumerJob)).Start();

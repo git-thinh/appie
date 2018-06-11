@@ -38,6 +38,8 @@ namespace appie
     /// </summary>
     public class ApiFetchWorker : IApiWorker
     {
+        #region [ MEMBER WORKER ]
+
         public int ThreadId { set; get; }
         public IApiChannel Channel { set; get; }
 
@@ -107,11 +109,21 @@ namespace appie
             }
         }
 
+        #endregion
+
+        bool Inited = false;
         /// <summary>
         /// Main work loop of the class.
         /// </summary>
         public void Run()
         {
+            if (Inited == false)
+            {
+                Inited = true;
+                lock (finishedLock)
+                    Monitor.Wait(finishedLock);
+            }
+
             try
             {
                 while (!Stopping)
@@ -136,7 +148,7 @@ namespace appie
                         if (Interlocked.CompareExchange(ref responseCounter, 0, 0) == 0) {
                             if (dicHTML.Count > 0) {
                                 if (Channel != null)
-                                    Channel.RecieveData(dicHTML);
+                                    Channel.RecieveDataFormWorker(dicHTML);
                                 dicHTML.Clear();
                             }
                         }
@@ -174,26 +186,45 @@ namespace appie
             }
         }
 
-        public void PostData(object data)
+        public void PostDataToWorker(object data)
         {
             if (data == null) return;
+            if (!Inited)
+                Thread.Sleep(500);
 
-            string url = data as string;
-
-            if (!string.IsNullOrEmpty(url))
+            Type type = data.GetType();
+            if (type.Name == "String")
             {
-                queueURL.Enqueue(url);
-                Interlocked.Increment(ref responseCounter);
-                lock (finishedLock)
-                    Monitor.Pulse(finishedLock);
+                string url = data as string;
+
+                if (!string.IsNullOrEmpty(url))
+                {
+                    queueURL.Enqueue(url);
+                    Interlocked.Increment(ref responseCounter);
+                    lock (finishedLock)
+                        Monitor.Pulse(finishedLock);
+                }
+            }
+            else if (type.Name == "String[]")
+            {
+                string[] urls = data as string[];
+
+                if (urls != null && urls.Length > 0)
+                {
+                    queueURL.EnqueueItems(urls);
+                    Interlocked.Add(ref responseCounter, urls.Length);
+                    lock (finishedLock)
+                        Monitor.Pulse(finishedLock);
+                }
             }
         }
-
+         
 
         #region [ FETCH ]
 
         static SynchronizedQueue<string> queueURL = new SynchronizedQueue<string>();
         static SynchronizedDictionary<string, string> dicHTML = new SynchronizedDictionary<string, string>();
+
         static readonly object finishedLock = new object();
         static int responseCounter = 0;
 
@@ -242,8 +273,9 @@ namespace appie
                 // Now start reading from it asynchronously
                 state.stream.BeginRead(state.buffer, 0, state.buffer.Length, new AsyncCallback(ReadCallback), state);
             }
-            catch
+            catch(Exception ex)
             {
+                string message = ex.Message;
                 string url = state.request.RequestUri.ToString();
                 fetchFinished(url, string.Empty);
             }
@@ -290,6 +322,7 @@ namespace appie
                 Monitor.Pulse(finishedLock);
             }
         }
+
         #endregion
     }
 }

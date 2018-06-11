@@ -4,14 +4,22 @@ using System.Text;
 
 namespace System.Threading
 {
-    public class SynchronizedQueue<T> : Queue<T>
+    public class SynchronizedQueue<T> 
     {
         readonly Object locker = new object();
+        Queue<T> queue = new Queue<T>();
 
         public new void Enqueue(T value)
         {
             lock (locker)
-                base.Enqueue(value);
+                queue.Enqueue(value);
+        }
+
+        public void EnqueueItems(T[] values)
+        {
+            lock (locker)
+                for (int i = 0; i < values.Length; i++)
+                    queue.Enqueue(values[i]);
         }
 
         public new int Count
@@ -19,7 +27,7 @@ namespace System.Threading
             get
             {
                 lock (locker)
-                    return base.Count;
+                    return queue.Count;
             }
         }
 
@@ -29,7 +37,7 @@ namespace System.Threading
             {
                 if (this.Count == 0)
                     return default(T);
-                return this.Dequeue();
+                return queue.Dequeue();
             }
         }
     }

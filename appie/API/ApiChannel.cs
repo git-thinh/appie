@@ -7,7 +7,7 @@ namespace appie
 {
     public interface IApiChannel
     {
-        void RecieveData(object data);
+        void RecieveDataFormWorker(object data);
         void Stop();
     }
 
@@ -35,24 +35,33 @@ namespace appie
 
         public ApiChannel(IApiWorker worker)
         {
-            _worker = worker;
+            worker.Channel = this; 
             _thread = new Thread(new ParameterizedThreadStart(delegate (object evt)
             {
                 IApiWorker w = (IApiWorker)evt;
                 w.Run();
             }));
-            _worker.Channel = this; 
-            _worker.ThreadId = _thread.ManagedThreadId;
-            _thread.Start(_worker);
+            _thread.SetApartmentState(ApartmentState.STA);
+            _thread.IsBackground = true;
+            worker.ThreadId = _thread.ManagedThreadId;
+            _worker = worker;
+            _thread.Start(_worker);  
         }
 
-        public void RecieveData(object data)
-        { 
+        public void PostDataToWorker(object data)
+        {
+            if (data == null) return;
+            _worker.PostDataToWorker(data);
         }
+
+        public void RecieveDataFormWorker(object data)
+        { 
+        } 
 
         public void Stop()
         { 
-            _worker.Stop(); 
+            _worker.Stop();
+            _thread.Join();
         }
     }
 }

@@ -32,6 +32,6 @@ namespace appie
         /// </summary>
         void Run();
 
-        void PostData(object data);             
+        void PostDataToWorker(object data);
     }
 }

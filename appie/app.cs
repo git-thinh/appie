@@ -106,8 +106,6 @@ namespace appie
 
 
 
-            ApiChannel channel = new ApiChannel(new ApiFetchWorker());
-
 
 
 
@@ -131,7 +129,14 @@ namespace appie
         static void Main(string[] args)
         {
             //app.RUN();
-            Tester_Monitor.RUN();
+
+
+            ApiChannel channel = new ApiChannel(new ApiFetchWorker()); 
+            channel.PostDataToWorker(new string[] {
+                "https://pronuncian.com/pronounce-th-sounds/",
+                "https://www.learning-english-online.net/pronunciation/the-english-th/",
+            });
+
             Console.ReadLine();
         }
     }

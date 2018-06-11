@@ -136,8 +136,8 @@ namespace appie
                 SetStopped();
             }
         }
-
-        public void PostData(object data) { }
+         
+        public void PostDataToWorker(object data) { }
 
     }
 }
