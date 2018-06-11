@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{5A2BD67F-769F-485A-96A6-84B757729911}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>appie</RootNamespace>
     <AssemblyName>appie</AssemblyName>
@@ -114,6 +114,7 @@
     <Compile Include="FORM\fMedia.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="LIB\System.Threading\Tester_Monitor.cs" />
     <Compile Include="LIB\System.Threading\EntityCache.cs" />
     <Compile Include="LIB\System.Threading\ListLocked.cs" />
     <Compile Include="LIB\System.Threading\ConcurrentList.cs" />

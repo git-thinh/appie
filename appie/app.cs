@@ -131,7 +131,9 @@ namespace appie
         [STAThread]
         static void Main(string[] args)
         {
-            app.RUN();
+            //app.RUN();
+            Tester_Monitor.RUN();
+            Console.ReadLine();
         }
     }
 }

@@ -24,10 +24,11 @@ namespace appie
             queueData = new Queue<string>();
             dicStore = new Dictionary<string, string>();
         }
+
         public void Close()
         {
         }
-        
+
         public void Pause()
         {
             // Let's now wake up the thread by setting _go=true and pulsing.
@@ -40,10 +41,12 @@ namespace appie
 
         public void PostMessage(object data)
         {
+            if (data == null) return;
+
             // Let's now wake up the thread by setting _go=true and pulsing.                
             lock (_locker)
-            { 
-                queueData.Enqueue(data as string); 
+            {
+                queueData.Enqueue(data as string);
                 Monitor.Pulse(_locker);
             }
         }
@@ -54,10 +57,10 @@ namespace appie
             lock (_locker)
             {
                 while (queueData.Count == 0 || _go == false)
-                    Monitor.Wait(_locker);    // Lock is released while we’re waiting
+                    Monitor.Wait(_locker); // Lock is released while we’re waiting
 
                 // do something ...
-                string data = queueData.Dequeue(); 
+                string data = queueData.Dequeue();
 
                 try
                 {
@@ -72,11 +75,9 @@ namespace appie
                             string url = rs.ResponseUri.ToString();
 
                             if (rs.StatusCode == HttpStatusCode.OK)
-                            {
                                 using (StreamReader sr = new StreamReader(rs.GetResponseStream(), Encoding.UTF8))
                                     htm = sr.ReadToEnd();
-                                rs.Close();
-                            }
+                            rs.Close();
                         }
                         catch { }
 
@@ -88,7 +89,8 @@ namespace appie
                         Run();
                     }, w);
                 }
-                catch {
+                catch
+                {
                     Run();
                 }
 
