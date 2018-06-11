@@ -106,8 +106,7 @@ namespace appie
 
 
 
-
-
+            ApiChannel channel = new ApiChannel(new ApiFetchWorker());
 
 
 

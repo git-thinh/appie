@@ -16,7 +16,10 @@ namespace System.Threading
 
         public int Count
         {
-            get { return _dictionary.Count; }
+            get { 
+                lock (_lock)
+                    return _dictionary.Count;
+            }
         }
 
         public bool Contains(TKey key)
@@ -31,7 +34,17 @@ namespace System.Threading
         {
             lock (_lock)
             {
-                _dictionary.Remove(key);
+                if (_dictionary.ContainsKey(key))
+                    _dictionary.Remove(key);
+            }
+        }
+
+        public void Add(TKey key, TValue value)
+        {
+            lock (_lock)
+            {
+                if (!_dictionary.ContainsKey(key))
+                    _dictionary.Add(key, value);
             }
         }
 
@@ -46,14 +59,17 @@ namespace System.Threading
             {
                 lock (_lock)
                 {
-                    return _dictionary[key];
+                    if (_dictionary.ContainsKey(key))
+                        return _dictionary[key];
+                    return default(TValue);
                 }
             }
             set
             {
                 lock (_lock)
                 {
-                    _dictionary[key] = value;
+                    if (_dictionary.ContainsKey(key))
+                        _dictionary[key] = value;
                 }
             }
         }

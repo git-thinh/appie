@@ -7,7 +7,7 @@ namespace appie
 {
     public interface IApiChannel
     {
-        void Execute(msg msg);
+        void RecieveData(object data);
         void Stop();
     }
 
@@ -31,31 +31,28 @@ namespace appie
     public class ApiChannel : IApiChannel
     {
         private readonly Thread _thread;  
-        private readonly IAPI _api;
+        private readonly IApiWorker _worker;
 
-        public ApiChannel(IAPI api)
+        public ApiChannel(IApiWorker worker)
         {
-            _api = api;
-            _api.Canceler = new ApiChannelCanceler();
-
+            _worker = worker;
             _thread = new Thread(new ParameterizedThreadStart(delegate (object evt)
             {
-                ApiChannelCanceler canceler = (ApiChannelCanceler)evt;
-                api.Init();
-                api.Open = true;
-                api.Run();
+                IApiWorker w = (IApiWorker)evt;
+                w.Run();
             }));
-            _api.Id = _thread.ManagedThreadId;
-            _thread.Start();
+            _worker.Channel = this; 
+            _worker.ThreadId = _thread.ManagedThreadId;
+            _thread.Start(_worker);
         }
 
-        public void Execute(msg msg)
+        public void RecieveData(object data)
         { 
         }
 
         public void Stop()
         { 
-            _api.Close(); 
+            _worker.Stop(); 
         }
     }
 }

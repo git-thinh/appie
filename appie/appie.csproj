@@ -94,10 +94,15 @@
   <ItemGroup>
     <Compile Include="API\ApiFetch.cs" />
     <Compile Include="API\ApiChannel.cs" />
+    <Compile Include="API\ApiFetchWorker.cs" />
+    <Compile Include="API\ProducerConsumer.cs" />
     <Compile Include="API\DHTMLEventHandler.cs" />
     <Compile Include="API\IAPI.cs" />
+    <Compile Include="API\IApiWorker.cs" />
     <Compile Include="API\IFORM.cs" />
     <Compile Include="API\msg.cs" />
+    <Compile Include="API\ApiWorker.cs" />
+    <Compile Include="API\RequestResponseState.cs" />
     <Compile Include="API\_API.cs" />
     <Compile Include="FORM\fBrowser.cs">
       <SubType>Form</SubType>
@@ -114,6 +119,9 @@
     <Compile Include="FORM\fMedia.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="LIB\System.Threading\FetchUrl.cs" />
+    <Compile Include="LIB\System.Threading\SynchronizedQueue.cs" />
+    <Compile Include="LIB\System.Threading\Worker.cs" />
     <Compile Include="LIB\System.Threading\Tester_Monitor.cs" />
     <Compile Include="LIB\System.Threading\EntityCache.cs" />
     <Compile Include="LIB\System.Threading\ListLocked.cs" />
