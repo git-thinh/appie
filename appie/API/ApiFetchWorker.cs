@@ -1,5 +1,6 @@
 ﻿using HtmlAgilityPack;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -143,11 +144,18 @@ namespace appie
                     lock (finishedLock)
                         Monitor.Wait(finishedLock);
 
-                    if (dicHTML.Count > 0)
+                    if (listURL.Count == 0)
                     {
-                        if (Channel != null)
-                            Channel.RecieveDataFormWorker(dicHTML);
-                        dicHTML.Clear();
+                        //if (Channel != null)
+                        //    Channel.RecieveDataFormWorker(dicHTML); 
+                        //dicHTML.Clear();
+                        Interlocked.Exchange(ref requestCounter, 0);
+                        Console.WriteLine("---------------------> COMPLETE: " + dicHTML.Count.ToString());
+                    }
+                    else
+                    {
+                        string[] urls = listURL.ToArray();
+                        PostDataToWorker(urls);
                     }
                 }
             }
@@ -168,74 +176,85 @@ namespace appie
 
                 if (urls != null && urls.Length > 0)
                 {
+                    Interlocked.Exchange(ref responseCounter, 0);
+
                     for (int i = 0; i < urls.Length; i++)
                     {
-                        if (Interlocked.CompareExchange(ref requestCounter, 5, 5) == 5)
-                        {
-                            break;
-                        }
+                        ////if (Interlocked.CompareExchange(ref requestCounter, 5, 5) == 5)
+                        ////{
+                        ////    break;
+                        ////}
 
                         if (dicHTML.ContainsKey(urls[i])) continue;
 
-                        Interlocked.Increment(ref requestCounter);
                         Interlocked.Increment(ref responseCounter);
 
                         dicHTML.Add(urls[i], string.Empty);
-                        HttpWebRequest w = (HttpWebRequest)WebRequest.Create(new Uri(urls[i]));
-                        w.BeginGetResponse(asyncResult =>
+                        try
                         {
-                            string htm = string.Empty, url = string.Empty;
-                            try
+                            HttpWebRequest w = (HttpWebRequest)WebRequest.Create(new Uri(urls[i]));
+                            w.Timeout = 5000;
+                            w.BeginGetResponse(asyncResult =>
                             {
-                                HttpWebResponse rs = (HttpWebResponse)w.EndGetResponse(asyncResult); //add a break point here 
-                                url = rs.ResponseUri.ToString();
+                                string htm = string.Empty, url = ((HttpWebRequest)asyncResult.AsyncState).RequestUri.ToString();
+
+
+                                Interlocked.Increment(ref requestCounter);
+                                Console.WriteLine(string.Format("{0}: {1}", requestCounter, url));
+
+                                try
+                                {
+                                    HttpWebResponse rs = (HttpWebResponse)w.EndGetResponse(asyncResult); //add a break point here 
+                                                                                                         //url = rs.ResponseUri.ToString();
 
                                 if (rs.StatusCode == HttpStatusCode.OK)
-                                {
-                                    using (StreamReader sr = new StreamReader(rs.GetResponseStream(), Encoding.UTF8))
-                                        htm = sr.ReadToEnd();
-                                    rs.Close();
-                                }
-
-                                if (!string.IsNullOrEmpty(htm))
-                                {
-                                    htm = HttpUtility.HtmlDecode(htm);
-                                    htm = format_HTML(htm);
-                                    dicHTML[url] = htm;
-                                }
-                            }
-                            catch { }
-
-                            if (!string.IsNullOrEmpty(htm))
-                            {
-                                string[] us = get_UrlHtml(url, htm);
-                                if (us.Length > 0)
-                                {
-                                    us = us.Where(x => !dicHTML.KeysArray.Any(xi => xi == x)).ToArray();
-                                    if (us.Length > 0)
                                     {
-                                        //PostDataToWorker(us);
-                                        // ????????????????????????????????????????????????????????????????
+                                        using (StreamReader sr = new StreamReader(rs.GetResponseStream(), Encoding.UTF8))
+                                            htm = sr.ReadToEnd();
+                                        rs.Close();
+                                    }
+
+                                    if (!string.IsNullOrEmpty(htm))
+                                    {
+                                        htm = HttpUtility.HtmlDecode(htm);
+                                        htm = format_HTML(htm);
+                                        dicHTML[url] = htm;
+
+                                        string[] us = get_UrlHtml(url, htm);
+                                        if (us.Length > 0)
+                                        {
+                                            us = us.Where(x => !dicHTML.KeysArray.Any(xi => xi == x)).ToArray();
+                                            if (us.Length > 0)
+                                                listURL.AddRange(us, true);
+                                        }
                                     }
                                 }
-                            }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine(string.Format("----> FAIL: {0}| {1}", requestCounter, url));
+                                }
+
+                                Interlocked.Decrement(ref responseCounter);
+                                if (Interlocked.CompareExchange(ref responseCounter, 0, 0) == 0) 
+                                    lock (finishedLock)
+                                        Monitor.Pulse(finishedLock); 
+                            }, w); 
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(string.Format("----> FAIL: {0}| {1}", requestCounter, urls[i]));
 
                             Interlocked.Decrement(ref responseCounter);
-                            if (Interlocked.CompareExchange(ref responseCounter, 0, 0) == 0)
-                            {
+                            if (Interlocked.CompareExchange(ref responseCounter, 0, 0) == 0) 
                                 lock (finishedLock)
-                                    Monitor.Pulse(finishedLock);
-                            }
-
-
-
-                        }, w);
-
+                                    Monitor.Pulse(finishedLock); 
+                        }
                     } // end for
                 }
             }
         }
 
+        static ConcurrentList<string> listURL = new ConcurrentList<string>();
         static SynchronizedDictionary<string, string> dicHTML = new SynchronizedDictionary<string, string>();
         static readonly object finishedLock = new object();
         static int responseCounter = 0;
@@ -460,6 +479,9 @@ namespace appie
 
             //string[] a = htm.Split(new string[] { "http" }, StringSplitOptions.None).Where((x, k) => k != 0).Select(x => "http" + x.Split(new char[] { '"', '\'' })[0]).ToArray();
             //lsURLs.AddRange(a);
+
+            //????????????????????????????????????????????????????????????????????????????????
+            uri_root = "https://dictionary.cambridge.org/grammar/british-grammar/";
 
             var u_html = lsURLs
                  .Where(x => x.IndexOf(uri_root) == 0)

@@ -61,13 +61,6 @@ namespace appie
         }
 
         public static void RUN() {
-            System.Net.ServicePointManager.DefaultConnectionLimit = 1000;
-            // active SSL 1.1, 1.2, 1.3 for WebClient request HTTPS
-            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 
-                //| (SecurityProtocolType)3072 
-                //| (SecurityProtocolType)0x00000C00 
-                | SecurityProtocolType.Tls;
 
 
 
@@ -128,13 +121,21 @@ namespace appie
         [STAThread]
         static void Main(string[] args)
         {
+            System.Net.ServicePointManager.DefaultConnectionLimit = 1000;
+            // active SSL 1.1, 1.2, 1.3 for WebClient request HTTPS
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3
+                | (SecurityProtocolType)3072
+                | (SecurityProtocolType)0x00000C00
+                | SecurityProtocolType.Tls;
             //app.RUN();
 
 
             ApiChannel channel = new ApiChannel(new ApiFetchWorker()); 
             channel.PostDataToWorker(new string[] {
-                "https://pronuncian.com/pronounce-th-sounds/",
-                "https://www.learning-english-online.net/pronunciation/the-english-th/",
+                // "https://pronuncian.com/pronounce-th-sounds/",
+                // "https://www.learning-english-online.net/pronunciation/the-english-th/",
+                "https://dictionary.cambridge.org/grammar/british-grammar/",
             });
 
             Console.ReadLine();

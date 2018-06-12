@@ -21,6 +21,12 @@ namespace System
             }
         }
 
+        public K[] ToArray()
+        {
+            using (_lock.Read())
+                return cacheData.ToArray();
+        }
+
         public void RemoveAt(int index)
         {
             using (_lock.Write())
@@ -163,12 +169,14 @@ namespace System
             }
         }
 
-        public void AddRange(K[] keys)
+        public void AddRange(K[] keys, bool distinct = false)
         {
             _lock.EnterWriteLock();
             try
             {
                 cacheData.AddRange(keys);
+                if (distinct)
+                    cacheData = cacheData.Distinct().ToList();
             }
             finally
             {
