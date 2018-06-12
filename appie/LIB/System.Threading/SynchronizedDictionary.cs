@@ -22,7 +22,7 @@ namespace System.Threading
             }
         }
 
-        public bool Contains(TKey key)
+        public bool ContainsKey(TKey key)
         {
             lock (_lock)
             {

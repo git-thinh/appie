@@ -1,10 +1,12 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading;
+using System.Web;
 
 namespace appie
-{ 
+{
     /*
      * 
             + Why Thread.Abort/Interrupt should be avoided
@@ -110,20 +112,12 @@ namespace appie
         }
 
         #endregion
-
-        bool Inited = false;
+         
         /// <summary>
         /// Main work loop of the class.
         /// </summary>
         public void Run()
-        {
-            if (Inited == false)
-            {
-                Inited = true;
-                lock (finishedLock)
-                    Monitor.Wait(finishedLock);
-            }
-
+        { 
             try
             {
                 while (!Stopping)
@@ -142,41 +136,15 @@ namespace appie
                     //     return;
                     // }
                     // The finally block will make sure that the stopped flag is set.
-
-                    if (queueURL.Count == 0)
-                    {
-                        if (Interlocked.CompareExchange(ref responseCounter, 0, 0) == 0) {
-                            if (dicHTML.Count > 0) {
-                                if (Channel != null)
-                                    Channel.RecieveDataFormWorker(dicHTML);
-                                dicHTML.Clear();
-                            }
-                        }
-                        lock (finishedLock)
-                            Monitor.Wait(finishedLock);
-                    }
-
-                    string PageUrl = queueURL.Dequeue();
-                    if (string.IsNullOrEmpty(PageUrl))
-                        continue;
-
-                    WebRequest request = WebRequest.Create(PageUrl);
-                    RequestResponseState state = new RequestResponseState();
-                    state.request = request;
-
-                    // Lock the object we'll use for waiting now, to make
-                    // sure we don't (by some fluke) do everything in the other threads
-                    // before getting to Monitor.Wait in this one. If we did, the pulse
-                    // would effectively get lost!
+                     
                     lock (finishedLock)
-                    {
-                        request.BeginGetResponse(new AsyncCallback(GetResponseCallback), state);
-
-                        //Console.WriteLine("Waiting for response...");
-
-                        // Wait until everything's finished. Normally you'd want to
-                        // carry on doing stuff here, of course.
                         Monitor.Wait(finishedLock);
+
+                    if (dicHTML.Count > 0)
+                    {
+                        if (Channel != null)
+                            Channel.RecieveDataFormWorker(dicHTML);
+                        dicHTML.Clear();
                     }
                 }
             }
@@ -188,37 +156,58 @@ namespace appie
 
         public void PostDataToWorker(object data)
         {
-            if (data == null) return;
-            if (!Inited)
-                Thread.Sleep(500);
+            if (data == null) return; 
 
             Type type = data.GetType();
-            if (type.Name == "String")
-            {
-                string url = data as string;
-
-                if (!string.IsNullOrEmpty(url))
-                {
-                    queueURL.Enqueue(url);
-                    Interlocked.Increment(ref responseCounter);
-                    lock (finishedLock)
-                        Monitor.Pulse(finishedLock);
-                }
-            }
-            else if (type.Name == "String[]")
+            if (type.Name == "String[]")
             {
                 string[] urls = data as string[];
 
                 if (urls != null && urls.Length > 0)
                 {
-                    queueURL.EnqueueItems(urls);
-                    Interlocked.Add(ref responseCounter, urls.Length);
-                    lock (finishedLock)
-                        Monitor.Pulse(finishedLock);
+                    for (int i = 0; i < urls.Length; i++)
+                    {
+                        if (dicHTML.ContainsKey(urls[i])) continue;
+
+                        Interlocked.Increment(ref responseCounter);
+                        dicHTML.Add(urls[i], string.Empty);
+                        HttpWebRequest w = (HttpWebRequest)WebRequest.Create(new Uri(urls[i]));
+                        w.BeginGetResponse(asyncResult =>
+                        {
+                            string htm = string.Empty, url = string.Empty;
+                            try
+                            {
+                                HttpWebResponse rs = (HttpWebResponse)w.EndGetResponse(asyncResult); //add a break point here 
+                                url = rs.ResponseUri.ToString();
+
+                                if (rs.StatusCode == HttpStatusCode.OK)
+                                {
+                                    using (StreamReader sr = new StreamReader(rs.GetResponseStream(), Encoding.UTF8))
+                                        htm = sr.ReadToEnd();
+                                    rs.Close();
+                                }
+
+                                if (!string.IsNullOrEmpty(htm))
+                                {
+                                    htm = HttpUtility.HtmlDecode(htm);
+                                    //htm = format_HTML(htm);
+                                    dicHTML[url] = htm;
+                                }
+                            }
+                            catch { }
+
+                            Interlocked.Decrement(ref responseCounter);
+                            if (Interlocked.CompareExchange(ref responseCounter, 0, 0) == 0)
+                            {
+                                lock (finishedLock)
+                                    Monitor.Pulse(finishedLock);
+                            }
+                        }, w);
+                    } // end for
                 }
             }
         }
-         
+
 
         #region [ FETCH ]
 
@@ -273,7 +262,7 @@ namespace appie
                 // Now start reading from it asynchronously
                 state.stream.BeginRead(state.buffer, 0, state.buffer.Length, new AsyncCallback(ReadCallback), state);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 string message = ex.Message;
                 string url = state.request.RequestUri.ToString();
@@ -300,7 +289,7 @@ namespace appie
             }
 
             // Nope - so decode the text and then call BeginRead again
-            state.text.Append(state.encoding.GetString(state.buffer, 0, len)); 
+            state.text.Append(state.encoding.GetString(state.buffer, 0, len));
             state.stream.BeginRead(state.buffer, 0, state.buffer.Length, new AsyncCallback(ReadCallback), state);
         }
 
