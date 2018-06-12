@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 // SmartThreadPool
 namespace System.Threading
@@ -81,6 +82,17 @@ namespace System.Threading
                 lock (_lock)
                 {
                     return _dictionary.Keys;
+                }
+            }
+        }
+
+        public TKey[] KeysArray
+        {
+            get
+            {
+                lock (_lock)
+                {
+                    return _dictionary.Keys.ToArray();                        ;
                 }
             }
         }

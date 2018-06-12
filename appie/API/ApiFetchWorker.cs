@@ -1,7 +1,10 @@
-﻿using System;
+﻿using HtmlAgilityPack;
+using System;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Web;
 
@@ -112,12 +115,12 @@ namespace appie
         }
 
         #endregion
-         
+
         /// <summary>
         /// Main work loop of the class.
         /// </summary>
         public void Run()
-        { 
+        {
             try
             {
                 while (!Stopping)
@@ -136,7 +139,7 @@ namespace appie
                     //     return;
                     // }
                     // The finally block will make sure that the stopped flag is set.
-                     
+
                     lock (finishedLock)
                         Monitor.Wait(finishedLock);
 
@@ -156,7 +159,7 @@ namespace appie
 
         public void PostDataToWorker(object data)
         {
-            if (data == null) return; 
+            if (data == null) return;
 
             Type type = data.GetType();
             if (type.Name == "String[]")
@@ -167,9 +170,16 @@ namespace appie
                 {
                     for (int i = 0; i < urls.Length; i++)
                     {
+                        if (Interlocked.CompareExchange(ref requestCounter, 5, 5) == 5)
+                        {
+                            break;
+                        }
+
                         if (dicHTML.ContainsKey(urls[i])) continue;
 
+                        Interlocked.Increment(ref requestCounter);
                         Interlocked.Increment(ref responseCounter);
+
                         dicHTML.Add(urls[i], string.Empty);
                         HttpWebRequest w = (HttpWebRequest)WebRequest.Create(new Uri(urls[i]));
                         w.BeginGetResponse(asyncResult =>
@@ -190,11 +200,25 @@ namespace appie
                                 if (!string.IsNullOrEmpty(htm))
                                 {
                                     htm = HttpUtility.HtmlDecode(htm);
-                                    //htm = format_HTML(htm);
+                                    htm = format_HTML(htm);
                                     dicHTML[url] = htm;
                                 }
                             }
                             catch { }
+
+                            if (!string.IsNullOrEmpty(htm))
+                            {
+                                string[] us = get_UrlHtml(url, htm);
+                                if (us.Length > 0)
+                                {
+                                    us = us.Where(x => !dicHTML.KeysArray.Any(xi => xi == x)).ToArray();
+                                    if (us.Length > 0)
+                                    {
+                                        //PostDataToWorker(us);
+                                        // ????????????????????????????????????????????????????????????????
+                                    }
+                                }
+                            }
 
                             Interlocked.Decrement(ref responseCounter);
                             if (Interlocked.CompareExchange(ref responseCounter, 0, 0) == 0)
@@ -202,116 +226,277 @@ namespace appie
                                 lock (finishedLock)
                                     Monitor.Pulse(finishedLock);
                             }
+
+
+
                         }, w);
+
                     } // end for
                 }
             }
         }
 
-
-        #region [ FETCH ]
-
-        static SynchronizedQueue<string> queueURL = new SynchronizedQueue<string>();
         static SynchronizedDictionary<string, string> dicHTML = new SynchronizedDictionary<string, string>();
-
         static readonly object finishedLock = new object();
         static int responseCounter = 0;
+        static int requestCounter = 0;
 
-        //static void RUN()
-        //{
-        //    WebRequest request = WebRequest.Create(PageUrl);
-        //    RequestResponseState state = new RequestResponseState();
-        //    state.request = request;
-
-        //    // Lock the object we'll use for waiting now, to make
-        //    // sure we don't (by some fluke) do everything in the other threads
-        //    // before getting to Monitor.Wait in this one. If we did, the pulse
-        //    // would effectively get lost!
-        //    lock (finishedLock)
-        //    {
-        //        request.BeginGetResponse(new AsyncCallback(GetResponseCallback), state);
-
-        //        Console.WriteLine("Waiting for response...");
-
-        //        // Wait until everything's finished. Normally you'd want to
-        //        // carry on doing stuff here, of course.
-        //        Monitor.Wait(finishedLock);
-        //    }
-        //}
-
-        static void GetResponseCallback(IAsyncResult ar)
+        static oLinkExtract get_Urls(string url, string htm)
         {
-            // Fetch our state information
-            RequestResponseState state = (RequestResponseState)ar.AsyncState;
-            try
+            HtmlDocument doc = new HtmlDocument();
+            doc.LoadHtml(htm);
+
+            string[] auri = url.Split('/');
+            string uri_root = string.Join("/", auri.Where((x, k) => k < 3).ToArray());
+            string uri_path1 = string.Join("/", auri.Where((x, k) => k < auri.Length - 2).ToArray());
+            string uri_path2 = string.Join("/", auri.Where((x, k) => k < auri.Length - 3).ToArray());
+
+            var lsURLs = doc.DocumentNode
+                .SelectNodes("//a")
+                .Where(p => p.InnerText != null && p.InnerText.Trim().Length > 0)
+                .Select(p => p.GetAttributeValue("href", string.Empty))
+                .Select(x => x.IndexOf("../../") == 0 ? uri_path2 + x.Substring(5) : x)
+                .Select(x => x.IndexOf("../") == 0 ? uri_path1 + x.Substring(2) : x)
+                .Where(x => x.Length > 1 && x[0] != '#')
+                .Select(x => x[0] == '/' ? uri_root + x : (x[0] != 'h' ? uri_root + "/" + x : x))
+                .ToList();
+
+            //string[] a = htm.Split(new string[] { "http" }, StringSplitOptions.None).Where((x, k) => k != 0).Select(x => "http" + x.Split(new char[] { '"', '\'' })[0]).ToArray();
+            //lsURLs.AddRange(a);
+
+            var u_html = lsURLs
+                 .Where(x => x.IndexOf(uri_root) == 0)
+                 .GroupBy(x => x)
+                 .Select(x => x.First())
+                 //.Where(x =>
+                 //    !x.EndsWith(".pdf")
+                 //    || !x.EndsWith(".txt")
+
+                 //    || !x.EndsWith(".ogg")
+                 //    || !x.EndsWith(".mp3")
+                 //    || !x.EndsWith(".m4a")
+
+                 //    || !x.EndsWith(".gif")
+                 //    || !x.EndsWith(".png")
+                 //    || !x.EndsWith(".jpg")
+                 //    || !x.EndsWith(".jpeg")
+
+                 //    || !x.EndsWith(".doc")
+                 //    || !x.EndsWith(".docx")
+                 //    || !x.EndsWith(".ppt")
+                 //    || !x.EndsWith(".pptx")
+                 //    || !x.EndsWith(".xls")
+                 //    || !x.EndsWith(".xlsx"))
+                 .ToArray();
+
+            //if (!string.IsNullOrEmpty(setting_URL_CONTIANS))
+            //    foreach (string key in setting_URL_CONTIANS.Split('|'))
+            //        u_html = u_html.Where(x => x.Contains(key)).ToArray();
+
+            //var u_audio = lsURLs.Where(x => x.EndsWith(".mp3")).Distinct().ToArray();
+            //var u_img = lsURLs.Where(x => x.EndsWith(".gif") || x.EndsWith(".jpeg") || x.EndsWith(".jpg") || x.EndsWith(".png")).Distinct().ToArray();
+            //var u_youtube = lsURLs.Where(x => x.Contains("youtube.com/")).Distinct().ToArray();
+
+            return new oLinkExtract()
             {
-                // Fetch the response which has been generated
-                state.response = state.request.EndGetResponse(ar);
-
-                // Store the response stream in the state
-                state.stream = state.response.GetResponseStream();
-
-                // Stash an Encoding for the text. I happen to know that
-                // my web server returns text in ISO-8859-1 - which is
-                // handy, as we don't need to worry about getting half
-                // a character in one read and the other half in another.
-                // (Use a Decoder if you want to cope with that.)
-                //state.encoding = Encoding.GetEncoding(28591);
-                state.encoding = Encoding.UTF8;
-
-                // Now start reading from it asynchronously
-                state.stream.BeginRead(state.buffer, 0, state.buffer.Length, new AsyncCallback(ReadCallback), state);
-            }
-            catch (Exception ex)
-            {
-                string message = ex.Message;
-                string url = state.request.RequestUri.ToString();
-                fetchFinished(url, string.Empty);
-            }
+                Url_Html = u_html,
+                //Url_Audio = u_audio,
+                //Url_Image = u_img,
+                //Url_Youtube = u_youtube
+            };
         }
 
-        static void ReadCallback(IAsyncResult ar)
+        static string format_HTML_bak(string s)
         {
-            // Fetch our state information
-            RequestResponseState state = (RequestResponseState)ar.AsyncState;
+            string si = string.Empty;
+            s = Regex.Replace(s, @"<script[^>]*>[\s\S]*?</script>", string.Empty);
+            s = Regex.Replace(s, @"<style[^>]*>[\s\S]*?</style>", string.Empty);
+            s = Regex.Replace(s, @"<noscript[^>]*>[\s\S]*?</noscript>", string.Empty);
+            s = Regex.Replace(s, @"(?s)(?<=<!--).+?(?=-->)", string.Empty).Replace("<!---->", string.Empty);
 
-            // Find out how much we've read
-            int len = state.stream.EndRead(ar);
+            //s = Regex.Replace(s, @"<noscript[^>]*>[\s\S]*?</noscript>", string.Empty);
+            //s = Regex.Replace(s, @"<noscript[^>]*>[\s\S]*?</noscript>", string.Empty);
+            //s = Regex.Replace(s, @"</?(?i:embed|object|frameset|frame|iframe|meta|link)(.|\n|\s)*?>", string.Empty, RegexOptions.Singleline | RegexOptions.IgnoreCase);
+            s = Regex.Replace(s, @"</?(?i:base|ins|svg|embed|object|frameset|frame|meta|link)(.|\n|\s)*?>", string.Empty, RegexOptions.Singleline | RegexOptions.IgnoreCase);
 
-            // Have we finished now?
-            if (len == 0)
-            {
-                // Dispose of things we can get rid of
-                ((IDisposable)state.response).Dispose();
-                ((IDisposable)state.stream).Dispose();
-                fetchFinished(state.request.RequestUri.ToString(), state.text.ToString());
-                return;
-            }
+            // Remove attribute style="padding:10px;..."
+            s = Regex.Replace(s, @"<([^>]*)(\sstyle="".+?""(\s|))(.*?)>", string.Empty);
+            s = s.Replace(@">"">", ">");
 
-            // Nope - so decode the text and then call BeginRead again
-            state.text.Append(state.encoding.GetString(state.buffer, 0, len));
-            state.stream.BeginRead(state.buffer, 0, state.buffer.Length, new AsyncCallback(ReadCallback), state);
+            string[] lines = s.Split(new char[] { '\r', '\n' }, StringSplitOptions.None).Select(x => x.Trim()).Where(x => x.Length > 0).ToArray();
+            s = string.Join(Environment.NewLine, lines);
+            return s;
+
+            //HtmlDocument doc = new HtmlDocument();
+            //doc.LoadHtml(s);
+            //string tagName = string.Empty, tagVal = string.Empty;
+            //foreach (var node in doc.DocumentNode.SelectNodes("//*"))
+            //{
+            //    if (node.InnerText == null || node.InnerText.Trim().Length == 0)
+            //    {
+            //        node.Remove();
+            //        continue;
+            //    }
+
+            //    tagName = node.Name.ToUpper();
+            //    if (tagName == "A")
+            //        tagVal = node.GetAttributeValue("href", string.Empty);
+            //    else if (tagName == "IMG")
+            //        tagVal = node.GetAttributeValue("src", string.Empty);
+
+            //    //node.Attributes.RemoveAll();
+            //    node.Attributes.RemoveAll_NoRemoveClassName();
+
+            //    if (tagVal != string.Empty)
+            //    {
+            //        if (tagName == "A") node.SetAttributeValue("href", tagVal);
+            //        else if (tagName == "IMG") node.SetAttributeValue("src", tagVal);
+            //    }
+            //}
+
+            //si = doc.DocumentNode.OuterHtml;
+            ////string[] lines = si.Split(new char[] { '\r', '\n' }, StringSplitOptions.None).Where(x => x.Trim().Length > 0).ToArray();
+            //string[] lines = si.Split(new char[] { '\r', '\n' }, StringSplitOptions.None).Select(x => x.Trim()).Where(x => x.Length > 0).ToArray();
+            //si = string.Join(Environment.NewLine, lines);
+            //return si;
         }
 
-        static void fetchFinished(string url, string page)
+        static string format_HTML(string s)
         {
-            //Console.WriteLine("Read text of page. Length={0} characters.", page.Length);
-            //// Assume for convenience that the page length is over 50 characters!
-            //Console.WriteLine("First 50 characters:");
-            //Console.WriteLine(page.Substring(0, 50));
-            //Console.WriteLine("Last 50 characters:");
-            //Console.WriteLine(page.Substring(page.Length - 50));
+            string si = string.Empty;
+            s = Regex.Replace(s, @"<script[^>]*>[\s\S]*?</script>", string.Empty);
+            s = Regex.Replace(s, @"<style[^>]*>[\s\S]*?</style>", string.Empty);
+            s = Regex.Replace(s, @"<noscript[^>]*>[\s\S]*?</noscript>", string.Empty);
+            s = Regex.Replace(s, @"(?s)(?<=<!--).+?(?=-->)", string.Empty).Replace("<!---->", string.Empty);
 
-            Interlocked.Decrement(ref responseCounter);
-            dicHTML.Add(url, page);
+            //s = Regex.Replace(s, @"<noscript[^>]*>[\s\S]*?</noscript>", string.Empty);
+            //s = Regex.Replace(s, @"<noscript[^>]*>[\s\S]*?</noscript>", string.Empty);
+            //s = Regex.Replace(s, @"</?(?i:embed|object|frameset|frame|iframe|meta|link)(.|\n|\s)*?>", string.Empty, RegexOptions.Singleline | RegexOptions.IgnoreCase);
+            s = Regex.Replace(s, @"</?(?i:base|nav|form|input|fieldset|button|link|symbol|path|canvas|use|ins|svg|embed|object|frameset|frame|meta|noscript)(.|\n|\s)*?>", string.Empty, RegexOptions.Singleline | RegexOptions.IgnoreCase);
 
-            // Tell the main thread we've finished.
-            lock (finishedLock)
+            // Remove attribute style="padding:10px;..."
+            s = Regex.Replace(s, @"<([^>]*)(\sstyle="".+?""(\s|))(.*?)>", string.Empty);
+            s = s.Replace(@">"">", ">");
+
+            string[] lines = s.Split(new char[] { '\r', '\n' }, StringSplitOptions.None).Select(x => x.Trim()).Where(x => x.Length > 0).ToArray();
+            s = string.Join(Environment.NewLine, lines);
+
+            int pos = s.ToLower().IndexOf("<body");
+            if (pos > 0)
             {
-                Monitor.Pulse(finishedLock);
+                s = s.Substring(pos + 5);
+                pos = s.IndexOf('>') + 1;
+                s = s.Substring(pos, s.Length - pos).Trim();
             }
+
+            s = s
+                .Replace(@" data-src=""", @" src=""")
+                .Replace(@"src=""//", @"src=""http://");
+
+            var mts = Regex.Matches(s, "<img.+?src=[\"'](.+?)[\"'].*?>", RegexOptions.IgnoreCase);
+            if (mts.Count > 0)
+            {
+                foreach (Match mt in mts)
+                {
+                    s = s.Replace(mt.ToString(), string.Format("{0}{1}{2}", "<p class=box_img___>", mt.ToString(), "</p>"));
+                }
+            }
+
+            return s;
+
+            //HtmlDocument doc = new HtmlDocument();
+            //doc.LoadHtml(s);
+            //string tagName = string.Empty, tagVal = string.Empty;
+            //foreach (var node in doc.DocumentNode.SelectNodes("//*"))
+            //{
+            //    if (node.InnerText == null || node.InnerText.Trim().Length == 0)
+            //    {
+            //        node.Remove();
+            //        continue;
+            //    }
+
+            //    tagName = node.Name.ToUpper();
+            //    if (tagName == "A")
+            //        tagVal = node.GetAttributeValue("href", string.Empty);
+            //    else if (tagName == "IMG")
+            //        tagVal = node.GetAttributeValue("src", string.Empty);
+
+            //    //node.Attributes.RemoveAll();
+            //    node.Attributes.RemoveAll_NoRemoveClassName();
+
+            //    if (tagVal != string.Empty)
+            //    {
+            //        if (tagName == "A") node.SetAttributeValue("href", tagVal);
+            //        else if (tagName == "IMG") node.SetAttributeValue("src", tagVal);
+            //    }
+            //}
+
+            //si = doc.DocumentNode.OuterHtml;
+            ////string[] lines = si.Split(new char[] { '\r', '\n' }, StringSplitOptions.None).Where(x => x.Trim().Length > 0).ToArray();
+            //string[] lines = si.Split(new char[] { '\r', '\n' }, StringSplitOptions.None).Select(x => x.Trim()).Where(x => x.Length > 0).ToArray();
+            //si = string.Join(Environment.NewLine, lines);
+            //return si;
         }
 
-        #endregion
+        static string[] get_UrlHtml(string url, string htm)
+        {
+            HtmlDocument doc = new HtmlDocument();
+            doc.LoadHtml(htm);
+
+            string[] auri = url.Split('/');
+            string uri_root = string.Join("/", auri.Where((x, k) => k < 3).ToArray());
+            string uri_path1 = string.Join("/", auri.Where((x, k) => k < auri.Length - 2).ToArray());
+            string uri_path2 = string.Join("/", auri.Where((x, k) => k < auri.Length - 3).ToArray());
+
+            var lsURLs = doc.DocumentNode
+                .SelectNodes("//a")
+                .Where(p => p.InnerText != null && p.InnerText.Trim().Length > 0)
+                .Select(p => p.GetAttributeValue("href", string.Empty))
+                .Select(x => x.IndexOf("../../") == 0 ? uri_path2 + x.Substring(5) : x)
+                .Select(x => x.IndexOf("../") == 0 ? uri_path1 + x.Substring(2) : x)
+                .Where(x => x.Length > 1 && x[0] != '#')
+                .Select(x => x[0] == '/' ? uri_root + x : (x[0] != 'h' ? uri_root + "/" + x : x))
+                .ToList();
+
+            //string[] a = htm.Split(new string[] { "http" }, StringSplitOptions.None).Where((x, k) => k != 0).Select(x => "http" + x.Split(new char[] { '"', '\'' })[0]).ToArray();
+            //lsURLs.AddRange(a);
+
+            var u_html = lsURLs
+                 .Where(x => x.IndexOf(uri_root) == 0)
+                 .GroupBy(x => x)
+                 .Select(x => x.First())
+                 //.Where(x =>
+                 //    !x.EndsWith(".pdf")
+                 //    || !x.EndsWith(".txt")
+
+                 //    || !x.EndsWith(".ogg")
+                 //    || !x.EndsWith(".mp3")
+                 //    || !x.EndsWith(".m4a")
+
+                 //    || !x.EndsWith(".gif")
+                 //    || !x.EndsWith(".png")
+                 //    || !x.EndsWith(".jpg")
+                 //    || !x.EndsWith(".jpeg")
+
+                 //    || !x.EndsWith(".doc")
+                 //    || !x.EndsWith(".docx")
+                 //    || !x.EndsWith(".ppt")
+                 //    || !x.EndsWith(".pptx")
+                 //    || !x.EndsWith(".xls")
+                 //    || !x.EndsWith(".xlsx"))
+                 .Distinct()
+                 .ToArray();
+
+            //if (!string.IsNullOrEmpty(setting_URL_CONTIANS))
+            //    foreach (string key in setting_URL_CONTIANS.Split('|'))
+            //        u_html = u_html.Where(x => x.Contains(key)).ToArray();
+
+            //var u_audio = lsURLs.Where(x => x.EndsWith(".mp3")).Distinct().ToArray();
+            //var u_img = lsURLs.Where(x => x.EndsWith(".gif") || x.EndsWith(".jpeg") || x.EndsWith(".jpg") || x.EndsWith(".png")).Distinct().ToArray();
+            //var u_youtube = lsURLs.Where(x => x.Contains("youtube.com/")).Distinct().ToArray();
+
+            return u_html;
+        }
+
     }
 }
