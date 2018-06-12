@@ -7,7 +7,7 @@ using System.Threading;
 namespace System
 {
     // https://msdn.microsoft.com/en-us/library/system.threading.readerwriterlockslim(v=vs.110).aspx
-    public class ConcurrentDictionary<K, V>
+    public class SynchronizedCacheString<K, V>
     {
         private readonly ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
         private Dictionary<K, V> cacheData = new Dictionary<K, V>();
@@ -226,7 +226,7 @@ namespace System
             Unchanged
         };
 
-        ~ConcurrentDictionary()
+        ~SynchronizedCacheString()
         {
             if (_lock != null) _lock.Dispose();
         }

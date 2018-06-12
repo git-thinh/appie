@@ -129,7 +129,6 @@
     <Compile Include="LIB\ControlTransparent.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="LIB\System.Threading\ConcurrentDictionary.cs" />
     <Compile Include="LIB\System.Threading\SynchronizedDictionary.cs" />
     <Compile Include="LIB\System\ReaderWriterLockSlimExtensions.cs" />
     <Compile Include="LIB\System\CrossThreadExtensions.cs" />

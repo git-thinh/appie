@@ -149,12 +149,15 @@ namespace appie
                         //if (Channel != null)
                         //    Channel.RecieveDataFormWorker(dicHTML); 
                         //dicHTML.Clear();
-                        Interlocked.Exchange(ref requestCounter, 0);
+                        dicHTML.RemoveValueEmpty();
+                        dicHTML.WriteFile("demo.bin");
                         Console.WriteLine("---------------------> COMPLETE: " + dicHTML.Count.ToString());
+                        Interlocked.Exchange(ref requestCounter, 0);
                     }
                     else
                     {
                         string[] urls = listURL.ToArray();
+                        listURL.Clear();
                         PostDataToWorker(urls);
                     }
                 }
@@ -218,12 +221,12 @@ namespace appie
                                     {
                                         htm = HttpUtility.HtmlDecode(htm);
                                         htm = format_HTML(htm);
-                                        dicHTML[url] = htm;
+                                        dicHTML.AddOrUpdate(url, htm);
 
                                         string[] us = get_UrlHtml(url, htm);
                                         if (us.Length > 0)
                                         {
-                                            us = us.Where(x => !dicHTML.KeysArray.Any(xi => xi == x)).ToArray();
+                                            us = us.Where(x => !dicHTML.Keys.Any(xi => xi == x)).ToArray();
                                             if (us.Length > 0)
                                                 listURL.AddRange(us, true);
                                         }
@@ -255,7 +258,7 @@ namespace appie
         }
 
         static ConcurrentList<string> listURL = new ConcurrentList<string>();
-        static SynchronizedDictionary<string, string> dicHTML = new SynchronizedDictionary<string, string>();
+        static SynchronizedCacheString  dicHTML = new SynchronizedCacheString();
         static readonly object finishedLock = new object();
         static int responseCounter = 0;
         static int requestCounter = 0;
@@ -413,13 +416,10 @@ namespace appie
                 .Replace(@"src=""//", @"src=""http://");
 
             var mts = Regex.Matches(s, "<img.+?src=[\"'](.+?)[\"'].*?>", RegexOptions.IgnoreCase);
-            if (mts.Count > 0)
-            {
-                foreach (Match mt in mts)
-                {
+            if (mts.Count > 0) 
+                foreach (Match mt in mts) 
                     s = s.Replace(mt.ToString(), string.Format("{0}{1}{2}", "<p class=box_img___>", mt.ToString(), "</p>"));
-                }
-            }
+            s = s.Replace("</body>", string.Empty).Replace("</html>", string.Empty).Trim();
 
             return s;
 
@@ -475,6 +475,7 @@ namespace appie
                 .Select(x => x.IndexOf("../") == 0 ? uri_path1 + x.Substring(2) : x)
                 .Where(x => x.Length > 1 && x[0] != '#')
                 .Select(x => x[0] == '/' ? uri_root + x : (x[0] != 'h' ? uri_root + "/" + x : x))
+                .Select(x => x.Split('#')[0])
                 .ToList();
 
             //string[] a = htm.Split(new string[] { "http" }, StringSplitOptions.None).Where((x, k) => k != 0).Select(x => "http" + x.Split(new char[] { '"', '\'' })[0]).ToArray();

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 
-namespace System
+namespace appie
 {
     // https://msdn.microsoft.com/en-us/library/system.threading.readerwriterlockslim(v=vs.110).aspx
     public class SynchronizedCacheString
@@ -110,20 +110,42 @@ namespace System
             }
         }
 
+        public void RemoveValueEmpty()
+        {
+            _lock.EnterWriteLock();
+            try
+            {
+                cacheData = cacheData.Where(x => !string.IsNullOrEmpty(x.Value)).ToDictionary(x => x.Key, x => x.Value);
+            }
+            finally
+            {
+                _lock.ExitWriteLock();
+            }
+        }
+
         public void WriteFile(string file_path, bool clean_data_after_write = false)
         {
             _lock.EnterWriteLock();
             try
             {
-                // Using Protobuf-net, I suddenly got an exception about an unknown wire-type
-                // https://stackoverflow.com/questions/2152978/using-protobuf-net-i-suddenly-got-an-exception-about-an-unknown-wire-type
-                using (var file = new FileStream(file_path, FileMode.Truncate))
+                if (File.Exists(file_path))
                 {
-                    // write
-                    ProtoBuf.Serializer.Serialize<Dictionary<string, string>>(file, cacheData);
-                    // SetLength after writing your data:
-                    // file.SetLength(file.Position);
+                    // Using Protobuf-net, I suddenly got an exception about an unknown wire-type
+                    // https://stackoverflow.com/questions/2152978/using-protobuf-net-i-suddenly-got-an-exception-about-an-unknown-wire-type
+                    using (var file = new FileStream(file_path, FileMode.Truncate))
+                    {
+                        // write
+                        ProtoBuf.Serializer.Serialize<Dictionary<string, string>>(file, cacheData);
+                        // SetLength after writing your data:
+                        // file.SetLength(file.Position);
+                    }
                 }
+                else
+                {
+                    using (var file = new FileStream(file_path, FileMode.OpenOrCreate))
+                        ProtoBuf.Serializer.Serialize<Dictionary<string, string>>(file, cacheData);
+                }
+
                 if (clean_data_after_write) cacheData.Clear();
             }
             finally
