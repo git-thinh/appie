@@ -15,21 +15,15 @@ using System.Windows.Forms;
 namespace appie
 {
     public class fBrowser : Form
-    { 
+    {
         #region [ VARIABLE ]
 
         readonly Font font_Title = new Font("Arial", 11f, FontStyle.Regular);
         readonly Font font_TextView = new Font("Courier New", 11f, FontStyle.Regular);
         readonly Font font_LogView = new Font("Courier New", 9f, FontStyle.Regular);
-
-        TextBox m_url_textBox;
+         
         TabControl m_tab;
-        System.Windows.Forms.WebBrowser m_brow_web;
-        System.Windows.Forms.WebBrowser m_brow_media;
-        Panel m_header;
         Panel m_footer;
-        TabPage m_tab_Browser;
-        Label m_browser_MessageLabel;
         TextBox m_log_Text;
 
         TextBox m_link_search_textBox;
@@ -38,11 +32,28 @@ namespace appie
         TextBox m_history_search_textBox;
         ListBox m_history_items_listBox;
 
+        #endregion
+
+        #region [ VAR: BROWSER ]
+
+        System.Windows.Forms.WebBrowser m_brow_web; 
+
+        TextBox m_url_textBox;
+        Panel m_browser_Toolbar;
+        TabPage m_tab_Browser;
+        Label m_browser_MessageLabel;
+
         HTMLDocument docMain = null;
         WebBrowser_V1 m_browser_ax = null;
         HTMLDocument m_browser_doc = null;
 
         SynchronizedCacheString dicHtml = new SynchronizedCacheString();
+
+        #endregion
+
+        #region [ VAR: MEDIA ]
+         
+        System.Windows.Forms.WebBrowser m_brow_media; 
 
         #endregion
 
@@ -94,9 +105,9 @@ namespace appie
             {
                 Text = "Browser",
             };
-            m_header = new Panel()
+            m_browser_Toolbar = new Panel()
             {
-                Dock = DockStyle.Top,
+                Dock = DockStyle.Bottom,
                 Height = 25,
                 BackColor = Color.White,
             };
@@ -265,7 +276,7 @@ namespace appie
 
             #region [ Add Control -> UI ]
 
-            m_header.Controls.AddRange(new Control[] {
+            m_browser_Toolbar.Controls.AddRange(new Control[] {
                 panel_address,
                 new Label() {
                     Text = "Address:",
@@ -280,7 +291,7 @@ namespace appie
             });
             m_tab_Browser.Controls.AddRange(new Control[] {
                 m_brow_web,
-                m_header,
+                m_browser_Toolbar,
             });
             m_tab.Controls.AddRange(new Control[] {
                 m_tab_Browser,
