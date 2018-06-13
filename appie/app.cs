@@ -128,17 +128,17 @@ namespace appie
                 | (SecurityProtocolType)3072
                 | (SecurityProtocolType)0x00000C00
                 | SecurityProtocolType.Tls;
-            //app.RUN();
+            app.RUN();
 
 
-            ApiChannel channel = new ApiChannel(new ApiFetchWorker()); 
-            channel.PostDataToWorker(new string[] {
-                // "https://pronuncian.com/pronounce-th-sounds/",
-                // "https://www.learning-english-online.net/pronunciation/the-english-th/",
-                "https://dictionary.cambridge.org/grammar/british-grammar/",
-            });
+            //ApiChannel channel = new ApiChannel(new ApiFetchWorker()); 
+            //channel.PostDataToWorker(new string[] {
+            //    // "https://pronuncian.com/pronounce-th-sounds/",
+            //    // "https://www.learning-english-online.net/pronunciation/the-english-th/",
+            //    "https://dictionary.cambridge.org/grammar/british-grammar/",
+            //});
 
-            Console.ReadLine();
+            //Console.ReadLine();
         }
     }
 }

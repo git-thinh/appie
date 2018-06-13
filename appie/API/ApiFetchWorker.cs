@@ -156,8 +156,7 @@ namespace appie
                     }
                     else
                     {
-                        string[] urls = listURL.ToArray();
-                        listURL.Clear();
+                        string[] urls = listURL.Splice(20).ToArray(); 
                         PostDataToWorker(urls);
                     }
                 }

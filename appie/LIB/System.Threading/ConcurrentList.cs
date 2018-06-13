@@ -98,6 +98,24 @@ namespace System
             }
             return new K[] { };
         }
+        public K[] Splice(int number)
+        {
+            _lock.EnterReadLock();
+            try
+            {
+                if (number > 0)
+                {
+                    K[] a = cacheData.Take(number).ToArray();
+                    cacheData = cacheData.Where(x => !a.Any(o => o.Equals(x))).ToList();
+                    return a;
+                }
+            }
+            finally
+            {
+                _lock.ExitReadLock();
+            }
+            return new K[] { };
+        }
 
         public bool Contain(K key)
         {
