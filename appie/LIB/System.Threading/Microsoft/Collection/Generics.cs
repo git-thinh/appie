@@ -2,7 +2,7 @@
 //Generics Sample(C#)
 //This sample shows how to create a custom generic list class with a single type parameter, and how to implement IEnumerable<T> to enable foreach iteration over the contents of the list.The sample also shows how client code creates an instance of the class by specifying a type argument, and how constraints on the type parameter enable additional operations to be performed on the type arguments.
 
-    using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
