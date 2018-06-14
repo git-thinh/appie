@@ -119,6 +119,9 @@
     <Compile Include="FORM\fMedia.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="LIB\CTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="LIB\System.Threading\FetchUrl.cs" />
     <Compile Include="LIB\System.Threading\SynchronizedQueue.cs" />
     <Compile Include="LIB\System.Threading\Worker.cs" />

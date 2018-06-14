@@ -588,6 +588,7 @@ namespace ProtoBuf
                     reader.blockEnd = reader.position + len;
                     reader.depth++;
                     return new SubItemToken(lastEnd);
+
                 default:
                     throw reader.CreateWireTypeException(); // throws
             }
