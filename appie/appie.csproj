@@ -423,6 +423,7 @@
     <Compile Include="LIB\YYProject.RichTextBoxEx\RTBLineSpacingRule.cs" />
     <Compile Include="LIB\YYProject.RichTextBoxEx\RTBParaSpacing.cs" />
     <Compile Include="LIB\YYProject.RichTextBoxEx\RTBReadOnlyMode.cs" />
+    <Compile Include="LIB\_Demo\Nullable\NonNullable.cs" />
     <Compile Include="MODEL\oCrawler.cs" />
     <Compile Include="MODEL\oSetting.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
