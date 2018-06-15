@@ -1,0 +1,854 @@
+    <!DOCTYPE html>
+    <html lang="en-US" prefix="og: http://ogp.me/ns#">
+
+
+
+<head>
+
+	        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="profile" href="http://gmpg.org/xfn/11">
+        <link rel="pingback" href="http://caigicunghay.com/xmlrpc.php">
+<title>Quản lý Thread Pool trong C# -</title>
+        <style type="text/css">
+        /*=====COLOR OPTION=====*/
+
+        /*Color*/
+        /*----------------------------------*/
+        /*background color*/ 
+                  .top-header,
+          .site-header{
+            background-color: #ffffff;
+          }
+                    section.wrapper-slider .slide-pager .cycle-pager-active,
+            section.wrapper-slider .slide-pager .cycle-pager-active:visited,
+            section.wrapper-slider .slide-pager .cycle-pager-active:hover,
+            section.wrapper-slider .slide-pager .cycle-pager-active:focus,
+            section.wrapper-slider .slide-pager .cycle-pager-active:active,
+            .title-divider,
+            .title-divider:visited,
+            .block-overlay-hover,
+            .block-overlay-hover:visited,
+            #gmaptoggle,
+            #gmaptoggle:visited,
+            .evision-back-to-top,
+            .evision-back-to-top:visited,
+            .search-form .search-submit,
+            .search-form .search-submit:visited,
+            .widget_calendar tbody a,
+            .widget_calendar tbody a:visited,
+            .wrap-portfolio .button.is-checked,
+            .button.button-outline:hover, 
+            .button.button-outline:focus, 
+            .button.button-outline:active,
+            .radius-thumb-holder,
+            .radius-thumb-holder:before,
+            .radius-thumb-holder:hover:before, 
+            .radius-thumb-holder:focus:before, 
+            .radius-thumb-holder:active:before,
+            #pbCloseBtn:hover:before,
+            .slide-pager .cycle-pager-active, 
+            .slick-dots .slick-active button,
+            .slide-pager span:hover,
+            .featurepost .latestpost-footer .moredetail a,
+            .featurepost .latestpost-footer .moredetail a:visited,
+            #load-wrap,
+            .back-tonav,
+            .back-tonav:visited,
+            .wrap-service .box-container .box-inner:hover .box-content, 
+            .wrap-service .box-container .box-inner:focus .box-content,
+            .top-header .noticebar .notice-title,
+            .top-header .timer,
+            .nav-buttons,
+            .widget .widgettitle:after,
+            .widget .widget-title:after,
+            .main-navigation.sec-main-navigation ul li.current_page_item:before,
+            .comments-area input[type="submit"],
+            a.category-more:hover,
+            a.category-more.odd-cat:hover,
+            .button.button-outline:hover,
+            .button.button-outline:focus,
+            .button.button-outline:active,
+            .button.button-outline:visited:hover,
+            .button.button-outline:visited:focus,
+            .button.button-outline:visited:active,
+            .tabs-menu li.current,
+            body.home.page h1.entry-title:before{
+              background-color: #ff6600;
+            }
+
+            .widget-title,
+            .widgettitle,
+            .wrapper-slider,
+            .flip-container .front,
+            .flip-container .back,
+            a.category-more.odd-cat:hover, a.category-more:hover,
+            a.category-more{
+              border-color: #ff6600; /*#2e5077*/
+            }
+
+            @media screen and (min-width: 768px){
+            .main-navigation .current_page_item > a:after,
+            .main-navigation .current-menu-item > a:after,
+            .main-navigation .current_page_ancestor > a:after,
+            .main-navigation li.active > a:after,
+            .main-navigation li.active > a:after,
+            .main-navigation li.active > a:after,
+            .main-navigation li.current_page_parent a:after {
+                background-color: #ff6600;
+              }
+            }
+
+            .latestpost-footer .moredetail a,
+            .latestpost-footer .moredetail a:visited,
+            span.i1,
+            p.card-title::first-letter,
+            span.i4,
+            .tagcloud a:hover,
+            .tagcloud a:focus,
+            .tagcloud a:before,
+            .posted-on a:hover,
+            .date a:hover,
+            .cat-links a:hover,
+            .tags-links a:hover,
+            .author a:hover,
+            .comments-link a:hover,
+            .edit-link a:hover,
+            .edit-link a:focus,
+            h1 a:hover,
+            h2 a:hover,
+            h3 a:hover,
+            h4 a:hover,
+            h5 a:hover,
+            h6 a:hover,
+            a:active,
+            a:hover,
+            .card:hover .card-title,
+            .site-header .wrapper-site-identity .site-title a:hover,
+            .search-holder .button-search:hover, .search-holder .button-search:hover i,
+            a.category-more{
+              color: #ff6600 !important;
+            }
+                    /*Site identity / logo & tagline*/
+            .site-header .wrapper-site-identity .site-branding .site-title a,
+            .site-header .wrapper-site-identity .site-title a:visited,
+            .site-header .wrapper-site-identity .site-branding .site-description,
+            .page-inner-title .entry-header time {
+              color: #313131; /*#545C68*/
+            }
+         
+        /*Primary*/
+          html, body, p, button, input, select, textarea, pre, code, kbd, tt, var, samp , .main-navigation a, search-input-holder .search-field,
+          .widget .widgettitle, .widget .widget-title,.par{
+          font-family: 'Roboto'; /*Lato*/
+          }
+         
+          /*Site identity / logo & tagline*/
+          .site-header .wrapper-site-identity .site-description,
+          .site-header .wrapper-site-identity .site-title a, .site-header .wrapper-site-identity .site-description {
+          font-family: 'Roboto' !important; /*Lato*/
+          }
+         
+          /*Title*/
+          h1, h1 a,
+          h2, h2 a,
+          h3, h3 a,
+          h4, h4 a,
+          h5, h5 a,
+          h6, h6 a,
+          .card p.card-title{
+            font-family: 'Roboto'; /*Lato*/
+          }
+                </style>
+    
+<!-- This site is optimized with the Yoast SEO plugin v5.0.2 - https://yoast.com/wordpress/plugins/seo/ -->
+<link rel="canonical" href="http://caigicunghay.com/quan-ly-thread-pool-trong-c/" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Quản lý Thread Pool trong C# -" />
+<meta property="og:description" content="Lớp Thread Pool cung cấp cho ứng dụng của bạn một nhóm luồng làm việc được quản lý bởi hệ thống, cho phép bạn tập trung vào công việc của ứng dụng hơn việc quản lý luồng, nếu như bạn có các tác vụ nhỏ yêu cầu cần xử lý nền &hellip;" />
+<meta property="og:url" content="http://caigicunghay.com/quan-ly-thread-pool-trong-c/" />
+<meta property="article:publisher" content="https://www.facebook.com/caigicunghaydotcom/" />
+<meta property="article:section" content="Cùng tôi Code" />
+<meta property="article:published_time" content="2018-02-14T11:31:50+00:00" />
+<meta property="og:image" content="http://caigicunghay.com/wp-content/uploads/2018/02/1200px-Thread_pool.svg_.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="621" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:description" content="Lớp Thread Pool cung cấp cho ứng dụng của bạn một nhóm luồng làm việc được quản lý bởi hệ thống, cho phép bạn tập trung vào công việc của ứng dụng hơn việc quản lý luồng, nếu như bạn có các tác vụ nhỏ yêu cầu cần xử lý nền [&hellip;]" />
+<meta name="twitter:title" content="Quản lý Thread Pool trong C# -" />
+<meta name="twitter:image" content="http://caigicunghay.com/wp-content/uploads/2018/02/1200px-Thread_pool.svg_.png" />
+<!-- / Yoast SEO plugin. -->
+
+<link rel='dns-prefetch' href='//fonts.googleapis.com' />
+<link rel='dns-prefetch' href='//s.w.org' />
+<link rel="alternate" type="application/rss+xml" title=" &raquo; Feed" href="http://caigicunghay.com/feed/" />
+<link rel="alternate" type="application/rss+xml" title=" &raquo; Comments Feed" href="http://caigicunghay.com/comments/feed/" />
+<link rel="alternate" type="application/rss+xml" title=" &raquo; Quản lý Thread Pool trong C# Comments Feed" href="http://caigicunghay.com/quan-ly-thread-pool-trong-c/feed/" />
+		<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/2.3\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/2.3\/svg\/","svgExt":".svg","source":{"concatemoji":"http:\/\/caigicunghay.com\/wp-includes\/js\/wp-emoji-release.min.js?ver=4.8.6"}};
+			!function(a,b,c){function d(a){var b,c,d,e,f=String.fromCharCode;if(!k||!k.fillText)return!1;switch(k.clearRect(0,0,j.width,j.height),k.textBaseline="top",k.font="600 32px Arial",a){case"flag":return k.fillText(f(55356,56826,55356,56819),0,0),b=j.toDataURL(),k.clearRect(0,0,j.width,j.height),k.fillText(f(55356,56826,8203,55356,56819),0,0),c=j.toDataURL(),b!==c&&(k.clearRect(0,0,j.width,j.height),k.fillText(f(55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447),0,0),b=j.toDataURL(),k.clearRect(0,0,j.width,j.height),k.fillText(f(55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447),0,0),c=j.toDataURL(),b!==c);case"emoji4":return k.fillText(f(55358,56794,8205,9794,65039),0,0),d=j.toDataURL(),k.clearRect(0,0,j.width,j.height),k.fillText(f(55358,56794,8203,9794,65039),0,0),e=j.toDataURL(),d!==e}return!1}function e(a){var c=b.createElement("script");c.src=a,c.defer=c.type="text/javascript",b.getElementsByTagName("head")[0].appendChild(c)}var f,g,h,i,j=b.createElement("canvas"),k=j.getContext&&j.getContext("2d");for(i=Array("flag","emoji4"),c.supports={everything:!0,everythingExceptFlag:!0},h=0;h<i.length;h++)c.supports[i[h]]=d(i[h]),c.supports.everything=c.supports.everything&&c.supports[i[h]],"flag"!==i[h]&&(c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&c.supports[i[h]]);c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&!c.supports.flag,c.DOMReady=!1,c.readyCallback=function(){c.DOMReady=!0},c.supports.everything||(g=function(){c.readyCallback()},b.addEventListener?(b.addEventListener("DOMContentLoaded",g,!1),a.addEventListener("load",g,!1)):(a.attachEvent("onload",g),b.attachEvent("onreadystatechange",function(){"complete"===b.readyState&&c.readyCallback()})),f=c.source||{},f.concatemoji?e(f.concatemoji):f.wpemoji&&f.twemoji&&(e(f.twemoji),e(f.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script>
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+<link rel='stylesheet' id='crayon-css'  href='http://caigicunghay.com/wp-content/plugins/crayon-syntax-highlighter/css/min/crayon.min.css?ver=_2.7.2_beta' type='text/css' media='all' />
+<link rel='stylesheet' id='crayon-theme-classic-css'  href='http://caigicunghay.com/wp-content/plugins/crayon-syntax-highlighter/themes/classic/classic.css?ver=_2.7.2_beta' type='text/css' media='all' />
+<link rel='stylesheet' id='crayon-font-monaco-css'  href='http://caigicunghay.com/wp-content/plugins/crayon-syntax-highlighter/fonts/monaco.css?ver=_2.7.2_beta' type='text/css' media='all' />
+<link rel='stylesheet' id='jquery-slick-css-css'  href='http://caigicunghay.com/wp-content/themes/onlinemag/assets/frameworks/slick/slick.css?ver=3.4.0' type='text/css' media='all' />
+<link rel='stylesheet' id='jquery-slick-theme-css'  href='http://caigicunghay.com/wp-content/themes/onlinemag/assets/frameworks/slick/slick-theme.css?ver=3.4.0' type='text/css' media='all' />
+<link rel='stylesheet' id='onlinemag-style-css'  href='http://caigicunghay.com/wp-content/themes/onlinemag/style.css?ver=4.8.6' type='text/css' media='all' />
+<link rel='stylesheet' id='onlinemag-google-fonts-css'  href='https://fonts.googleapis.com/css?family=Roboto%7CRoboto%7CRoboto&#038;ver=4.8.6' type='text/css' media='all' />
+<link rel='stylesheet' id='tablepress-default-css'  href='http://caigicunghay.com/wp-content/plugins/tablepress/css/default.min.css?ver=1.8' type='text/css' media='all' />
+<script type='text/javascript' src='http://caigicunghay.com/wp-includes/js/jquery/jquery.js?ver=1.12.4'></script>
+<script type='text/javascript' src='http://caigicunghay.com/wp-includes/js/jquery/jquery-migrate.min.js?ver=1.4.1'></script>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var CrayonSyntaxSettings = {"version":"_2.7.2_beta","is_admin":"0","ajaxurl":"http:\/\/caigicunghay.com\/wp-admin\/admin-ajax.php","prefix":"crayon-","setting":"crayon-setting","selected":"crayon-setting-selected","changed":"crayon-setting-changed","special":"crayon-setting-special","orig_value":"data-orig-value","debug":""};
+var CrayonSyntaxStrings = {"copy":"Press %s to Copy, %s to Paste","minimize":"Click To Expand Code"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='http://caigicunghay.com/wp-content/plugins/crayon-syntax-highlighter/js/min/crayon.min.js?ver=_2.7.2_beta'></script>
+<link rel='https://api.w.org/' href='http://caigicunghay.com/wp-json/' />
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://caigicunghay.com/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://caigicunghay.com/wp-includes/wlwmanifest.xml" /> 
+<meta name="generator" content="WordPress 4.8.6" />
+<link rel='shortlink' href='http://caigicunghay.com/?p=633' />
+<link rel="alternate" type="application/json+oembed" href="http://caigicunghay.com/wp-json/oembed/1.0/embed?url=http%3A%2F%2Fcaigicunghay.com%2Fquan-ly-thread-pool-trong-c%2F" />
+<link rel="alternate" type="text/xml+oembed" href="http://caigicunghay.com/wp-json/oembed/1.0/embed?url=http%3A%2F%2Fcaigicunghay.com%2Fquan-ly-thread-pool-trong-c%2F&#038;format=xml" />
+<link rel="icon" href="http://caigicunghay.com/wp-content/uploads/2017/07/captiva-icon-1.png" sizes="32x32" />
+<link rel="icon" href="http://caigicunghay.com/wp-content/uploads/2017/07/captiva-icon-1.png" sizes="192x192" />
+<link rel="apple-touch-icon-precomposed" href="http://caigicunghay.com/wp-content/uploads/2017/07/captiva-icon-1.png" />
+<meta name="msapplication-TileImage" content="http://caigicunghay.com/wp-content/uploads/2017/07/captiva-icon-1.png" />
+
+</head>
+
+<body class="post-template-default single single-post postid-633 single-format-standard wp-custom-logo evision-right-sidebar group-blog">
+
+    <div id="page" class="site container clearfix">
+    <a class="skip-link screen-reader-text" href="#content">Skip to content</a>
+    <div class="col-xs-12 col-sm-12 col-md-12 top-header-right">
+                                <div class="timer col-md-6 col-xs-12 col-sm-6">
+                June 15, 2018            </div>
+            </div>
+    <header id="masthead" class="wrapper wrap-head site-header">
+        <div class="wrapper wrapper-site-identity">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-4">
+                        <div class="site-branding">
+                            <a href="http://caigicunghay.com/" class="custom-logo-link" rel="home" itemprop="url"><img width="273" height="77" src="http://caigicunghay.com/wp-content/uploads/2017/07/cropped-cropped-logo-2.png" class="custom-logo" alt="" itemprop="logo" /></a>                                                                <p class="site-title"><a href="http://caigicunghay.com/" rel="home"></a></p>
+                                                            
+                        </div><!-- .site-branding -->
+                    </div>
+                                    </div>
+            </div>
+        </div>
+    </header><!-- #masthead -->
+
+    <nav class="wrapper wrap-nav">
+        <div class="container">
+            <div class="wrap-inner">
+                <div class="sec-menu">
+                    <nav id="sec-site-navigation" class="main-navigation sec-main-navigation" role="navigation" aria-label="secondary-menu">
+                    
+                    <div id="primary-menu" class="primary-menu"><ul>
+<li class="page_item page-item-132"><a href="http://caigicunghay.com/blog/">Blog</a></li>
+<li class="page_item page-item-2"><a href="http://caigicunghay.com/gioi-thieu/">Giới thiệu</a></li>
+<li class="page_item page-item-17 current_page_parent"><a href="http://caigicunghay.com/trang-chu/">Trang chủ</a></li>
+</ul></div>
+                    </nav><!-- #site-navigation -->
+                    <div class="nav-holder">
+                        <button id="sec-menu-toggle" class="menu-toggle" aria-controls="secondary-menu" aria-expanded="false"><span class="fa fa-bars"></span></button>
+                        <div id="sec-site-header-menu" class="site-header-menu">
+                            <div class="container">
+                                <div class="row">                                   
+                                    <div class="col-xs-12 col-sm-12 col-md-12">
+                                        <nav id="sec-site-navigation-mobile" class="main-navigation sec-main-navigation" role="navigation" aria-label="secondary-menu">
+                                        <div id="primary-menu-mobile" class="primary-menu"><ul>
+<li class="page_item page-item-132"><a href="http://caigicunghay.com/blog/">Blog</a></li>
+<li class="page_item page-item-2"><a href="http://caigicunghay.com/gioi-thieu/">Giới thiệu</a></li>
+<li class="page_item page-item-17 current_page_parent"><a href="http://caigicunghay.com/trang-chu/">Trang chủ</a></li>
+</ul></div>
+                                        </nav><!-- #site-navigation -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- site-header-menu -->
+                    </div>
+                </div> 
+                                     <div class="nav-buttons col-md-1">                        
+                        
+                                                    <div class="button-list">
+                                <div class="search-holder">
+                                  <a class="button-search button-outline" href="#">
+                                    <i class="fa fa-search"></i>
+                                  </a>                                
+                                </div>
+                            </div>                            
+                                            </div>                    
+                                              
+            </div>
+            <div class="search-form-nav" id="top-search">
+                <form role="search" method="get" class="search-form" action="http://caigicunghay.com/">
+				<label>
+					<span class="screen-reader-text">Search for:</span>
+					<input type="search" class="search-field" placeholder="Search &hellip;" value="" name="s" />
+				</label>
+				<input type="submit" class="search-submit" value="Search" />
+			</form>            </div>
+        </div>
+    </nav>
+             <header class="wrapper top-header">
+            <div class="container">
+                <div class="wrap-inner">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-9 col-md-9 top-header-left">
+                            <div class="noticebar">
+                                                                    <span class="notice-title">Latest</span>
+                                                                <div class="ticker">
+                                    <div id="cycle-slideshow-ticker" class="cycle-slideshow"
+                                        data-cycle-log="false"
+                                        data-cycle-swipe=true
+                                        data-cycle-timeout=5000
+                                        data-cycle-fx=scrollVert
+                                        data-cycle-speed=1000
+                                        data-cycle-carousel-fluid=true
+                                        data-cycle-carousel-visible=5
+                                        data-cycle-pause-on-hover=true
+                                        data-cycle-auto-height=container
+                                        data-cycle-prev=#slide-prev-notice
+                                        data-cycle-next=#slide-next-notice 
+                                        data-cycle-slides="> div">
+                                                                                                <div class="slide-item">
+                                                        <a href="http://caigicunghay.com/auto-sro_client-phan-mem-auto-train-con-duong-lua/">
+                                                            <span class="notice-content">Auto SRO_CLIENT phần mềm auto train con đường tơ lụa</span>
+                                                        </a>
+                                                    </div>
+                                                                                                    <div class="slide-item">
+                                                        <a href="http://caigicunghay.com/quan-ly-thread-pool-trong-c/">
+                                                            <span class="notice-content">Quản lý Thread Pool trong C#</span>
+                                                        </a>
+                                                    </div>
+                                                                                                    <div class="slide-item">
+                                                        <a href="http://caigicunghay.com/nhung-dieu-minh-nhan-ra-o-tuoi-17/">
+                                                            <span class="notice-content">Những điều mình nhận ra ở tuổi 17</span>
+                                                        </a>
+                                                    </div>
+                                                                                                    <div class="slide-item">
+                                                        <a href="http://caigicunghay.com/lam-nao-de-co-lam-viec-hieu-qua-nhat/">
+                                                            <span class="notice-content">Làm thế nào để có thể làm việc hiệu quả nhất</span>
+                                                        </a>
+                                                    </div>
+                                                                                                    <div class="slide-item">
+                                                        <a href="http://caigicunghay.com/cach-cai-thien-su-tu-tin-cua-ban-lau-dai/">
+                                                            <span class="notice-content">Cách cải thiện sự tự tin của bản thân lâu dài</span>
+                                                        </a>
+                                                    </div>
+                                                                                        </div>
+                                    <div class="cycle-pager" id="slide-pager"></div>
+                                </div>
+                            </div>                            
+                        </div>   
+                         <div class="controls col-md-1 hidden-xs">
+                            <a href="#" id="slide-prev-notice"><i class="fa fa-angle-left"></i></a>
+                            <a href="#" id="slide-next-notice"><i class="fa fa-angle-right"></i></a>
+                      </div>                   
+                    </div>
+                </div>
+            </div>
+        </header>
+                            
+    <section class="wrapper">
+        <div id="content" class="site-content">
+<div id="breadcrumb" class="wrapper wrap-breadcrumb"><div class="container"><div role="navigation" aria-label="Breadcrumbs" class="breadcrumb-trail breadcrumbs" itemprop="breadcrumb"><ul class="trail-items" itemscope itemtype="http://schema.org/BreadcrumbList"><meta name="numberOfItems" content="3" /><meta name="itemListOrder" content="Ascending" /><li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem" class="trail-item trail-begin"><a href="http://caigicunghay.com" rel="home"><span itemprop="name">Home</span></a><meta itemprop="position" content="1" /></li><li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem" class="trail-item"><a href="http://caigicunghay.com/category/cung-toi-code/"><span itemprop="name">Cùng tôi Code</span></a><meta itemprop="position" content="2" /></li><li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem" class="trail-item trail-end"><span itemprop="name">Quản lý Thread Pool trong C#</span><meta itemprop="position" content="3" /></li></ul></div></div><!-- .container --></div><!-- #breadcrumb -->
+
+	<div id="primary" class="content-area">
+		<main id="main" class="site-main" role="main">
+
+		<article id="post-633" class="post-633 post type-post status-publish format-standard has-post-thumbnail hentry category-cung-toi-code">
+	<div class="wrapper page-inner-title">
+		<div class="container">
+		    <div class="row">
+		        <div class="col-md-12 col-sm-12 col-xs-12">
+					<header class="entry-header">
+						<div class="inner-banner-overlay">
+														<h1 class="entry-title">Quản lý Thread Pool trong C#</h1>															<header class="entry-header">
+									<div class="entry-meta entry-inner">
+										<span class="posted-on">On <a href="http://caigicunghay.com/2018/02/14/" rel="bookmark"><time class="entry-date published updated" datetime="2018-02-14T11:31:50+00:00">February 14, 2018</time></a></span><span class="byline"> By <span class="author vcard"><a class="url fn n" href="http://caigicunghay.com/author/caigicunghay/">Con chó vàng</a></span></span>									</div><!-- .entry-meta -->
+								</header><!-- .entry-header -->
+													</div>
+					</header><!-- .entry-header -->
+		        </div>
+		    </div>
+		</div>
+	</div>
+	<div class="entry-content">
+		<div class='image-full'><img width="1200" height="621" src="http://caigicunghay.com/wp-content/uploads/2018/02/1200px-Thread_pool.svg_.png" class="attachment-full size-full wp-post-image" alt="" srcset="http://caigicunghay.com/wp-content/uploads/2018/02/1200px-Thread_pool.svg_.png 1200w, http://caigicunghay.com/wp-content/uploads/2018/02/1200px-Thread_pool.svg_-300x155.png 300w, http://caigicunghay.com/wp-content/uploads/2018/02/1200px-Thread_pool.svg_-768x397.png 768w, http://caigicunghay.com/wp-content/uploads/2018/02/1200px-Thread_pool.svg_-1024x530.png 1024w" sizes="(max-width: 1200px) 100vw, 1200px" /></div>
+		<p>Lớp <a href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.threadpool">Thread Pool</a> cung cấp cho ứng dụng của bạn một nhóm luồng làm việc được quản lý bởi hệ thống, cho phép bạn tập trung vào công việc của ứng dụng hơn việc quản lý luồng, nếu như bạn có các tác vụ nhỏ yêu cầu cần xử lý nền (ví dụ như kiểm tra bản cập nhật mới nhất). Thì quản lý thread pool là một cách đơn giản để tận dụng đa luồng. Ví dụ, bắt đầu với .NET Framework 4, bạn có thể tạo các đối tượng Task và Task &lt;TResult&gt;, thực hiện các tác vụ không đồng bộ trên các luồng thread.</p>
+<blockquote><p>Chú thích: bắt đầu với  .NET Framework 2.0 Service Pack 1, thông lượng của luồng thread được cải thiện đáng kể trong ba lĩnh vực chính được xác định là tắc nghẽn trong các bản phát hành trước của. NET Framework: xếp hàng nhiệm vụ, dispatching chủ đề luồng thread, và dispatching I / O hoàn thành chủ đề. Để sử dụng chức năng này, ứng dụng của bạn nên nhắm mục tiêu. NET Framework 3.5 hoặc mới hơn.</p></blockquote>
+<p>Đối với các tạc vụ nền tương tác với giao diện người dùng,  .NET Framework version 2.0 cũng cung cấp lớp <a class="xref" href="https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.backgroundworker" data-linktype="relative-path">BackgroundWorker</a> mà giao tiếp bằng cách sử dụng các sự kiện được nêu ra trên thread giao diện người dùng.</p>
+<p>.NET Framework sử dụng Thread Pool cho nhiều mục đích, bao gồm lập trình không đồng bộ (asynchronous), hẹn giờ (callback), đăng ký các tác vụ chờ, các phương thức không đồng bộ sử dụng delegates, gửi các request,..</p>
+<h2>Khi nào không sử dụng Thread Pool</h2>
+<p>Dưới đây là một số trường hợp tạo và sử dụng luồng riêng sẽ thích hợp thay vì việc sử dụng Thread Pool</p>
+<ul>
+<li>Kết quả của luồng trước ảnh hưởng đến luồng sau</li>
+<li>Bạn cần một luồng ưu tiên cụ thể</li>
+<li>Bạn có các tạc vụ chặn luồng trong một thời gian dài. Thread Pool có số lượng tối đa luồng. Vì vậy số lượng lớn luồng bị chặn sẽ ngăn ngừa tạc vụ bắt đầu.</li>
+<li>Bạn cần đặt các chủ đề vào một căn hộ đơn luồng. Tất cả ThreadPool đều nằm trong căn hộ đa luồng.</li>
+</ul>
+<h2>Đặc điểm của Thread Pool</h2>
+<p>Các luồng của Thread Pool là các luồng chạy nền, Xem sự khác biệt của  <a class="" href="https://docs.microsoft.com/en-us/dotnet/standard/threading/foreground-and-background-threads" data-linktype="relative-path">Foreground and Background Threads</a>. Mỗi luồng sử dụng kích thước ngăn xếp mặc định, chạy ở mức độ ưu tiên mặc định and is in the multithreaded apartment (và đang ở trong căn hộ đa luồng).</p>
+<h2 id="exceptions-in-thread-pool-threads" class="heading-with-anchor x-hidden-focus">Exceptions trong Thread Pool Threads</h2>
+<p>Trường hợp ngoại lệ. Có 3 ngoại lệ đối với quy tắc này:</p>
+<ul>
+<li> <a class="xref x-hidden-focus" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.threadabortexception" data-linktype="relative-path">ThreadAbortException</a> Một ngoại lệ hủy bỏ luồng được ném ra trong một luồng Thread Pool, bởi vì <a class="xref" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.thread.abort" data-linktype="relative-path">Abort</a> đã được gọi.</li>
+<li> <a class="xref" href="https://docs.microsoft.com/en-us/dotnet/api/system.appdomainunloadedexception" data-linktype="relative-path">AppDomainUnloadedException</a> Một luồng ngoại lệ miền ứng dụng không được tải được ném ra trong một luồng Thread Pool, bởi vì một miền ứng dụng đang được gỡ.</li>
+<li>The common language runtime or a host process terminates the thread.</li>
+</ul>
+<p>Muốn xem nhiều hơn hãy xem <a href="https://docs.microsoft.com/en-us/dotnet/standard/threading/exceptions-in-managed-threads" data-linktype="relative-path">Exceptions in Managed Threads</a>.</p>
+<blockquote><p>Chú thích: In the .NET Framework versions 1.0 and 1.1, the common language runtime silently traps unhandled exceptions in thread pool threads. This might corrupt application state and eventually cause applications to hang, which might be very difficult to debug.</p>
+<p>Trong phiên bản .Net Framework 1.0 và 1.0, language runtime thường âm thầm bẫy những ngoại lệ không được quản lý trong luồng Thread Pool. Điều này sẽ làm hỏng tình trạng ứng dụng và cuối cùng làm ứng dụng bị treo nó sẽ rất khó để Debug (gỡ lỗi).</p></blockquote>
+<h2>Số luồng lớn nhất của Thread Pool</h2>
+<p>Số lượng vận hành có thể xếp hàng đợi trong Thread Pool là giới hạn chỉ bằng bộ nhớ sẵn có; tuy nhiên thread pool giới hạn số lượng của các luồng có thể kích hoạt trong process (tiến trình) cùng một lúc. Bắt đầu từ .NET Framework 4 kích thước mặc định của thread pool cho một tiến trình phụ thuộc vào vài yếu tố, như là kích cỡ của không gian địa chỉ ảo. Một tiến trình có thể gọi phương thức <a class="xref" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.threadpool.getmaxthreads" data-linktype="relative-path">GetMaxThreads</a> để quyết định số lượng luồng.</p>
+<p>Bạn có thể điều khiển số luồng lớn nhất bằng cách sử dụng phương thức <a class="xref" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.threadpool.getmaxthreads" data-linktype="relative-path">GetMaxThreads</a> và  <a class="xref" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.threadpool.setmaxthreads" data-linktype="relative-path">SetMaxThreads</a>.</p>
+<p>Chú thích: Trong phiên bản .NET Framework 1.0 và 1.1, kích cỡ của thread pool không thể đặt từ quản lý code, có thể đặt kích cỡ bằng cách sử dụng CorSetMaxThreads được khai báo trong mscoree.h</p>
+<h2>Thread pool tối thiểu</h2>
+<p>Thread pool cung cấp các luồng làm việc mới hoặc I/O completion các luồng cho đến khi nó chạm tới một mức tối thiểu được chỉ định cho mỗi loại. Bạn có thể sử dụng phương thức <a class="xref" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.threadpool.getminthreads" data-linktype="relative-path">GetMinThreads</a> để lấy thu được các giá trị tối thiểu này.</p>
+<blockquote><p>Chú thích: Khi yêu cầu thấp số lượng thread thực sự của thread pool có thể giảm xuống dưới các giá trị tối thiểu.</p></blockquote>
+<p>Khi đạt đến mức tối thiểu, thread pool có thể tạo ra thêm luồng hoặc đợi cho tới khi một vài tạc vụ hoàn thành. Bắt đầu từ phiên bản .NET Framework 4.0, thread pool tạo ra và phá hủy các luồng làm việc theo thứ tự để tối ưu dung lượng, được định nghĩa là số lượng các nhiệm vụ hoàn thành cho mỗi đơn vị thời gian. Quá ít luồng có thể không sử dụng tối ưu các tài nguyên có sẵn, trong khi quá nhiều luồng có thể làm tăng sự tranh chấp tài nguyên.</p>
+<p><strong>Cảnh báo: </strong>bạn có thể sử dụng phương thức <a class="xref" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.threadpool.setminthreads" data-linktype="relative-path">SetMinThreads</a> để tăng số lượng luồng rảnh, tuy nhiên không cần thiết tăng những giá trị này có thể gây ra vấn đề hiệu suất. Nếu quá nhiều tạc vụ bắt đầu ở cùng một thời điểm, tất cả chúng sẽ xuất hiện chậm chạp. Trong hầu hết trường hợp thread pool sẽ thực hiện tốt hơn với các thuật toán riêng của mình để phân bổ các chủ đề.</p>
+<h2>Bỏ qua kiểm tra an ninh</h2>
+<p>Thread pool cũng cung cấp phương thức <a class="xref" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.threadpool.unsafequeueuserworkitem" data-linktype="relative-path">ThreadPool.UnsafeQueueUserWorkItem</a> và <a class="xref" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.threadpool.unsaferegisterwaitforsingleobject" data-linktype="relative-path">ThreadPool.UnsafeRegisterWaitForSingleObject</a>. Sử dụng những phương thức này chỉ khi bạn chắc chắn rằng thứ gọi không liên quan đến bất kỳ kiểm tra an ninh nào thực hiện trong quá trình thực hiện nhiệm vụ được xếp hàng đợi. Cả hai phương thức <a class="xref" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.threadpool.queueuserworkitem" data-linktype="relative-path">QueueUserWorkItem</a> và <a class="xref" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.threadpool.registerwaitforsingleobject" data-linktype="relative-path">RegisterWaitForSingleObject</a> đều bắt được caller&#8217;s stack được trộn vào stack của thread thread pool khi chủ đề bắt đầu thực thi một tác vụ. Nếu yêu cầu kiểm tra an toàn, toàn bộ ngăn xếp phải được kiểm tra. Mặc dù kiểm tra cung cấp sự an toàn, nó cũng có một chi phí hiệu suất.</p>
+<h2>Sử dụng Thread Pool</h2>
+<p>Bắt đầu từ .NET Framework 4.0, cách dễ dàng nhất để sử dụng thread pool là sử dụng <a href="https://docs.microsoft.com/en-us/dotnet/standard/parallel-programming/task-parallel-library-tpl" data-linktype="relative-path">Task Parallel Library (TPL)</a>. Bởi mặc định loại thư viện song song như <a class="xref" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task" data-linktype="relative-path">Task</a> and <a class="xref" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task-1" data-linktype="relative-path">Task&lt;TResult&gt;</a> sử dụng các luồng thead pool để chạy tasks. Bạn cũng có thể dùng thread pool bởi gọi <a class="xref" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.threadpool.queueuserworkitem" data-linktype="relative-path">ThreadPool.QueueUserWorkItem</a> từ code được quản lý (hoặc CorQueueUserWorkItem từ mã không được quản lý) và vượt qua một <a class="xref" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.waitcallback" data-linktype="relative-path">WaitCallback</a> đại biểu đại diện cho phương pháp thực hiện nhiệm vụ. Một cách khác để sử dụng thread pool là xếp hàng các hạng mục công việc có liên quan đến hoạt động chờ đợi bằng cách sử dụng phương thức <a class="xref" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.threadpool.registerwaitforsingleobject" data-linktype="relative-path">ThreadPool.RegisterWaitForSingleObject</a> và vượt qua một <a class="xref" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.waithandle" data-linktype="relative-path">WaitHandle</a>, khi báo hiệu hoặc khi hết giờ, gọi phương thức đại diện bởi <a class="xref" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.waitortimercallback" data-linktype="relative-path">WaitOrTimerCallback</a> delegate. Các luồng thread pool được sử dụng để gọi các phương thức callback.</p>
+<h2>Các ví dụ Thread Pool</h2>
+<p class="lf-text-block lf-block" data-lf-anchor-id="8bd72e4ddf9166d3bb29ec45610132d7:0">The code examples in this section demonstrate the thread pool by using the <a class="xref" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.tasks.task" data-linktype="relative-path">Task</a> class, the <a class="xref" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.threadpool.queueuserworkitem" data-linktype="relative-path">ThreadPool.QueueUserWorkItem</a> method, and the <a class="xref" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.threadpool.registerwaitforsingleobject" data-linktype="relative-path">ThreadPool.RegisterWaitForSingleObject</a> method.<span class="lf-thread-btn"><a class="fycon-action-view" tabindex="0" aria-label="Write a Sidenote" data-lf-anchor-id="8bd72e4ddf9166d3bb29ec45610132d7:0">+</a></span></p>
+<ul class="lf-text-block lf-block" data-lf-anchor-id="01872c45779bee909525ac3760264e8f:0">
+<li><a href="https://docs.microsoft.com/en-us/dotnet/standard/threading/the-managed-thread-pool#TaskParallelLibrary" data-linktype="self-bookmark">Executing Asynchronous Tasks with the Task Parallel Library</a></li>
+<li><a href="https://docs.microsoft.com/en-us/dotnet/standard/threading/the-managed-thread-pool#ExecuteCodeWithQUWI" data-linktype="self-bookmark">Executing Code Asynchronously with QueueUserWorkItem</a></li>
+<li><a href="https://docs.microsoft.com/en-us/dotnet/standard/threading/the-managed-thread-pool#TaskDataForQUWI" data-linktype="self-bookmark">Supplying Task Data for QueueUserWorkItem</a></li>
+<li>
+<p class=""><a href="https://docs.microsoft.com/en-us/dotnet/standard/threading/the-managed-thread-pool#RegisterWaitForSingleObject" data-linktype="self-bookmark">Using RegisterWaitForSingleObject</a></p>
+</li>
+</ul>
+<p></p><!-- Crayon Syntax Highlighter v_2.7.2_beta -->
+
+		<div id="crayon-5b23cbd74a3ed937085960" class="crayon-syntax crayon-theme-classic crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important;">
+		
+			<div class="crayon-toolbar" data-settings=" mouseover overlay hide delay" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><span class="crayon-title">Thực thi tạc vụ không đồng bộ với Task Parallel Library</span>
+			<div class="crayon-tools" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><div class="crayon-button crayon-nums-button" title="Toggle Line Numbers"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="Expand Code"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="Copy"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="Open Code In New Window"><div class="crayon-button-icon"></div></div><span class="crayon-language">C#</span></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 12px !important; line-height: 15px !important;">
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+
+class Example
+{
+    static void Main()
+    {
+        Action&lt;object&gt; action = (object obj) =&gt;
+                                {
+                                   Console.WriteLine("Task={0}, obj={1}, Thread={2}",
+                                   Task.CurrentId, obj,
+                                   Thread.CurrentThread.ManagedThreadId);
+                                };
+
+        // Create a task but do not start it.
+        Task t1 = new Task(action, "alpha");
+
+        // Construct a started task
+        Task t2 = Task.Factory.StartNew(action, "beta");
+        // Block the main thread to demonstate that t2 is executing
+        t2.Wait();
+
+        // Launch t1 
+        t1.Start();
+        Console.WriteLine("t1 has been launched. (Main Thread={0})",
+                          Thread.CurrentThread.ManagedThreadId);
+        // Wait for the task to finish.
+        t1.Wait();
+
+        // Construct a started task using Task.Run.
+        String taskData = "delta";
+        Task t3 = Task.Run( () =&gt; {Console.WriteLine("Task={0}, obj={1}, Thread={2}",
+                                                     Task.CurrentId, taskData,
+                                                      Thread.CurrentThread.ManagedThreadId);
+                                   });
+        // Wait for the task to finish.
+        t3.Wait();
+
+        // Construct an unstarted task
+        Task t4 = new Task(action, "gamma");
+        // Run it synchronously
+        t4.RunSynchronously();
+        // Although the task was run synchronously, it is a good practice
+        // to wait for it in the event exceptions were thrown by the task.
+        t4.Wait();
+    }
+}
+// The example displays output like the following:
+//       Task=1, obj=beta, Thread=3
+//       t1 has been launched. (Main Thread=1)
+//       Task=2, obj=alpha, Thread=4
+//       Task=3, obj=delta, Thread=3
+//       Task=4, obj=gamma, Thread=1</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table">
+					<tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-5b23cbd74a3ed937085960-1">1</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a3ed937085960-2">2</div><div class="crayon-num" data-line="crayon-5b23cbd74a3ed937085960-3">3</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a3ed937085960-4">4</div><div class="crayon-num" data-line="crayon-5b23cbd74a3ed937085960-5">5</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a3ed937085960-6">6</div><div class="crayon-num" data-line="crayon-5b23cbd74a3ed937085960-7">7</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a3ed937085960-8">8</div><div class="crayon-num" data-line="crayon-5b23cbd74a3ed937085960-9">9</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a3ed937085960-10">10</div><div class="crayon-num" data-line="crayon-5b23cbd74a3ed937085960-11">11</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a3ed937085960-12">12</div><div class="crayon-num" data-line="crayon-5b23cbd74a3ed937085960-13">13</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a3ed937085960-14">14</div><div class="crayon-num" data-line="crayon-5b23cbd74a3ed937085960-15">15</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a3ed937085960-16">16</div><div class="crayon-num" data-line="crayon-5b23cbd74a3ed937085960-17">17</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a3ed937085960-18">18</div><div class="crayon-num" data-line="crayon-5b23cbd74a3ed937085960-19">19</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a3ed937085960-20">20</div><div class="crayon-num" data-line="crayon-5b23cbd74a3ed937085960-21">21</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a3ed937085960-22">22</div><div class="crayon-num" data-line="crayon-5b23cbd74a3ed937085960-23">23</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a3ed937085960-24">24</div><div class="crayon-num" data-line="crayon-5b23cbd74a3ed937085960-25">25</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a3ed937085960-26">26</div><div class="crayon-num" data-line="crayon-5b23cbd74a3ed937085960-27">27</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a3ed937085960-28">28</div><div class="crayon-num" data-line="crayon-5b23cbd74a3ed937085960-29">29</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a3ed937085960-30">30</div><div class="crayon-num" data-line="crayon-5b23cbd74a3ed937085960-31">31</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a3ed937085960-32">32</div><div class="crayon-num" data-line="crayon-5b23cbd74a3ed937085960-33">33</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a3ed937085960-34">34</div><div class="crayon-num" data-line="crayon-5b23cbd74a3ed937085960-35">35</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a3ed937085960-36">36</div><div class="crayon-num" data-line="crayon-5b23cbd74a3ed937085960-37">37</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a3ed937085960-38">38</div><div class="crayon-num" data-line="crayon-5b23cbd74a3ed937085960-39">39</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a3ed937085960-40">40</div><div class="crayon-num" data-line="crayon-5b23cbd74a3ed937085960-41">41</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a3ed937085960-42">42</div><div class="crayon-num" data-line="crayon-5b23cbd74a3ed937085960-43">43</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a3ed937085960-44">44</div><div class="crayon-num" data-line="crayon-5b23cbd74a3ed937085960-45">45</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a3ed937085960-46">46</div><div class="crayon-num" data-line="crayon-5b23cbd74a3ed937085960-47">47</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a3ed937085960-48">48</div><div class="crayon-num" data-line="crayon-5b23cbd74a3ed937085960-49">49</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a3ed937085960-50">50</div><div class="crayon-num" data-line="crayon-5b23cbd74a3ed937085960-51">51</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a3ed937085960-52">52</div><div class="crayon-num" data-line="crayon-5b23cbd74a3ed937085960-53">53</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a3ed937085960-54">54</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-5b23cbd74a3ed937085960-1"><span class="crayon-st">using</span><span class="crayon-h"> </span><span class="crayon-v">System</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a3ed937085960-2"><span class="crayon-st">using</span><span class="crayon-h"> </span><span class="crayon-v">System</span><span class="crayon-sy">.</span><span class="crayon-v">Threading</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-5b23cbd74a3ed937085960-3"><span class="crayon-st">using</span><span class="crayon-h"> </span><span class="crayon-v">System</span><span class="crayon-sy">.</span><span class="crayon-v">Threading</span><span class="crayon-sy">.</span><span class="crayon-v">Tasks</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a3ed937085960-4">&nbsp;</div><div class="crayon-line" id="crayon-5b23cbd74a3ed937085960-5"><span class="crayon-t">class</span><span class="crayon-h"> </span><span class="crayon-e">Example</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a3ed937085960-6"><span class="crayon-sy">{</span></div><div class="crayon-line" id="crayon-5b23cbd74a3ed937085960-7"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-m">static</span><span class="crayon-h"> </span><span class="crayon-t">void</span><span class="crayon-h"> </span><span class="crayon-e">Main</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a3ed937085960-8"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-sy">{</span></div><div class="crayon-line" id="crayon-5b23cbd74a3ed937085960-9"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">Action</span><span class="crayon-o">&lt;</span><span class="crayon-t">object</span><span class="crayon-o">&gt;</span><span class="crayon-h"> </span><span class="crayon-v">action</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-sy">(</span><span class="crayon-t">object</span><span class="crayon-h"> </span><span class="crayon-v">obj</span><span class="crayon-sy">)</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-o">&gt;</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a3ed937085960-10"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-sy">{</span></div><div class="crayon-line" id="crayon-5b23cbd74a3ed937085960-11"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="crayon-v">Console</span><span class="crayon-sy">.</span><span class="crayon-e">WriteLine</span><span class="crayon-sy">(</span><span class="crayon-s">"Task={0}, obj={1}, Thread={2}"</span><span class="crayon-sy">,</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a3ed937085960-12"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="crayon-v">Task</span><span class="crayon-sy">.</span><span class="crayon-v">CurrentId</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-v">obj</span><span class="crayon-sy">,</span></div><div class="crayon-line" id="crayon-5b23cbd74a3ed937085960-13"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="crayon-v">Thread</span><span class="crayon-sy">.</span><span class="crayon-v">CurrentThread</span><span class="crayon-sy">.</span><span class="crayon-v">ManagedThreadId</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a3ed937085960-14"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-sy">}</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-5b23cbd74a3ed937085960-15">&nbsp;</div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a3ed937085960-16"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// Create a task but do not start it.</span></div><div class="crayon-line" id="crayon-5b23cbd74a3ed937085960-17"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-e">Task </span><span class="crayon-v">t1</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-r">new</span><span class="crayon-h"> </span><span class="crayon-e">Task</span><span class="crayon-sy">(</span><span class="crayon-v">action</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-s">"alpha"</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a3ed937085960-18">&nbsp;</div><div class="crayon-line" id="crayon-5b23cbd74a3ed937085960-19"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// Construct a started task</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a3ed937085960-20"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-e">Task </span><span class="crayon-v">t2</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-v">Task</span><span class="crayon-sy">.</span><span class="crayon-v">Factory</span><span class="crayon-sy">.</span><span class="crayon-e">StartNew</span><span class="crayon-sy">(</span><span class="crayon-v">action</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-s">"beta"</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-5b23cbd74a3ed937085960-21"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// Block the main thread to demonstate that t2 is executing</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a3ed937085960-22"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">t2</span><span class="crayon-sy">.</span><span class="crayon-e">Wait</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-5b23cbd74a3ed937085960-23">&nbsp;</div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a3ed937085960-24"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// Launch t1 </span></div><div class="crayon-line" id="crayon-5b23cbd74a3ed937085960-25"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">t1</span><span class="crayon-sy">.</span><span class="crayon-e">Start</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a3ed937085960-26"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">Console</span><span class="crayon-sy">.</span><span class="crayon-e">WriteLine</span><span class="crayon-sy">(</span><span class="crayon-s">"t1 has been launched. (Main Thread={0})"</span><span class="crayon-sy">,</span></div><div class="crayon-line" id="crayon-5b23cbd74a3ed937085960-27"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">Thread</span><span class="crayon-sy">.</span><span class="crayon-v">CurrentThread</span><span class="crayon-sy">.</span><span class="crayon-v">ManagedThreadId</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a3ed937085960-28"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// Wait for the task to finish.</span></div><div class="crayon-line" id="crayon-5b23cbd74a3ed937085960-29"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">t1</span><span class="crayon-sy">.</span><span class="crayon-e">Wait</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a3ed937085960-30">&nbsp;</div><div class="crayon-line" id="crayon-5b23cbd74a3ed937085960-31"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// Construct a started task using Task.Run.</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a3ed937085960-32"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-t">String</span><span class="crayon-h"> </span><span class="crayon-v">taskData</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-s">"delta"</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-5b23cbd74a3ed937085960-33"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-e">Task </span><span class="crayon-v">t3</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-v">Task</span><span class="crayon-sy">.</span><span class="crayon-e">Run</span><span class="crayon-sy">(</span><span class="crayon-h"> </span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-o">&gt;</span><span class="crayon-h"> </span><span class="crayon-sy">{</span><span class="crayon-v">Console</span><span class="crayon-sy">.</span><span class="crayon-e">WriteLine</span><span class="crayon-sy">(</span><span class="crayon-s">"Task={0}, obj={1}, Thread={2}"</span><span class="crayon-sy">,</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a3ed937085960-34"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="crayon-v">Task</span><span class="crayon-sy">.</span><span class="crayon-v">CurrentId</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-v">taskData</span><span class="crayon-sy">,</span></div><div class="crayon-line" id="crayon-5b23cbd74a3ed937085960-35"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">Thread</span><span class="crayon-sy">.</span><span class="crayon-v">CurrentThread</span><span class="crayon-sy">.</span><span class="crayon-v">ManagedThreadId</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a3ed937085960-36"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span class="crayon-sy">}</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-5b23cbd74a3ed937085960-37"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// Wait for the task to finish.</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a3ed937085960-38"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">t3</span><span class="crayon-sy">.</span><span class="crayon-e">Wait</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-5b23cbd74a3ed937085960-39">&nbsp;</div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a3ed937085960-40"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// Construct an unstarted task</span></div><div class="crayon-line" id="crayon-5b23cbd74a3ed937085960-41"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-e">Task </span><span class="crayon-v">t4</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-r">new</span><span class="crayon-h"> </span><span class="crayon-e">Task</span><span class="crayon-sy">(</span><span class="crayon-v">action</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-s">"gamma"</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a3ed937085960-42"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// Run it synchronously</span></div><div class="crayon-line" id="crayon-5b23cbd74a3ed937085960-43"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">t4</span><span class="crayon-sy">.</span><span class="crayon-e">RunSynchronously</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a3ed937085960-44"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// Although the task was run synchronously, it is a good practice</span></div><div class="crayon-line" id="crayon-5b23cbd74a3ed937085960-45"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// to wait for it in the event exceptions were thrown by the task.</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a3ed937085960-46"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">t4</span><span class="crayon-sy">.</span><span class="crayon-e">Wait</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-5b23cbd74a3ed937085960-47"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-sy">}</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a3ed937085960-48"><span class="crayon-sy">}</span></div><div class="crayon-line" id="crayon-5b23cbd74a3ed937085960-49"><span class="crayon-c">// The example displays output like the following:</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a3ed937085960-50"><span class="crayon-c">//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Task=1, obj=beta, Thread=3</span></div><div class="crayon-line" id="crayon-5b23cbd74a3ed937085960-51"><span class="crayon-c">//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; t1 has been launched. (Main Thread=1)</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a3ed937085960-52"><span class="crayon-c">//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Task=2, obj=alpha, Thread=4</span></div><div class="crayon-line" id="crayon-5b23cbd74a3ed937085960-53"><span class="crayon-c">//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Task=3, obj=delta, Thread=3</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a3ed937085960-54"><span class="crayon-c">//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Task=4, obj=gamma, Thread=1</span></div></div></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0157 seconds] -->
+<p></p>
+<h2>Thực thi code không đồng bộ với QueueUserWorkItem</h2>
+<p>Ví dụ sau xếp hàng một nhiệm vụ rất đơn giản, được đại diện bởi phương thức ThreadProc, sử dụng phương thức <a class="xref" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.threadpool.queueuserworkitem" data-linktype="relative-path">QueueUserWorkItem</a></p><!-- Crayon Syntax Highlighter v_2.7.2_beta -->
+
+		<div id="crayon-5b23cbd74a3ff148821549" class="crayon-syntax crayon-theme-classic crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important;">
+		
+			<div class="crayon-toolbar" data-settings=" mouseover overlay hide delay" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><span class="crayon-title">Thực thi code bất đồng bộ với QueueUserWorkItem</span>
+			<div class="crayon-tools" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><div class="crayon-button crayon-nums-button" title="Toggle Line Numbers"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="Expand Code"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="Copy"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="Open Code In New Window"><div class="crayon-button-icon"></div></div><span class="crayon-language">C#</span></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 12px !important; line-height: 15px !important;">
+using System;
+using System.Threading;
+
+public class Example
+{
+    public static void Main()
+    {
+        // Queue the task.
+        ThreadPool.QueueUserWorkItem(new WaitCallback(ThreadProc));
+
+        Console.WriteLine("Main thread does some work, then sleeps.");
+        // If you comment out the Sleep, the main thread exits before
+        // the thread pool task runs.  The thread pool uses background
+        // threads, which do not keep the application running.  (This
+        // is a simple example of a race condition.)
+        Thread.Sleep(1000);
+
+        Console.WriteLine("Main thread exits.");
+    }
+
+    // This thread procedure performs the task.
+    static void ThreadProc(Object stateInfo)
+    {
+        // No state object was passed to QueueUserWorkItem, so
+        // stateInfo is null.
+        Console.WriteLine("Hello from the thread pool.");
+    }
+}</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table">
+					<tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-5b23cbd74a3ff148821549-1">1</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a3ff148821549-2">2</div><div class="crayon-num" data-line="crayon-5b23cbd74a3ff148821549-3">3</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a3ff148821549-4">4</div><div class="crayon-num" data-line="crayon-5b23cbd74a3ff148821549-5">5</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a3ff148821549-6">6</div><div class="crayon-num" data-line="crayon-5b23cbd74a3ff148821549-7">7</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a3ff148821549-8">8</div><div class="crayon-num" data-line="crayon-5b23cbd74a3ff148821549-9">9</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a3ff148821549-10">10</div><div class="crayon-num" data-line="crayon-5b23cbd74a3ff148821549-11">11</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a3ff148821549-12">12</div><div class="crayon-num" data-line="crayon-5b23cbd74a3ff148821549-13">13</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a3ff148821549-14">14</div><div class="crayon-num" data-line="crayon-5b23cbd74a3ff148821549-15">15</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a3ff148821549-16">16</div><div class="crayon-num" data-line="crayon-5b23cbd74a3ff148821549-17">17</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a3ff148821549-18">18</div><div class="crayon-num" data-line="crayon-5b23cbd74a3ff148821549-19">19</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a3ff148821549-20">20</div><div class="crayon-num" data-line="crayon-5b23cbd74a3ff148821549-21">21</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a3ff148821549-22">22</div><div class="crayon-num" data-line="crayon-5b23cbd74a3ff148821549-23">23</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a3ff148821549-24">24</div><div class="crayon-num" data-line="crayon-5b23cbd74a3ff148821549-25">25</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a3ff148821549-26">26</div><div class="crayon-num" data-line="crayon-5b23cbd74a3ff148821549-27">27</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a3ff148821549-28">28</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-5b23cbd74a3ff148821549-1"><span class="crayon-st">using</span><span class="crayon-h"> </span><span class="crayon-v">System</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a3ff148821549-2"><span class="crayon-st">using</span><span class="crayon-h"> </span><span class="crayon-v">System</span><span class="crayon-sy">.</span><span class="crayon-v">Threading</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-5b23cbd74a3ff148821549-3">&nbsp;</div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a3ff148821549-4"><span class="crayon-m">public</span><span class="crayon-h"> </span><span class="crayon-t">class</span><span class="crayon-h"> </span><span class="crayon-e">Example</span></div><div class="crayon-line" id="crayon-5b23cbd74a3ff148821549-5"><span class="crayon-sy">{</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a3ff148821549-6"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-m">public</span><span class="crayon-h"> </span><span class="crayon-m">static</span><span class="crayon-h"> </span><span class="crayon-t">void</span><span class="crayon-h"> </span><span class="crayon-e">Main</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span></div><div class="crayon-line" id="crayon-5b23cbd74a3ff148821549-7"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-sy">{</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a3ff148821549-8"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// Queue the task.</span></div><div class="crayon-line" id="crayon-5b23cbd74a3ff148821549-9"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">ThreadPool</span><span class="crayon-sy">.</span><span class="crayon-e">QueueUserWorkItem</span><span class="crayon-sy">(</span><span class="crayon-r">new</span><span class="crayon-h"> </span><span class="crayon-e">WaitCallback</span><span class="crayon-sy">(</span><span class="crayon-v">ThreadProc</span><span class="crayon-sy">)</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a3ff148821549-10">&nbsp;</div><div class="crayon-line" id="crayon-5b23cbd74a3ff148821549-11"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">Console</span><span class="crayon-sy">.</span><span class="crayon-e">WriteLine</span><span class="crayon-sy">(</span><span class="crayon-s">"Main thread does some work, then sleeps."</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a3ff148821549-12"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// If you comment out the Sleep, the main thread exits before</span></div><div class="crayon-line" id="crayon-5b23cbd74a3ff148821549-13"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// the thread pool task runs.&nbsp;&nbsp;The thread pool uses background</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a3ff148821549-14"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// threads, which do not keep the application running.&nbsp;&nbsp;(This</span></div><div class="crayon-line" id="crayon-5b23cbd74a3ff148821549-15"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// is a simple example of a race condition.)</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a3ff148821549-16"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">Thread</span><span class="crayon-sy">.</span><span class="crayon-e">Sleep</span><span class="crayon-sy">(</span><span class="crayon-cn">1000</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-5b23cbd74a3ff148821549-17">&nbsp;</div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a3ff148821549-18"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">Console</span><span class="crayon-sy">.</span><span class="crayon-e">WriteLine</span><span class="crayon-sy">(</span><span class="crayon-s">"Main thread exits."</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-5b23cbd74a3ff148821549-19"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-sy">}</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a3ff148821549-20">&nbsp;</div><div class="crayon-line" id="crayon-5b23cbd74a3ff148821549-21"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// This thread procedure performs the task.</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a3ff148821549-22"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-m">static</span><span class="crayon-h"> </span><span class="crayon-t">void</span><span class="crayon-h"> </span><span class="crayon-e">ThreadProc</span><span class="crayon-sy">(</span><span class="crayon-t">Object</span><span class="crayon-h"> </span><span class="crayon-v">stateInfo</span><span class="crayon-sy">)</span></div><div class="crayon-line" id="crayon-5b23cbd74a3ff148821549-23"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-sy">{</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a3ff148821549-24"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// No state object was passed to QueueUserWorkItem, so</span></div><div class="crayon-line" id="crayon-5b23cbd74a3ff148821549-25"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// stateInfo is null.</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a3ff148821549-26"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">Console</span><span class="crayon-sy">.</span><span class="crayon-e">WriteLine</span><span class="crayon-sy">(</span><span class="crayon-s">"Hello from the thread pool."</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-5b23cbd74a3ff148821549-27"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-sy">}</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a3ff148821549-28"><span class="crayon-sy">}</span></div></div></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0021 seconds] -->
+<p></p>
+<h2>Cung cấp dữ liệu cho QueueUserWorkItem</h2>
+<p>Đoạn code ví dụ dưới đây sử dụng phương thức <a class="xref" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.threadpool.queueuserworkitem" data-linktype="relative-path">QueueUserWorkItem</a> để xếp hàng một task và cung cấp dữ liệu cho task.</p><!-- Crayon Syntax Highlighter v_2.7.2_beta -->
+
+		<div id="crayon-5b23cbd74a404135734400" class="crayon-syntax crayon-theme-classic crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important;">
+		
+			<div class="crayon-toolbar" data-settings=" mouseover overlay hide delay" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><span class="crayon-title">Cung cấp dữ liệu cho QueueUserWorkItem</span>
+			<div class="crayon-tools" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><div class="crayon-button crayon-nums-button" title="Toggle Line Numbers"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="Expand Code"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="Copy"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="Open Code In New Window"><div class="crayon-button-icon"></div></div><span class="crayon-language">C#</span></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 12px !important; line-height: 15px !important;">
+using System;
+using System.Threading;
+
+// TaskInfo holds state information for a task that will be
+// executed by a ThreadPool thread.
+public class TaskInfo
+{
+    // State information for the task.  These members
+    // can be implemented as read-only properties, read/write
+    // properties with validation, and so on, as required.
+    public string Boilerplate;
+    public int Value;
+
+    // Public constructor provides an easy way to supply all
+    // the information needed for the task.
+    public TaskInfo(string text, int number)
+    {
+        Boilerplate = text;
+        Value = number;
+    }
+}
+
+public class Example
+{
+    public static void Main()
+    {
+        // Create an object containing the information needed
+        // for the task.
+        TaskInfo ti = new TaskInfo("This report displays the number {0}.", 42);
+
+        // Queue the task and data.
+        if (ThreadPool.QueueUserWorkItem(new WaitCallback(ThreadProc), ti))
+        {
+            Console.WriteLine("Main thread does some work, then sleeps.");
+
+            // If you comment out the Sleep, the main thread exits before
+            // the ThreadPool task has a chance to run.  ThreadPool uses
+            // background threads, which do not keep the application
+            // running.  (This is a simple example of a race condition.)
+            Thread.Sleep(1000);
+
+            Console.WriteLine("Main thread exits.");
+        }
+        else
+        {
+            Console.WriteLine("Unable to queue ThreadPool request.");
+        }
+    }
+
+    // The thread procedure performs the independent task, in this case
+    // formatting and printing a very simple report.
+    //
+    static void ThreadProc(Object stateInfo)
+    {
+        TaskInfo ti = (TaskInfo) stateInfo;
+        Console.WriteLine(ti.Boilerplate, ti.Value);
+    }
+}</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table">
+					<tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-5b23cbd74a404135734400-1">1</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a404135734400-2">2</div><div class="crayon-num" data-line="crayon-5b23cbd74a404135734400-3">3</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a404135734400-4">4</div><div class="crayon-num" data-line="crayon-5b23cbd74a404135734400-5">5</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a404135734400-6">6</div><div class="crayon-num" data-line="crayon-5b23cbd74a404135734400-7">7</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a404135734400-8">8</div><div class="crayon-num" data-line="crayon-5b23cbd74a404135734400-9">9</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a404135734400-10">10</div><div class="crayon-num" data-line="crayon-5b23cbd74a404135734400-11">11</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a404135734400-12">12</div><div class="crayon-num" data-line="crayon-5b23cbd74a404135734400-13">13</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a404135734400-14">14</div><div class="crayon-num" data-line="crayon-5b23cbd74a404135734400-15">15</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a404135734400-16">16</div><div class="crayon-num" data-line="crayon-5b23cbd74a404135734400-17">17</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a404135734400-18">18</div><div class="crayon-num" data-line="crayon-5b23cbd74a404135734400-19">19</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a404135734400-20">20</div><div class="crayon-num" data-line="crayon-5b23cbd74a404135734400-21">21</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a404135734400-22">22</div><div class="crayon-num" data-line="crayon-5b23cbd74a404135734400-23">23</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a404135734400-24">24</div><div class="crayon-num" data-line="crayon-5b23cbd74a404135734400-25">25</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a404135734400-26">26</div><div class="crayon-num" data-line="crayon-5b23cbd74a404135734400-27">27</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a404135734400-28">28</div><div class="crayon-num" data-line="crayon-5b23cbd74a404135734400-29">29</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a404135734400-30">30</div><div class="crayon-num" data-line="crayon-5b23cbd74a404135734400-31">31</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a404135734400-32">32</div><div class="crayon-num" data-line="crayon-5b23cbd74a404135734400-33">33</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a404135734400-34">34</div><div class="crayon-num" data-line="crayon-5b23cbd74a404135734400-35">35</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a404135734400-36">36</div><div class="crayon-num" data-line="crayon-5b23cbd74a404135734400-37">37</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a404135734400-38">38</div><div class="crayon-num" data-line="crayon-5b23cbd74a404135734400-39">39</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a404135734400-40">40</div><div class="crayon-num" data-line="crayon-5b23cbd74a404135734400-41">41</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a404135734400-42">42</div><div class="crayon-num" data-line="crayon-5b23cbd74a404135734400-43">43</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a404135734400-44">44</div><div class="crayon-num" data-line="crayon-5b23cbd74a404135734400-45">45</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a404135734400-46">46</div><div class="crayon-num" data-line="crayon-5b23cbd74a404135734400-47">47</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a404135734400-48">48</div><div class="crayon-num" data-line="crayon-5b23cbd74a404135734400-49">49</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a404135734400-50">50</div><div class="crayon-num" data-line="crayon-5b23cbd74a404135734400-51">51</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a404135734400-52">52</div><div class="crayon-num" data-line="crayon-5b23cbd74a404135734400-53">53</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a404135734400-54">54</div><div class="crayon-num" data-line="crayon-5b23cbd74a404135734400-55">55</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a404135734400-56">56</div><div class="crayon-num" data-line="crayon-5b23cbd74a404135734400-57">57</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a404135734400-58">58</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-5b23cbd74a404135734400-1"><span class="crayon-st">using</span><span class="crayon-h"> </span><span class="crayon-v">System</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a404135734400-2"><span class="crayon-st">using</span><span class="crayon-h"> </span><span class="crayon-v">System</span><span class="crayon-sy">.</span><span class="crayon-v">Threading</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-5b23cbd74a404135734400-3">&nbsp;</div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a404135734400-4"><span class="crayon-c">// TaskInfo holds state information for a task that will be</span></div><div class="crayon-line" id="crayon-5b23cbd74a404135734400-5"><span class="crayon-c">// executed by a ThreadPool thread.</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a404135734400-6"><span class="crayon-m">public</span><span class="crayon-h"> </span><span class="crayon-t">class</span><span class="crayon-h"> </span><span class="crayon-e">TaskInfo</span></div><div class="crayon-line" id="crayon-5b23cbd74a404135734400-7"><span class="crayon-sy">{</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a404135734400-8"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// State information for the task.&nbsp;&nbsp;These members</span></div><div class="crayon-line" id="crayon-5b23cbd74a404135734400-9"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// can be implemented as read-only properties, read/write</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a404135734400-10"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// properties with validation, and so on, as required.</span></div><div class="crayon-line" id="crayon-5b23cbd74a404135734400-11"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-m">public</span><span class="crayon-h"> </span><span class="crayon-t">string</span><span class="crayon-h"> </span><span class="crayon-v">Boilerplate</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a404135734400-12"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-m">public</span><span class="crayon-h"> </span><span class="crayon-t">int</span><span class="crayon-h"> </span><span class="crayon-v">Value</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-5b23cbd74a404135734400-13">&nbsp;</div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a404135734400-14"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// Public constructor provides an easy way to supply all</span></div><div class="crayon-line" id="crayon-5b23cbd74a404135734400-15"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// the information needed for the task.</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a404135734400-16"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-m">public</span><span class="crayon-h"> </span><span class="crayon-e">TaskInfo</span><span class="crayon-sy">(</span><span class="crayon-t">string</span><span class="crayon-h"> </span><span class="crayon-v">text</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-t">int</span><span class="crayon-h"> </span><span class="crayon-v">number</span><span class="crayon-sy">)</span></div><div class="crayon-line" id="crayon-5b23cbd74a404135734400-17"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-sy">{</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a404135734400-18"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">Boilerplate</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-v">text</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-5b23cbd74a404135734400-19"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">Value</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-v">number</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a404135734400-20"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-sy">}</span></div><div class="crayon-line" id="crayon-5b23cbd74a404135734400-21"><span class="crayon-sy">}</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a404135734400-22">&nbsp;</div><div class="crayon-line" id="crayon-5b23cbd74a404135734400-23"><span class="crayon-m">public</span><span class="crayon-h"> </span><span class="crayon-t">class</span><span class="crayon-h"> </span><span class="crayon-e">Example</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a404135734400-24"><span class="crayon-sy">{</span></div><div class="crayon-line" id="crayon-5b23cbd74a404135734400-25"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-m">public</span><span class="crayon-h"> </span><span class="crayon-m">static</span><span class="crayon-h"> </span><span class="crayon-t">void</span><span class="crayon-h"> </span><span class="crayon-e">Main</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a404135734400-26"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-sy">{</span></div><div class="crayon-line" id="crayon-5b23cbd74a404135734400-27"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// Create an object containing the information needed</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a404135734400-28"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// for the task.</span></div><div class="crayon-line" id="crayon-5b23cbd74a404135734400-29"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-e">TaskInfo </span><span class="crayon-v">ti</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-r">new</span><span class="crayon-h"> </span><span class="crayon-e">TaskInfo</span><span class="crayon-sy">(</span><span class="crayon-s">"This report displays the number {0}."</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-cn">42</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a404135734400-30">&nbsp;</div><div class="crayon-line" id="crayon-5b23cbd74a404135734400-31"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// Queue the task and data.</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a404135734400-32"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-st">if</span><span class="crayon-h"> </span><span class="crayon-sy">(</span><span class="crayon-v">ThreadPool</span><span class="crayon-sy">.</span><span class="crayon-e">QueueUserWorkItem</span><span class="crayon-sy">(</span><span class="crayon-r">new</span><span class="crayon-h"> </span><span class="crayon-e">WaitCallback</span><span class="crayon-sy">(</span><span class="crayon-v">ThreadProc</span><span class="crayon-sy">)</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-v">ti</span><span class="crayon-sy">)</span><span class="crayon-sy">)</span></div><div class="crayon-line" id="crayon-5b23cbd74a404135734400-33"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-sy">{</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a404135734400-34"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">Console</span><span class="crayon-sy">.</span><span class="crayon-e">WriteLine</span><span class="crayon-sy">(</span><span class="crayon-s">"Main thread does some work, then sleeps."</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-5b23cbd74a404135734400-35">&nbsp;</div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a404135734400-36"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// If you comment out the Sleep, the main thread exits before</span></div><div class="crayon-line" id="crayon-5b23cbd74a404135734400-37"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// the ThreadPool task has a chance to run.&nbsp;&nbsp;ThreadPool uses</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a404135734400-38"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// background threads, which do not keep the application</span></div><div class="crayon-line" id="crayon-5b23cbd74a404135734400-39"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// running.&nbsp;&nbsp;(This is a simple example of a race condition.)</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a404135734400-40"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">Thread</span><span class="crayon-sy">.</span><span class="crayon-e">Sleep</span><span class="crayon-sy">(</span><span class="crayon-cn">1000</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-5b23cbd74a404135734400-41">&nbsp;</div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a404135734400-42"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">Console</span><span class="crayon-sy">.</span><span class="crayon-e">WriteLine</span><span class="crayon-sy">(</span><span class="crayon-s">"Main thread exits."</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-5b23cbd74a404135734400-43"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-sy">}</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a404135734400-44"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-st">else</span></div><div class="crayon-line" id="crayon-5b23cbd74a404135734400-45"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-sy">{</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a404135734400-46"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">Console</span><span class="crayon-sy">.</span><span class="crayon-e">WriteLine</span><span class="crayon-sy">(</span><span class="crayon-s">"Unable to queue ThreadPool request."</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-5b23cbd74a404135734400-47"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-sy">}</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a404135734400-48"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-sy">}</span></div><div class="crayon-line" id="crayon-5b23cbd74a404135734400-49">&nbsp;</div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a404135734400-50"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// The thread procedure performs the independent task, in this case</span></div><div class="crayon-line" id="crayon-5b23cbd74a404135734400-51"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// formatting and printing a very simple report.</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a404135734400-52"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">//</span></div><div class="crayon-line" id="crayon-5b23cbd74a404135734400-53"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-m">static</span><span class="crayon-h"> </span><span class="crayon-t">void</span><span class="crayon-h"> </span><span class="crayon-e">ThreadProc</span><span class="crayon-sy">(</span><span class="crayon-t">Object</span><span class="crayon-h"> </span><span class="crayon-v">stateInfo</span><span class="crayon-sy">)</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a404135734400-54"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-sy">{</span></div><div class="crayon-line" id="crayon-5b23cbd74a404135734400-55"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-e">TaskInfo </span><span class="crayon-v">ti</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-sy">(</span><span class="crayon-v">TaskInfo</span><span class="crayon-sy">)</span><span class="crayon-h"> </span><span class="crayon-v">stateInfo</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a404135734400-56"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">Console</span><span class="crayon-sy">.</span><span class="crayon-e">WriteLine</span><span class="crayon-sy">(</span><span class="crayon-v">ti</span><span class="crayon-sy">.</span><span class="crayon-v">Boilerplate</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-v">ti</span><span class="crayon-sy">.</span><span class="crayon-v">Value</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-5b23cbd74a404135734400-57"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-sy">}</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a404135734400-58"><span class="crayon-sy">}</span></div></div></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0042 seconds] -->
+<p></p>
+<h2>Sử dụng RegisterWaitForSingleObject</h2>
+<p class="lf-text-block lf-block x-hidden-focus" data-lf-anchor-id="9d01ec6794af72d38e19146b8342e196:0">The following example demonstrates several threading features.<span class="lf-thread-btn"><a class="fycon-action-view" tabindex="0" aria-label="Write a Sidenote" data-lf-anchor-id="9d01ec6794af72d38e19146b8342e196:0">+</a></span></p>
+<ul class="lf-text-block lf-block" data-lf-anchor-id="0f8d29e961d2a0b03045990368660621:0">
+<li>Queuing a task for execution by <a class="xref" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.threadpool" data-linktype="relative-path">ThreadPool</a> threads, with the <a class="xref" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.threadpool.registerwaitforsingleobject" data-linktype="relative-path">RegisterWaitForSingleObject</a> method.</li>
+<li>Signaling a task to execute, with <a class="xref" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.autoresetevent" data-linktype="relative-path">AutoResetEvent</a>. See <a href="https://docs.microsoft.com/en-us/dotnet/standard/threading/eventwaithandle-autoresetevent-countdownevent-manualresetevent" data-linktype="relative-path">EventWaitHandle, AutoResetEvent, CountdownEvent, ManualResetEvent</a>.</li>
+<li>Handling both time-outs and signals with a <a class="xref" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.waitortimercallback" data-linktype="relative-path">WaitOrTimerCallback</a> delegate.</li>
+<li>
+<p class="x-hidden-focus">Canceling a queued task with <a class="xref" href="https://docs.microsoft.com/en-us/dotnet/api/system.threading.registeredwaithandle" data-linktype="relative-path">RegisteredWaitHandle</a>.</p>
+</li>
+</ul>
+<p></p><!-- Crayon Syntax Highlighter v_2.7.2_beta -->
+
+		<div id="crayon-5b23cbd74a40a051053942" class="crayon-syntax crayon-theme-classic crayon-font-monaco crayon-os-pc print-yes notranslate" data-settings=" minimize scroll-mouseover" style=" margin-top: 12px; margin-bottom: 12px; font-size: 12px !important; line-height: 15px !important;">
+		
+			<div class="crayon-toolbar" data-settings=" mouseover overlay hide delay" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><span class="crayon-title"></span>
+			<div class="crayon-tools" style="font-size: 12px !important;height: 18px !important; line-height: 18px !important;"><div class="crayon-button crayon-nums-button" title="Toggle Line Numbers"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-plain-button" title="Toggle Plain Code"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-wrap-button" title="Toggle Line Wrap"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-expand-button" title="Expand Code"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-copy-button" title="Copy"><div class="crayon-button-icon"></div></div><div class="crayon-button crayon-popup-button" title="Open Code In New Window"><div class="crayon-button-icon"></div></div><span class="crayon-language">C#</span></div></div>
+			<div class="crayon-info" style="min-height: 16.8px !important; line-height: 16.8px !important;"></div>
+			<div class="crayon-plain-wrap"><textarea wrap="soft" class="crayon-plain print-no" data-settings="dblclick" readonly style="-moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4; font-size: 12px !important; line-height: 15px !important;">
+using System;
+using System.Threading;
+
+// TaskInfo contains data that will be passed to the callback
+// method.
+public class TaskInfo
+{
+    public RegisteredWaitHandle Handle = null;
+    public string OtherInfo = "default";
+}
+
+public class Example
+{
+    public static void Main(string[] args)
+    {
+        // The main thread uses AutoResetEvent to signal the
+        // registered wait handle, which executes the callback
+        // method.
+        AutoResetEvent ev = new AutoResetEvent(false);
+
+        TaskInfo ti = new TaskInfo();
+        ti.OtherInfo = "First task";
+        // The TaskInfo for the task includes the registered wait
+        // handle returned by RegisterWaitForSingleObject.  This
+        // allows the wait to be terminated when the object has
+        // been signaled once (see WaitProc).
+        ti.Handle = ThreadPool.RegisterWaitForSingleObject(
+            ev,
+            new WaitOrTimerCallback(WaitProc),
+            ti,
+            1000,
+            false );
+
+        // The main thread waits three seconds, to demonstrate the
+        // time-outs on the queued thread, and then signals.
+        Thread.Sleep(3100);
+        Console.WriteLine("Main thread signals.");
+        ev.Set();
+
+        // The main thread sleeps, which should give the callback
+        // method time to execute.  If you comment out this line, the
+        // program usually ends before the ThreadPool thread can execute.
+        Thread.Sleep(1000);
+        // If you start a thread yourself, you can wait for it to end
+        // by calling Thread.Join.  This option is not available with
+        // thread pool threads.
+    }
+
+    // The callback method executes when the registered wait times out,
+    // or when the WaitHandle (in this case AutoResetEvent) is signaled.
+    // WaitProc unregisters the WaitHandle the first time the event is
+    // signaled.
+    public static void WaitProc(object state, bool timedOut)
+    {
+        // The state object must be cast to the correct type, because the
+        // signature of the WaitOrTimerCallback delegate specifies type
+        // Object.
+        TaskInfo ti = (TaskInfo) state;
+
+        string cause = "TIMED OUT";
+        if (!timedOut)
+        {
+            cause = "SIGNALED";
+            // If the callback method executes because the WaitHandle is
+            // signaled, stop future execution of the callback method
+            // by unregistering the WaitHandle.
+            if (ti.Handle != null)
+                ti.Handle.Unregister(null);
+        }
+
+        Console.WriteLine("WaitProc( {0} ) executes on thread {1}; cause = {2}.",
+            ti.OtherInfo,
+            Thread.CurrentThread.GetHashCode().ToString(),
+            cause
+        );
+    }
+}</textarea></div>
+			<div class="crayon-main" style="">
+				<table class="crayon-table">
+					<tr class="crayon-row">
+				<td class="crayon-nums " data-settings="show">
+					<div class="crayon-nums-content" style="font-size: 12px !important; line-height: 15px !important;"><div class="crayon-num" data-line="crayon-5b23cbd74a40a051053942-1">1</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a40a051053942-2">2</div><div class="crayon-num" data-line="crayon-5b23cbd74a40a051053942-3">3</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a40a051053942-4">4</div><div class="crayon-num" data-line="crayon-5b23cbd74a40a051053942-5">5</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a40a051053942-6">6</div><div class="crayon-num" data-line="crayon-5b23cbd74a40a051053942-7">7</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a40a051053942-8">8</div><div class="crayon-num" data-line="crayon-5b23cbd74a40a051053942-9">9</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a40a051053942-10">10</div><div class="crayon-num" data-line="crayon-5b23cbd74a40a051053942-11">11</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a40a051053942-12">12</div><div class="crayon-num" data-line="crayon-5b23cbd74a40a051053942-13">13</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a40a051053942-14">14</div><div class="crayon-num" data-line="crayon-5b23cbd74a40a051053942-15">15</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a40a051053942-16">16</div><div class="crayon-num" data-line="crayon-5b23cbd74a40a051053942-17">17</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a40a051053942-18">18</div><div class="crayon-num" data-line="crayon-5b23cbd74a40a051053942-19">19</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a40a051053942-20">20</div><div class="crayon-num" data-line="crayon-5b23cbd74a40a051053942-21">21</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a40a051053942-22">22</div><div class="crayon-num" data-line="crayon-5b23cbd74a40a051053942-23">23</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a40a051053942-24">24</div><div class="crayon-num" data-line="crayon-5b23cbd74a40a051053942-25">25</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a40a051053942-26">26</div><div class="crayon-num" data-line="crayon-5b23cbd74a40a051053942-27">27</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a40a051053942-28">28</div><div class="crayon-num" data-line="crayon-5b23cbd74a40a051053942-29">29</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a40a051053942-30">30</div><div class="crayon-num" data-line="crayon-5b23cbd74a40a051053942-31">31</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a40a051053942-32">32</div><div class="crayon-num" data-line="crayon-5b23cbd74a40a051053942-33">33</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a40a051053942-34">34</div><div class="crayon-num" data-line="crayon-5b23cbd74a40a051053942-35">35</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a40a051053942-36">36</div><div class="crayon-num" data-line="crayon-5b23cbd74a40a051053942-37">37</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a40a051053942-38">38</div><div class="crayon-num" data-line="crayon-5b23cbd74a40a051053942-39">39</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a40a051053942-40">40</div><div class="crayon-num" data-line="crayon-5b23cbd74a40a051053942-41">41</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a40a051053942-42">42</div><div class="crayon-num" data-line="crayon-5b23cbd74a40a051053942-43">43</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a40a051053942-44">44</div><div class="crayon-num" data-line="crayon-5b23cbd74a40a051053942-45">45</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a40a051053942-46">46</div><div class="crayon-num" data-line="crayon-5b23cbd74a40a051053942-47">47</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a40a051053942-48">48</div><div class="crayon-num" data-line="crayon-5b23cbd74a40a051053942-49">49</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a40a051053942-50">50</div><div class="crayon-num" data-line="crayon-5b23cbd74a40a051053942-51">51</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a40a051053942-52">52</div><div class="crayon-num" data-line="crayon-5b23cbd74a40a051053942-53">53</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a40a051053942-54">54</div><div class="crayon-num" data-line="crayon-5b23cbd74a40a051053942-55">55</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a40a051053942-56">56</div><div class="crayon-num" data-line="crayon-5b23cbd74a40a051053942-57">57</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a40a051053942-58">58</div><div class="crayon-num" data-line="crayon-5b23cbd74a40a051053942-59">59</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a40a051053942-60">60</div><div class="crayon-num" data-line="crayon-5b23cbd74a40a051053942-61">61</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a40a051053942-62">62</div><div class="crayon-num" data-line="crayon-5b23cbd74a40a051053942-63">63</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a40a051053942-64">64</div><div class="crayon-num" data-line="crayon-5b23cbd74a40a051053942-65">65</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a40a051053942-66">66</div><div class="crayon-num" data-line="crayon-5b23cbd74a40a051053942-67">67</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a40a051053942-68">68</div><div class="crayon-num" data-line="crayon-5b23cbd74a40a051053942-69">69</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a40a051053942-70">70</div><div class="crayon-num" data-line="crayon-5b23cbd74a40a051053942-71">71</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a40a051053942-72">72</div><div class="crayon-num" data-line="crayon-5b23cbd74a40a051053942-73">73</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a40a051053942-74">74</div><div class="crayon-num" data-line="crayon-5b23cbd74a40a051053942-75">75</div><div class="crayon-num crayon-striped-num" data-line="crayon-5b23cbd74a40a051053942-76">76</div><div class="crayon-num" data-line="crayon-5b23cbd74a40a051053942-77">77</div></div>
+				</td>
+						<td class="crayon-code"><div class="crayon-pre" style="font-size: 12px !important; line-height: 15px !important; -moz-tab-size:4; -o-tab-size:4; -webkit-tab-size:4; tab-size:4;"><div class="crayon-line" id="crayon-5b23cbd74a40a051053942-1"><span class="crayon-st">using</span><span class="crayon-h"> </span><span class="crayon-v">System</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a40a051053942-2"><span class="crayon-st">using</span><span class="crayon-h"> </span><span class="crayon-v">System</span><span class="crayon-sy">.</span><span class="crayon-v">Threading</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-5b23cbd74a40a051053942-3">&nbsp;</div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a40a051053942-4"><span class="crayon-c">// TaskInfo contains data that will be passed to the callback</span></div><div class="crayon-line" id="crayon-5b23cbd74a40a051053942-5"><span class="crayon-c">// method.</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a40a051053942-6"><span class="crayon-m">public</span><span class="crayon-h"> </span><span class="crayon-t">class</span><span class="crayon-h"> </span><span class="crayon-e">TaskInfo</span></div><div class="crayon-line" id="crayon-5b23cbd74a40a051053942-7"><span class="crayon-sy">{</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a40a051053942-8"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-m">public</span><span class="crayon-h"> </span><span class="crayon-e">RegisteredWaitHandle </span><span class="crayon-v">Handle</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-t">null</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-5b23cbd74a40a051053942-9"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-m">public</span><span class="crayon-h"> </span><span class="crayon-t">string</span><span class="crayon-h"> </span><span class="crayon-v">OtherInfo</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-s">"default"</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a40a051053942-10"><span class="crayon-sy">}</span></div><div class="crayon-line" id="crayon-5b23cbd74a40a051053942-11">&nbsp;</div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a40a051053942-12"><span class="crayon-m">public</span><span class="crayon-h"> </span><span class="crayon-t">class</span><span class="crayon-h"> </span><span class="crayon-e">Example</span></div><div class="crayon-line" id="crayon-5b23cbd74a40a051053942-13"><span class="crayon-sy">{</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a40a051053942-14"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-m">public</span><span class="crayon-h"> </span><span class="crayon-m">static</span><span class="crayon-h"> </span><span class="crayon-t">void</span><span class="crayon-h"> </span><span class="crayon-e">Main</span><span class="crayon-sy">(</span><span class="crayon-t">string</span><span class="crayon-sy">[</span><span class="crayon-sy">]</span><span class="crayon-h"> </span><span class="crayon-v">args</span><span class="crayon-sy">)</span></div><div class="crayon-line" id="crayon-5b23cbd74a40a051053942-15"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-sy">{</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a40a051053942-16"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// The main thread uses AutoResetEvent to signal the</span></div><div class="crayon-line" id="crayon-5b23cbd74a40a051053942-17"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// registered wait handle, which executes the callback</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a40a051053942-18"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// method.</span></div><div class="crayon-line" id="crayon-5b23cbd74a40a051053942-19"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-e">AutoResetEvent </span><span class="crayon-v">ev</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-r">new</span><span class="crayon-h"> </span><span class="crayon-e">AutoResetEvent</span><span class="crayon-sy">(</span><span class="crayon-t">false</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a40a051053942-20">&nbsp;</div><div class="crayon-line" id="crayon-5b23cbd74a40a051053942-21"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-e">TaskInfo </span><span class="crayon-v">ti</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-r">new</span><span class="crayon-h"> </span><span class="crayon-e">TaskInfo</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a40a051053942-22"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">ti</span><span class="crayon-sy">.</span><span class="crayon-v">OtherInfo</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-s">"First task"</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-5b23cbd74a40a051053942-23"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// The TaskInfo for the task includes the registered wait</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a40a051053942-24"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// handle returned by RegisterWaitForSingleObject.&nbsp;&nbsp;This</span></div><div class="crayon-line" id="crayon-5b23cbd74a40a051053942-25"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// allows the wait to be terminated when the object has</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a40a051053942-26"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// been signaled once (see WaitProc).</span></div><div class="crayon-line" id="crayon-5b23cbd74a40a051053942-27"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">ti</span><span class="crayon-sy">.</span><span class="crayon-v">Handle</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-v">ThreadPool</span><span class="crayon-sy">.</span><span class="crayon-e">RegisterWaitForSingleObject</span><span class="crayon-sy">(</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a40a051053942-28"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">ev</span><span class="crayon-sy">,</span></div><div class="crayon-line" id="crayon-5b23cbd74a40a051053942-29"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-r">new</span><span class="crayon-h"> </span><span class="crayon-e">WaitOrTimerCallback</span><span class="crayon-sy">(</span><span class="crayon-v">WaitProc</span><span class="crayon-sy">)</span><span class="crayon-sy">,</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a40a051053942-30"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">ti</span><span class="crayon-sy">,</span></div><div class="crayon-line" id="crayon-5b23cbd74a40a051053942-31"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-cn">1000</span><span class="crayon-sy">,</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a40a051053942-32"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-t">false</span><span class="crayon-h"> </span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-5b23cbd74a40a051053942-33">&nbsp;</div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a40a051053942-34"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// The main thread waits three seconds, to demonstrate the</span></div><div class="crayon-line" id="crayon-5b23cbd74a40a051053942-35"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// time-outs on the queued thread, and then signals.</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a40a051053942-36"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">Thread</span><span class="crayon-sy">.</span><span class="crayon-e">Sleep</span><span class="crayon-sy">(</span><span class="crayon-cn">3100</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-5b23cbd74a40a051053942-37"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">Console</span><span class="crayon-sy">.</span><span class="crayon-e">WriteLine</span><span class="crayon-sy">(</span><span class="crayon-s">"Main thread signals."</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a40a051053942-38"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">ev</span><span class="crayon-sy">.</span><span class="crayon-st">Set</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-5b23cbd74a40a051053942-39">&nbsp;</div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a40a051053942-40"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// The main thread sleeps, which should give the callback</span></div><div class="crayon-line" id="crayon-5b23cbd74a40a051053942-41"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// method time to execute.&nbsp;&nbsp;If you comment out this line, the</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a40a051053942-42"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// program usually ends before the ThreadPool thread can execute.</span></div><div class="crayon-line" id="crayon-5b23cbd74a40a051053942-43"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">Thread</span><span class="crayon-sy">.</span><span class="crayon-e">Sleep</span><span class="crayon-sy">(</span><span class="crayon-cn">1000</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a40a051053942-44"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// If you start a thread yourself, you can wait for it to end</span></div><div class="crayon-line" id="crayon-5b23cbd74a40a051053942-45"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// by calling Thread.Join.&nbsp;&nbsp;This option is not available with</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a40a051053942-46"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// thread pool threads.</span></div><div class="crayon-line" id="crayon-5b23cbd74a40a051053942-47"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-sy">}</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a40a051053942-48">&nbsp;</div><div class="crayon-line" id="crayon-5b23cbd74a40a051053942-49"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// The callback method executes when the registered wait times out,</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a40a051053942-50"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// or when the WaitHandle (in this case AutoResetEvent) is signaled.</span></div><div class="crayon-line" id="crayon-5b23cbd74a40a051053942-51"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// WaitProc unregisters the WaitHandle the first time the event is</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a40a051053942-52"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// signaled.</span></div><div class="crayon-line" id="crayon-5b23cbd74a40a051053942-53"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-m">public</span><span class="crayon-h"> </span><span class="crayon-m">static</span><span class="crayon-h"> </span><span class="crayon-t">void</span><span class="crayon-h"> </span><span class="crayon-e">WaitProc</span><span class="crayon-sy">(</span><span class="crayon-t">object</span><span class="crayon-h"> </span><span class="crayon-v">state</span><span class="crayon-sy">,</span><span class="crayon-h"> </span><span class="crayon-t">bool</span><span class="crayon-h"> </span><span class="crayon-v">timedOut</span><span class="crayon-sy">)</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a40a051053942-54"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-sy">{</span></div><div class="crayon-line" id="crayon-5b23cbd74a40a051053942-55"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// The state object must be cast to the correct type, because the</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a40a051053942-56"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// signature of the WaitOrTimerCallback delegate specifies type</span></div><div class="crayon-line" id="crayon-5b23cbd74a40a051053942-57"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// Object.</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a40a051053942-58"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-e">TaskInfo </span><span class="crayon-v">ti</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-sy">(</span><span class="crayon-v">TaskInfo</span><span class="crayon-sy">)</span><span class="crayon-h"> </span><span class="crayon-v">state</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-5b23cbd74a40a051053942-59">&nbsp;</div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a40a051053942-60"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-t">string</span><span class="crayon-h"> </span><span class="crayon-v">cause</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-s">"TIMED OUT"</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-5b23cbd74a40a051053942-61"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-st">if</span><span class="crayon-h"> </span><span class="crayon-sy">(</span><span class="crayon-o">!</span><span class="crayon-v">timedOut</span><span class="crayon-sy">)</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a40a051053942-62"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-sy">{</span></div><div class="crayon-line" id="crayon-5b23cbd74a40a051053942-63"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">cause</span><span class="crayon-h"> </span><span class="crayon-o">=</span><span class="crayon-h"> </span><span class="crayon-s">"SIGNALED"</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a40a051053942-64"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// If the callback method executes because the WaitHandle is</span></div><div class="crayon-line" id="crayon-5b23cbd74a40a051053942-65"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// signaled, stop future execution of the callback method</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a40a051053942-66"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-c">// by unregistering the WaitHandle.</span></div><div class="crayon-line" id="crayon-5b23cbd74a40a051053942-67"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-st">if</span><span class="crayon-h"> </span><span class="crayon-sy">(</span><span class="crayon-v">ti</span><span class="crayon-sy">.</span><span class="crayon-v">Handle</span><span class="crayon-h"> </span><span class="crayon-o">!=</span><span class="crayon-h"> </span><span class="crayon-t">null</span><span class="crayon-sy">)</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a40a051053942-68"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">ti</span><span class="crayon-sy">.</span><span class="crayon-v">Handle</span><span class="crayon-sy">.</span><span class="crayon-e">Unregister</span><span class="crayon-sy">(</span><span class="crayon-t">null</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line" id="crayon-5b23cbd74a40a051053942-69"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-sy">}</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a40a051053942-70">&nbsp;</div><div class="crayon-line" id="crayon-5b23cbd74a40a051053942-71"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">Console</span><span class="crayon-sy">.</span><span class="crayon-e">WriteLine</span><span class="crayon-sy">(</span><span class="crayon-s">"WaitProc( {0} ) executes on thread {1}; cause = {2}."</span><span class="crayon-sy">,</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a40a051053942-72"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">ti</span><span class="crayon-sy">.</span><span class="crayon-v">OtherInfo</span><span class="crayon-sy">,</span></div><div class="crayon-line" id="crayon-5b23cbd74a40a051053942-73"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-v">Thread</span><span class="crayon-sy">.</span><span class="crayon-v">CurrentThread</span><span class="crayon-sy">.</span><span class="crayon-e">GetHashCode</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">.</span><span class="crayon-e">ToString</span><span class="crayon-sy">(</span><span class="crayon-sy">)</span><span class="crayon-sy">,</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a40a051053942-74"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-i">cause</span></div><div class="crayon-line" id="crayon-5b23cbd74a40a051053942-75"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-sy">)</span><span class="crayon-sy">;</span></div><div class="crayon-line crayon-striped-line" id="crayon-5b23cbd74a40a051053942-76"><span class="crayon-h">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="crayon-sy">}</span></div><div class="crayon-line" id="crayon-5b23cbd74a40a051053942-77"><span class="crayon-sy">}</span></div></div></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+<!-- [Format Time: 0.0164 seconds] -->
+<p></p>
+			</div><!-- .entry-content -->
+
+	<footer class="entry-footer">
+		<span class="cat-links"><a href="http://caigicunghay.com/category/cung-toi-code/" rel="category tag">Cùng tôi Code</a></span>	</footer><!-- .entry-footer -->
+</article><!-- #post-## -->
+
+
+	<nav class="navigation post-navigation" role="navigation">
+		<h2 class="screen-reader-text">Post navigation</h2>
+		<div class="nav-links"><div class="nav-previous"><a href="http://caigicunghay.com/nhung-dieu-minh-nhan-ra-o-tuoi-17/" rel="prev"><span class="post-navi" aria-hidden="true">PREVIOUS POST</span> <span class="screen-reader-text">Previous post:</span> <span class="post-title">Những điều mình nhận ra ở tuổi 17</span></a></div><div class="nav-next"><a href="http://caigicunghay.com/auto-sro_client-phan-mem-auto-train-con-duong-lua/" rel="next"><span class="post-navi" aria-hidden="true">NEXT POST</span> <span class="screen-reader-text">Next post:</span> <span class="post-title">Auto SRO_CLIENT phần mềm auto train con đường tơ lụa</span></a></div></div>
+	</nav>
+<div id="comments" class="comments-area">
+
+		<div id="respond" class="comment-respond">
+		<h3 id="reply-title" class="comment-reply-title">Leave a Reply <small><a rel="nofollow" id="cancel-comment-reply-link" href="/quan-ly-thread-pool-trong-c/#respond" style="display:none;">Cancel reply</a></small></h3>			<form action="http://caigicunghay.com/wp-comments-post.php" method="post" id="commentform" class="comment-form" novalidate>
+				<p class="comment-notes"><span id="email-notes">Your email address will not be published.</span> Required fields are marked <span class="required">*</span></p><p class="comment-form-comment"><label for="comment">Comment</label> <textarea id="comment" name="comment" cols="45" rows="8" maxlength="65525" aria-required="true" required="required"></textarea></p><p class="comment-form-author"><label for="author">Name <span class="required">*</span></label> <input id="author" name="author" type="text" value="" size="30" maxlength="245" aria-required='true' required='required' /></p>
+<p class="comment-form-email"><label for="email">Email <span class="required">*</span></label> <input id="email" name="email" type="email" value="" size="30" maxlength="100" aria-describedby="email-notes" aria-required='true' required='required' /></p>
+<p class="comment-form-url"><label for="url">Website</label> <input id="url" name="url" type="url" value="" size="30" maxlength="200" /></p>
+<p class="form-submit"><input name="submit" type="submit" id="submit" class="submit" value="Post Comment" /> <input type='hidden' name='comment_post_ID' value='633' id='comment_post_ID' />
+<input type='hidden' name='comment_parent' id='comment_parent' value='0' />
+</p>			</form>
+			</div><!-- #respond -->
+	
+</div><!-- #comments -->
+
+		</main><!-- #main -->
+	</div><!-- #primary -->
+
+
+<aside id="secondary" class="widget-area" role="complementary">
+	<section id="categories-2" class="widget widget_categories"><h2 class="widget-title">Chuyên mục</h2>		<ul>
+	<li class="cat-item cat-item-2"><a href="http://caigicunghay.com/category/cung-toi-code/" title="Cùng tôi Code - Chuyên mục chứa đựng những bài phân tích, hướng dẫn, thảo luận liên quan đến code,.. và nhiều vấn đề liên quan ">Cùng tôi Code</a>
+</li>
+	<li class="cat-item cat-item-30"><a href="http://caigicunghay.com/category/thu-vien/hinh-anh/" >Hình ảnh</a>
+</li>
+	<li class="cat-item cat-item-50"><a href="http://caigicunghay.com/category/cam-nang/lam-dep/" >Làm đẹp</a>
+</li>
+	<li class="cat-item cat-item-51"><a href="http://caigicunghay.com/category/thu-vien/hinh-anh/nguoi-dep/" >Người đẹp</a>
+</li>
+	<li class="cat-item cat-item-48"><a href="http://caigicunghay.com/category/cam-nang/phat-trien-ca-nhan/" >Phát triển cá nhân</a>
+</li>
+	<li class="cat-item cat-item-21"><a href="http://caigicunghay.com/category/quay-phim-chup-anh/" >Quay phim &#8211; chụp ảnh</a>
+</li>
+	<li class="cat-item cat-item-39"><a href="http://caigicunghay.com/category/goc-review/review-game/" >Review game</a>
+</li>
+	<li class="cat-item cat-item-23"><a href="http://caigicunghay.com/category/thu-thuat/" >Thủ thuật</a>
+</li>
+	<li class="cat-item cat-item-24"><a href="http://caigicunghay.com/category/thu-thuat/thu-thuat-di-dong/" >Thủ thuật di động</a>
+</li>
+	<li class="cat-item cat-item-28"><a href="http://caigicunghay.com/category/thu-thuat/thu-thuat-pc/" >Thủ thuật PC</a>
+</li>
+	<li class="cat-item cat-item-40"><a href="http://caigicunghay.com/category/tim-nguoi-than/" >Tìm người thân</a>
+</li>
+	<li class="cat-item cat-item-31"><a href="http://caigicunghay.com/category/ung-dung/" >Ứng dụng</a>
+</li>
+	<li class="cat-item cat-item-32"><a href="http://caigicunghay.com/category/ung-dung/ung-dung-mobile/" >Ứng dụng Mobile</a>
+</li>
+		</ul>
+</section></aside><!-- #secondary -->
+        </div><!-- #content -->
+    </section>
+        <!-- *****************************************
+             Footer section starts
+    ****************************************** -->
+    <footer class="wrapper wrap-footer">
+     
+        <!-- footer site info -->
+        <section id="colophon" class="wrapper site-footer" role="contentinfo">
+            <div class="container">
+                <div class="row">
+                    <div class="xs-12 col-sm-6 col-md-6">
+                        <div class="site-info">
+                            Copyright &copy; All right reserved.                                                            <span class="sep"> | </span>
+                                Theme: OnlineMag by <a href="http://evisionthemes.com/" target = "_blank" rel="designer">eVisionThemes </a>                                                        </div><!-- .site-info -->
+                    </div>
+                                    </div>
+            </div>
+        </section><!-- #colophon -->     
+
+    </footer><!-- #colophon -->
+    <!-- *****************************************
+             Footer section ends
+    ****************************************** -->
+                    <a id="gotop" class="evision-back-to-top" href="#page"><i class="fa fa-angle-up"></i></a>
+            </div><!-- #page -->
+    <script type='text/javascript' src='http://caigicunghay.com/wp-content/themes/onlinemag/assets/js/modernizr.min.js?ver=2.8.3'></script>
+<script type='text/javascript' src='http://caigicunghay.com/wp-content/themes/onlinemag/assets/frameworks/jquery.easing/jquery.easing.js?ver=0.3.6'></script>
+<script type='text/javascript' src='http://caigicunghay.com/wp-content/themes/onlinemag/assets/frameworks/slick/slick.min.js?ver=1.6.0'></script>
+<script type='text/javascript' src='http://caigicunghay.com/wp-content/themes/onlinemag/assets/frameworks/waypoints/jquery.waypoints.min.js?ver=4.0.0'></script>
+<script type='text/javascript' src='http://caigicunghay.com/wp-content/themes/onlinemag/assets/frameworks/cycle2/jquery.cycle2.js?ver=2.1.6'></script>
+<script type='text/javascript' src='http://caigicunghay.com/wp-content/themes/onlinemag/assets/js/evision-custom.js?ver=4.8.6'></script>
+<script type='text/javascript' src='http://caigicunghay.com/wp-content/themes/onlinemag/js/skip-link-focus-fix.js?ver=20151215'></script>
+<script type='text/javascript' src='http://caigicunghay.com/wp-includes/js/comment-reply.min.js?ver=4.8.6'></script>
+<script type='text/javascript' src='http://caigicunghay.com/wp-includes/js/wp-embed.min.js?ver=4.8.6'></script>
+</body>
+</html>

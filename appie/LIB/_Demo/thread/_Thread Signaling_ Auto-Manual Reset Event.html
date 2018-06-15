@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width" />
+<title>C# &#8211; Thread Signaling: Auto và Manual Reset Event | YinYang&#039;s Programing Blog</title>
+<link rel="profile" href="http://gmpg.org/xfn/11" />
+<link rel="pingback" href="https://yinyangit.wordpress.com/xmlrpc.php" />
+<!--[if lt IE 9]>
+<script src="https://s2.wp.com/wp-content/themes/pub/silesia/js/html5.js" type="text/javascript"></script>
+<![endif]-->
+
+<meta name="google-site-verification" content="gnmzSoooNtmRiaD3FiB9OHiG-poJ1Ou5mewun64T6bw" />
+<meta name="msvalidate.01" content="E4896FB2D5D577AE4D67903075BCD46B" />
+<link rel='dns-prefetch' href='//s2.wp.com' />
+<link rel='dns-prefetch' href='//s1.wp.com' />
+<link rel='dns-prefetch' href='//s0.wp.com' />
+<link rel='dns-prefetch' href='//s.pubmine.com' />
+<link rel='dns-prefetch' href='//x.bidswitch.net' />
+<link rel='dns-prefetch' href='//static.criteo.net' />
+<link rel='dns-prefetch' href='//ib.adnxs.com' />
+<link rel='dns-prefetch' href='//aax.amazon-adsystem.com' />
+<link rel='dns-prefetch' href='//bidder.criteo.com' />
+<link rel='dns-prefetch' href='//cas.criteo.com' />
+<link rel='dns-prefetch' href='//gum.criteo.com' />
+<link rel='dns-prefetch' href='//ads.pubmatic.com' />
+<link rel='dns-prefetch' href='//gads.pubmatic.com' />
+<link rel='dns-prefetch' href='//tpc.googlesyndication.com' />
+<link rel='dns-prefetch' href='//ad.doubleclick.net' />
+<link rel='dns-prefetch' href='//googleads.g.doubleclick.net' />
+<link rel='dns-prefetch' href='//www.googletagservices.com' />
+<link rel='dns-prefetch' href='//cdn.switchadhub.com' />
+<link rel='dns-prefetch' href='//delivery.g.switchadhub.com' />
+<link rel='dns-prefetch' href='//delivery.swid.switchadhub.com' />
+<link rel="alternate" type="application/rss+xml" title="Dòng thông tin YinYang&#039;s Programing Blog &raquo;" href="https://yinyangit.wordpress.com/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Dòng phản hồi YinYang&#039;s Programing Blog &raquo;" href="https://yinyangit.wordpress.com/comments/feed/" />
+<link rel="alternate" type="application/rss+xml" title="YinYang&#039;s Programing Blog &raquo; C# &#8211; Thread Signaling: Auto và Manual Reset&nbsp;Event Dòng phản hồi" href="https://yinyangit.wordpress.com/2012/12/04/c-thread-signaling-auto-va-manual-reset-event/feed/" />
+	<script type="text/javascript">
+		/* <![CDATA[ */
+		function addLoadEvent(func) {
+			var oldonload = window.onload;
+			if (typeof window.onload != 'function') {
+				window.onload = func;
+			} else {
+				window.onload = function () {
+					oldonload();
+					func();
+				}
+			}
+		}
+		/* ]]> */
+	</script>
+			<script type="text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s0.wp.com\/wp-content\/mu-plugins\/wpcom-smileys\/twemoji\/2\/72x72\/","ext":".png","svgUrl":"https:\/\/s0.wp.com\/wp-content\/mu-plugins\/wpcom-smileys\/twemoji\/2\/svg\/","svgExt":".svg","source":{"concatemoji":"https:\/\/s2.wp.com\/wp-includes\/js\/wp-emoji-release.min.js?m=1516999477h&ver=4.9.7-alpha-43298"}};
+			!function(a,b,c){function d(a,b){var c=String.fromCharCode;l.clearRect(0,0,k.width,k.height),l.fillText(c.apply(this,a),0,0);var d=k.toDataURL();l.clearRect(0,0,k.width,k.height),l.fillText(c.apply(this,b),0,0);var e=k.toDataURL();return d===e}function e(a){var b;if(!l||!l.fillText)return!1;switch(l.textBaseline="top",l.font="600 32px Arial",a){case"flag":return!(b=d([55356,56826,55356,56819],[55356,56826,8203,55356,56819]))&&(b=d([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]),!b);case"emoji":return b=d([55357,56692,8205,9792,65039],[55357,56692,8203,9792,65039]),!b}return!1}function f(a){var c=b.createElement("script");c.src=a,c.defer=c.type="text/javascript",b.getElementsByTagName("head")[0].appendChild(c)}var g,h,i,j,k=b.createElement("canvas"),l=k.getContext&&k.getContext("2d");for(j=Array("flag","emoji"),c.supports={everything:!0,everythingExceptFlag:!0},i=0;i<j.length;i++)c.supports[j[i]]=e(j[i]),c.supports.everything=c.supports.everything&&c.supports[j[i]],"flag"!==j[i]&&(c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&c.supports[j[i]]);c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&!c.supports.flag,c.DOMReady=!1,c.readyCallback=function(){c.DOMReady=!0},c.supports.everything||(h=function(){c.readyCallback()},b.addEventListener?(b.addEventListener("DOMContentLoaded",h,!1),a.addEventListener("load",h,!1)):(a.attachEvent("onload",h),b.attachEvent("onreadystatechange",function(){"complete"===b.readyState&&c.readyCallback()})),g=c.source||{},g.concatemoji?f(g.concatemoji):g.wpemoji&&g.twemoji&&(f(g.twemoji),f(g.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script>
+		<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+<link rel='stylesheet' id='all-css-0-1' href='https://s1.wp.com/_static/??-eJyVUu1uwjAMfKF5ERtjv6Y9S5KaYnDqqHZVePulLQjxoYj9iXzxnS+x7cYMUTrDzlwaIPPQUqduzFESaCLG0x16j6pv7rmM6YDq9mjZxwPM6IEeWNqrj/SNb9S1LMFzrXSP7A0byKJ2h2qyKD2W+5S9TYyEDXlkTIVWk43UtFh8CuUcg+GxKkl5czGawl3pQPVlS1NDyD2qQjkTDQlsV972qFuuXR6C0zIFJe/UToyvEKmLCxlmy1e+bZLPjX7u8kSCQ8nKgRDYj84w5WlC/yiw9RFDqTCvTZDj60qVSJ6BCuUWLGJyndiSvAS1qi0KsERvJN0NgC176us7Oi13Cdt5ca5wEv2mn9XXx/fmc71ab/Z/otFPdA==?cssminify=yes' type='text/css' media='all' />
+<style id='silesia-style-inline-css' type='text/css'>
+
+			#tertiary:after {
+				border-color: transparent #527f8d;
+			}
+		
+</style>
+<link rel='stylesheet' id='print-css-1-1' href='https://s2.wp.com/wp-content/mu-plugins/global-print/global-print.css?m=1465851035h&cssminify=yes' type='text/css' media='print' />
+<link rel='stylesheet' id='all-css-2-1' href='https://s0.wp.com/_static/??-eJx9i0EKQjEMBS9kDdVfXIlnyS+1jaRJafLx+uJCRBRXbx7MwH2ErOJFHPoWBm+VxACzk8qK8037bLaD3/pQ83BlpAnWcJLU1/6rTDMhB9aqn+cr8lZ6MWgLVNYV+Slc+jmmQzrFtMTj7QHFQEmu?cssminify=yes' type='text/css' media='all' />
+<script type='text/javascript'>
+/* <![CDATA[ */
+var related_posts_js_options = {"post_heading":"h4"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://s2.wp.com/_static/??-eJyFj90KwjAMhV/IrAw6xQvxWWoXS2r/bNoNfXo70At1KARCTr4cTsScgIJ2dUQWttW1Yr49W2d5I34B4MlkVbDzFF6wjqFgKAvr44kcQmXMyjStGZ3jCpciF4/MDVrZvkeiMBHOfzGLJSl9gYxM9y9XXyG5aiiwyOjaAyMsGT6mdnX0h17uh36Qcre1DyuucHk='></script>
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://yinyangit.wordpress.com/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="https://s1.wp.com/wp-includes/wlwmanifest.xml" /> 
+<link rel='prev' title='jQuery &#8211; Hướng dẫn tổng quan về jqGrid&nbsp;Plugin' href='https://yinyangit.wordpress.com/2012/11/29/jquery-huong-dan-tong-quan-ve-jqgrid-plugin/' />
+<link rel='next' title='C# &#8211; Giao tiếp giữa các process bằng Pipe Stream (Inter-process&nbsp;communication)' href='https://yinyangit.wordpress.com/2012/12/11/c-giao-tiep-giua-cac-process-bang-pipe-stream/' />
+<meta name="generator" content="WordPress.com" />
+<link rel="canonical" href="https://yinyangit.wordpress.com/2012/12/04/c-thread-signaling-auto-va-manual-reset-event/" />
+<link rel='shortlink' href='https://wp.me/ptl4u-1hI' />
+<link rel="alternate" type="application/json+oembed" href="https://public-api.wordpress.com/oembed/?format=json&amp;url=https%3A%2F%2Fyinyangit.wordpress.com%2F2012%2F12%2F04%2Fc-thread-signaling-auto-va-manual-reset-event%2F&amp;for=wpcom-auto-discovery" /><link rel="alternate" type="application/xml+oembed" href="https://public-api.wordpress.com/oembed/?format=xml&amp;url=https%3A%2F%2Fyinyangit.wordpress.com%2F2012%2F12%2F04%2Fc-thread-signaling-auto-va-manual-reset-event%2F&amp;for=wpcom-auto-discovery" />
+<!-- Jetpack Open Graph Tags -->
+<meta property="og:type" content="article" />
+<meta property="og:title" content="C# &#8211; Thread Signaling: Auto và Manual Reset Event" />
+<meta property="og:url" content="https://yinyangit.wordpress.com/2012/12/04/c-thread-signaling-auto-va-manual-reset-event/" />
+<meta property="og:description" content="Khi làm việc với Thread, đôi lúc bạn cần các thread thực thi theo một trình tự nào đó để đảm bảo các tác vụ diễn ra một cách hợp lý. Như vậy, các thread cần phải sử dụng một cơ chế nào đó để đợi và…" />
+<meta property="article:published_time" content="2012-12-04T04:21:42+00:00" />
+<meta property="article:modified_time" content="2012-12-04T04:27:45+00:00" />
+<meta property="og:site_name" content="YinYang&#039;s Programing Blog" />
+<meta property="og:image" content="https://yinyangit.files.wordpress.com/2012/12/gdp_road-position.jpg" />
+<meta property="og:locale" content="vi_VN" />
+<meta name="twitter:site" content="@wordpressdotcom" />
+<meta name="twitter:text:title" content="C# &#8211; Thread Signaling: Auto và Manual Reset&nbsp;Event" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:creator" content="@YinYangIT" />
+<meta property="fb:app_id" content="249643311490" />
+<meta property="article:publisher" content="https://www.facebook.com/WordPresscom" />
+
+<!-- End Jetpack Open Graph Tags -->
+<link rel="shortcut icon" type="image/x-icon" href="https://secure.gravatar.com/blavatar/7fa3ae3f2dc76be062dbc7aa3aa65eb9?s=32" sizes="16x16" />
+<link rel="icon" type="image/x-icon" href="https://secure.gravatar.com/blavatar/7fa3ae3f2dc76be062dbc7aa3aa65eb9?s=32" sizes="16x16" />
+<link rel="apple-touch-icon-precomposed" href="https://secure.gravatar.com/blavatar/7fa3ae3f2dc76be062dbc7aa3aa65eb9?s=114" />
+<link rel='openid.server' href='https://yinyangit.wordpress.com/?openidserver=1' />
+<link rel='openid.delegate' href='https://yinyangit.wordpress.com/' />
+<link rel="search" type="application/opensearchdescription+xml" href="https://yinyangit.wordpress.com/osd.xml" title="YinYang&#039;s Programing Blog" />
+<link rel="search" type="application/opensearchdescription+xml" href="https://s1.wp.com/opensearch.xml" title="WordPress.com" />
+		<style type="text/css">.recentcomments a{display:inline !important;padding:0 !important;margin:0 !important;}</style>
+				<style type="text/css">
+			.recentcomments a {
+				display: inline !important;
+				padding: 0 !important;
+				margin: 0 !important;
+			}
+
+			table.recentcommentsavatartop img.avatar, table.recentcommentsavatarend img.avatar {
+				border: 0px;
+				margin: 0;
+			}
+
+			table.recentcommentsavatartop a, table.recentcommentsavatarend a {
+				border: 0px !important;
+				background-color: transparent !important;
+			}
+
+			td.recentcommentsavatarend, td.recentcommentsavatartop {
+				padding: 0px 0px 1px 0px;
+				margin: 0px;
+			}
+
+			td.recentcommentstextend {
+				border: none !important;
+				padding: 0px 0px 2px 10px;
+			}
+
+			.rtl td.recentcommentstextend {
+				padding: 0px 10px 2px 0px;
+			}
+
+			td.recentcommentstexttop {
+				border: none;
+				padding: 0px 0px 0px 10px;
+			}
+
+			.rtl td.recentcommentstexttop {
+				padding: 0px 10px 0px 0px;
+			}
+		</style>
+		<meta name="application-name" content="YinYang&#039;s Programing Blog" /><meta name="msapplication-window" content="width=device-width;height=device-height" /><meta name="msapplication-tooltip" content="&quot;Education is not a preparation for life; education is life itself&quot;" /><meta name="msapplication-task" content="name=Theo dõi;action-uri=https://yinyangit.wordpress.com/feed/;icon-uri=https://secure.gravatar.com/blavatar/7fa3ae3f2dc76be062dbc7aa3aa65eb9?s=16" /><meta name="msapplication-task" content="name=Đăng ký một blog miễn phí;action-uri=http://wordpress.com/signup/;icon-uri=https://s1.wp.com/i/favicon.ico" /><meta name="msapplication-task" content="name=Hỗ trợ của WordPress.com;action-uri=http://support.wordpress.com/;icon-uri=https://s1.wp.com/i/favicon.ico" /><meta name="msapplication-task" content="name=Diễn đàn của WordPress.com;action-uri=http://forums.wordpress.com/;icon-uri=https://s1.wp.com/i/favicon.ico" /><meta name="description" content="Khi làm việc với Thread, đôi lúc bạn cần các thread thực thi theo một trình tự nào đó để đảm bảo các tác vụ diễn ra một cách hợp lý. Như vậy, các thread cần phải sử dụng một cơ chế nào đó để đợi và thông báo cho nhau. Cơ chế này được&hellip;" />
+		<script type="text/javascript">
+		var __ATA_PP = { pt: 1, ht: 0, tn: 'silesia', amp: false, siteid: 8982, consent: 0 };
+		var __ATA = __ATA || {};
+		__ATA.cmd = __ATA.cmd || [];
+		__ATA.criteo = __ATA.criteo || {};
+		__ATA.criteo.cmd = __ATA.criteo.cmd || [];
+		</script>
+		<script type="text/javascript" src="//s.pubmine.com/head.js" async></script><link rel="amphtml" href="https://yinyangit.wordpress.com/2012/12/04/c-thread-signaling-auto-va-manual-reset-event/amp/"><style type="text/css" id="syntaxhighlighteranchor"></style>
+<script type="text/javascript">
+	window.google_analytics_uacct = "UA-52447-2";
+</script>
+
+<script type="text/javascript">
+	var _gaq = _gaq || [];
+	_gaq.push(['_setAccount', 'UA-52447-2']);
+	_gaq.push(['_setDomainName', 'wordpress.com']);
+	_gaq.push(['_initData']);
+	_gaq.push(['_trackPageview']);
+
+	(function() {
+		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ga);
+	})();
+</script>
+</head>
+
+<body class="post-template-default single single-post postid-4942 single-format-standard mp6 customizer-styles-applied highlander-enabled highlander-light">
+<div id="page" class="hfeed site">
+		<div id="tertiary" class="widget-area" role="complementary">
+
+	<aside id="authors-3" class="widget widget_authors"><h1 class="widget-title"></h1><ul><li><a href="https://yinyangit.wordpress.com/author/yinyangit/"> <img alt='' src='https://1.gravatar.com/avatar/7cf6b18e49b589304c12d44e5affb97e?s=48&#038;d=identicon&#038;r=G' class='avatar avatar-48' height='48' width='48' /> <strong>Yin Yang</strong></a><ul><li><a href="https://yinyangit.wordpress.com/2015/10/02/c-tim-hieu-ve-closure/">C# &#8211; Tìm hiểu về&nbsp;Closure</a></li><li><a href="https://yinyangit.wordpress.com/2015/09/23/net-strong-named-assembly-la-gi/">.NET &#8211; Strong Named Assembly là&nbsp;gì?</a></li><li><a href="https://yinyangit.wordpress.com/2015/09/20/net-qua-trinh-bien-dich-jit-just-in-time-va-ngen-native-image-generator/">.NET &#8211; Quá trình biên dịch: JIT (Just-In-Time) và NGEN (Native Image&nbsp;Generator)</a></li><li><a href="https://yinyangit.wordpress.com/2015/09/11/javascript-console-dir-va-console-table/">Javascript &#8211; console.dir() và&nbsp;console.table()</a></li><li><a href="https://yinyangit.wordpress.com/2015/09/06/design-pattern-vi-du-ve-service-locator-trong-c/">Design Pattern &#8211; Ví dụ về Service Locator trong&nbsp;C#</a></li><li><a href="https://yinyangit.wordpress.com/2015/08/28/javascript-this-keyword-slide/">Javascript &#8211; this keyword&nbsp;(Slide)</a></li><li><a href="https://yinyangit.wordpress.com/2015/08/05/angularjs-su-dung-cu-phap-controller-as-va-scope/">AngularJS &#8211; Sử dụng cú pháp Controller as và&nbsp;$scope</a></li><li><a href="https://yinyangit.wordpress.com/2015/07/08/context-image-resizer-resize-anh-qua-menu-ngu-canh/">Context Image Resizer &#8211; Resize ảnh qua menu ngữ&nbsp;cảnh</a></li><li><a href="https://yinyangit.wordpress.com/2015/07/02/javascript-common-design-patterns-slide/">Javascript &#8211; Common Design Patterns&nbsp;(Slide)</a></li><li><a href="https://yinyangit.wordpress.com/2015/06/24/javascript-gioi-thieu-ve-debounce-function/">Javascript &#8211; Giới thiệu về Debounce&nbsp;Function</a></li></ul></li></ul></aside>		<aside id="recent-posts-3" class="widget widget_recent_entries">		<h1 class="widget-title">Bài viết mới</h1>		<ul>
+											<li>
+					<a href="https://yinyangit.wordpress.com/2015/10/02/c-tim-hieu-ve-closure/">C# &#8211; Tìm hiểu về&nbsp;Closure</a>
+									</li>
+											<li>
+					<a href="https://yinyangit.wordpress.com/2015/09/23/net-strong-named-assembly-la-gi/">.NET &#8211; Strong Named Assembly là&nbsp;gì?</a>
+									</li>
+											<li>
+					<a href="https://yinyangit.wordpress.com/2015/09/20/net-qua-trinh-bien-dich-jit-just-in-time-va-ngen-native-image-generator/">.NET &#8211; Quá trình biên dịch: JIT (Just-In-Time) và NGEN (Native Image&nbsp;Generator)</a>
+									</li>
+											<li>
+					<a href="https://yinyangit.wordpress.com/2015/09/11/javascript-console-dir-va-console-table/">Javascript &#8211; console.dir() và&nbsp;console.table()</a>
+									</li>
+											<li>
+					<a href="https://yinyangit.wordpress.com/2015/09/06/design-pattern-vi-du-ve-service-locator-trong-c/">Design Pattern &#8211; Ví dụ về Service Locator trong&nbsp;C#</a>
+									</li>
+											<li>
+					<a href="https://yinyangit.wordpress.com/2015/08/28/javascript-this-keyword-slide/">Javascript &#8211; this keyword&nbsp;(Slide)</a>
+									</li>
+											<li>
+					<a href="https://yinyangit.wordpress.com/2015/08/05/angularjs-su-dung-cu-phap-controller-as-va-scope/">AngularJS &#8211; Sử dụng cú pháp Controller as và&nbsp;$scope</a>
+									</li>
+											<li>
+					<a href="https://yinyangit.wordpress.com/2015/07/08/context-image-resizer-resize-anh-qua-menu-ngu-canh/">Context Image Resizer &#8211; Resize ảnh qua menu ngữ&nbsp;cảnh</a>
+									</li>
+											<li>
+					<a href="https://yinyangit.wordpress.com/2015/07/02/javascript-common-design-patterns-slide/">Javascript &#8211; Common Design Patterns&nbsp;(Slide)</a>
+									</li>
+											<li>
+					<a href="https://yinyangit.wordpress.com/2015/06/24/javascript-gioi-thieu-ve-debounce-function/">Javascript &#8211; Giới thiệu về Debounce&nbsp;Function</a>
+									</li>
+					</ul>
+		</aside>	<a id="tertiary-control" class="tertiary-control" href="#" title="Open sidebar">+</a>
+</div><!-- #secondary .widget-area -->
+
+	<div id="wrapper" class="site-wrapper">
+		<header id="masthead" class="site-header" role="banner">
+			<hgroup>
+				<h1 class="site-title"><a href="https://yinyangit.wordpress.com/" title="YinYang&#039;s Programing Blog" rel="home">YinYang&#039;s Programing Blog</a></h1>
+				<h2 class="site-description">&quot;Education is not a preparation for life; education is life itself&quot;</h2>
+			</hgroup>
+
+			
+			<nav role="navigation" class="site-navigation main-navigation clearfix">
+				<h1 class="assistive-text">Menu</h1>
+				<div class="assistive-text skip-link"><a href="#content" title="Skip to content">Skip to content</a></div>
+
+				<div class="menu-testmenu-container"><ul id="menu-testmenu" class="menu"><li id="menu-item-3644" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-3644"><a href="https://yinyangit.wordpress.com/">Home</a></li>
+<li id="menu-item-3646" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3646"><a href="https://yinyangit.wordpress.com/thong-tin/">About</a></li>
+<li id="menu-item-3647" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3647"><a href="https://yinyangit.wordpress.com/archives/">Archives</a></li>
+<li id="menu-item-3648" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3648"><a href="https://yinyangit.wordpress.com/discussion/">Discussion</a></li>
+<li id="menu-item-4584" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-4584"><a href="https://yinyangit.wordpress.com/category/game-dev/">Game Dev</a></li>
+<li id="menu-item-3643" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-3643"><a href="https://yinyangit.wordpress.com/category/web-development/">Web Dev</a></li>
+<li id="menu-item-4114" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4114"><a href="https://yinyangit.wordpress.com/my-corner/my-gallery/">Photos</a></li>
+</ul></div>			</nav><!-- .site-navigation .main-navigation -->
+
+			
+		</header><!-- #masthead .site-header -->
+
+		<div id="main" class="site-main clearfix">
+
+<div id="primary" class="content-area">
+	<div id="content" class="site-content" role="main">
+
+	
+<article id="post-4942" class="clearfix post-4942 post type-post status-publish format-standard hentry category-c tag-thread">
+	<footer class="entry-meta">
+								<span class="entry-format genericon"></span>
+			
+			<span class="entry-date">Posted on <a href="https://yinyangit.wordpress.com/2012/12/04/c-thread-signaling-auto-va-manual-reset-event/" title="11:21 sáng" rel="bookmark"><time class="entry-date" datetime="2012-12-04T11:21:42+00:00" pubdate>Thứ Ba, Tháng Mười Hai 4, 2012</time></a><span class="byline"> by <span class="author vcard"><a class="url fn n" href="https://yinyangit.wordpress.com/author/yinyangit/" title="Xem tất cả bài viết bằng Yin Yang" rel="author">Yin Yang</a></span></span></span>
+
+						<span class="tags-links">
+				Tagged <a href="https://yinyangit.wordpress.com/tag/thread/" rel="tag">Thread</a>			</span>
+					
+				<span class="comments-link">Bình luận<a href="https://yinyangit.wordpress.com/2012/12/04/c-thread-signaling-auto-va-manual-reset-event/#comments">9 bình luận<span class="screen-reader-text"> ở C# &#8211; Thread Signaling: Auto và Manual Reset&nbsp;Event</span></a></span>
+		
+			</footer><!-- .entry-meta -->
+
+	<header class="entry-header">
+		<h1 class="entry-title"><a href="https://yinyangit.wordpress.com/2012/12/04/c-thread-signaling-auto-va-manual-reset-event/" rel="bookmark">C# &#8211; Thread Signaling: Auto và Manual Reset&nbsp;Event</a></h1>	</header><!-- .entry-header -->
+
+		<div class="entry-content">
+		<p><a href="https://yinyangit.wordpress.com/2012/12/04/c-thread-signaling-auto-va-manual-reset-event/queue-people-standing-in-line/" rel="attachment wp-att-4950"><img data-attachment-id="4950" data-permalink="https://yinyangit.wordpress.com/2012/12/04/c-thread-signaling-auto-va-manual-reset-event/queue-people-standing-in-line/#main" data-orig-file="https://yinyangit.files.wordpress.com/2012/12/queue-people-standing-in-line.png" data-orig-size="200,150" data-comments-opened="1" data-image-meta="{&quot;aperture&quot;:&quot;0&quot;,&quot;credit&quot;:&quot;&quot;,&quot;camera&quot;:&quot;&quot;,&quot;caption&quot;:&quot;&quot;,&quot;created_timestamp&quot;:&quot;0&quot;,&quot;copyright&quot;:&quot;&quot;,&quot;focal_length&quot;:&quot;0&quot;,&quot;iso&quot;:&quot;0&quot;,&quot;shutter_speed&quot;:&quot;0&quot;,&quot;title&quot;:&quot;&quot;}" data-image-title="queue-people-standing-in-line" data-image-description="" data-medium-file="https://yinyangit.files.wordpress.com/2012/12/queue-people-standing-in-line.png?w=200" data-large-file="https://yinyangit.files.wordpress.com/2012/12/queue-people-standing-in-line.png?w=200" class="alignleft size-thumbnail wp-image-4950" alt="queue-people-standing-in-line" src="https://yinyangit.files.wordpress.com/2012/12/queue-people-standing-in-line.png?w=150&#038;h=113" srcset="https://yinyangit.files.wordpress.com/2012/12/queue-people-standing-in-line.png?w=150&amp;h=113 150w, https://yinyangit.files.wordpress.com/2012/12/queue-people-standing-in-line.png 200w" sizes="(max-width: 150px) 100vw, 150px"   /></a>Khi làm việc với Thread, đôi lúc bạn cần các thread thực thi theo một trình tự nào đó để đảm bảo các tác vụ diễn ra một cách hợp lý. Như vậy, các thread cần phải sử dụng một cơ chế nào đó để đợi và thông báo cho nhau. Cơ chế này được gọi là Signaling và có nhiều cách thức để thực hiện, tuy nhiên trong bài này tôi chỉ tập trung giới thiệu về hai lớp <a href="http://msdn.microsoft.com/en-us/library/system.threading.autoresetevent.aspx">AutoResetEvent </a>và <a href="http://msdn.microsoft.com/en-us/library/system.threading.manualresetevent.aspx">ManualResetEvent</a>.</p>
+<p><span id="more-4942"></span></p>
+<h1>Giới thiệu</h1>
+<p>Hai lớp Event này được thừa kế trực tiếp từ <a href="http://msdn.microsoft.com/en-us/library/system.threading.eventwaithandle.aspx">EventWaitHandle</a>. Một đối tượng event sẽ có hai trạng thái là:<br />
+&#8211; <strong>signaled</strong>: cho phép các thread đang đợi tiếp tục chạy.<br />
+&#8211; <strong>non-signaled</strong>: các thread sẽ bị chặn (block).</p>
+<p>EventWaitHandle có ba phương thức chính bạn cần quan tâm:<br />
+&#8211; <strong>Close</strong>: giải phóng các tài nguyên được sử dụng bởi WaitHandle.<br />
+&#8211; <strong>Reset</strong>: chuyển trạng thái của event thành non-signaled.<br />
+&#8211; <strong>Set</strong>: chuyển trạng thái của event thành signaled.<br />
+&#8211; <strong>WaitOne</strong>([parameters]): Chặn thread hiện tại cho đến khi trạng thái của event được chuyển sang signaled.</p>
+<p>Cách sử dụng AutoResetEvent và ManualResetEvent là như nhau tuy nhiên chúng có một chút khác biệt sẽ được trình bày sau. Bây giờ ta hãy đi vào một ví dụ cụ thể.</p>
+<h1>Sử dụng</h1>
+<p>Khi tạo một đối tượng AutoResetEvent hay ManualResetEvent, bạn có thể xác dịnh trạng thái cho nó bằng cách truyền một tham số boolean vào constructor, với true cho trạng thái signaled và ngược lại. Bạn cũng có thể tạo một event bằng lớp EventWaitHandle với tham số thứ hai là một kiểu enum EventResetMode.</p>
+<pre class="brush: csharp; title: ; notranslate" title="">
+using System;
+using System.Threading;
+class Program
+{
+
+    static void Main()
+    {
+        var signal = new EventWaitHandle(false,EventResetMode.AutoReset);
+		// or signal = new AutoResetEvent(false);
+
+        new Thread(() =&gt;
+        {
+            Console.WriteLine(&quot;Waiting on EventWaitHandle&quot;);
+            signal.WaitOne();
+
+            Console.WriteLine(&quot;Got the signal from EventWaitHandle.&quot;);
+
+        }).Start();
+
+        Thread.Sleep(200);
+        Console.WriteLine(&quot;Press Enter to release the waiting thread.&quot;);
+        Console.ReadLine();
+
+        signal.Set();
+
+        Console.Read();
+    }
+}
+
+// OUT PUT:
+/*
+Waiting on EventWaitHandle
+Press Enter to release the waiting thread.
+{ENTER}
+Got the signal from EventWaitHandle.
+*/
+</pre>
+<p>Cách hoạt động này giống như đèn giao thông. Tín hiệu chuyển sang đỏ (non-signaled) là bắt buộc các xe phải &#8220;wait&#8221;. Khi tín hiệu chuyển sang xanh (signaled) thì xe cộ mới được tiếp tục lưu thông.</p>
+<p style="text-align:center;"><a href="https://yinyangit.wordpress.com/2012/12/04/c-thread-signaling-auto-va-manual-reset-event/gdp_road-position/" rel="attachment wp-att-4944"><img data-attachment-id="4944" data-permalink="https://yinyangit.wordpress.com/2012/12/04/c-thread-signaling-auto-va-manual-reset-event/gdp_road-position/#main" data-orig-file="https://yinyangit.files.wordpress.com/2012/12/gdp_road-position.jpg?w=620" data-orig-size="402,286" data-comments-opened="1" data-image-meta="{&quot;aperture&quot;:&quot;0&quot;,&quot;credit&quot;:&quot;&quot;,&quot;camera&quot;:&quot;&quot;,&quot;caption&quot;:&quot;&quot;,&quot;created_timestamp&quot;:&quot;0&quot;,&quot;copyright&quot;:&quot;&quot;,&quot;focal_length&quot;:&quot;0&quot;,&quot;iso&quot;:&quot;0&quot;,&quot;shutter_speed&quot;:&quot;0&quot;,&quot;title&quot;:&quot;&quot;}" data-image-title="gdp_road-position" data-image-description="" data-medium-file="https://yinyangit.files.wordpress.com/2012/12/gdp_road-position.jpg?w=620?w=300" data-large-file="https://yinyangit.files.wordpress.com/2012/12/gdp_road-position.jpg?w=620?w=402" class="aligncenter size-full wp-image-4944" alt="gdp_road-position" src="https://yinyangit.files.wordpress.com/2012/12/gdp_road-position.jpg?w=620" srcset="https://yinyangit.files.wordpress.com/2012/12/gdp_road-position.jpg 402w, https://yinyangit.files.wordpress.com/2012/12/gdp_road-position.jpg?w=150 150w, https://yinyangit.files.wordpress.com/2012/12/gdp_road-position.jpg?w=300 300w" sizes="(max-width: 402px) 100vw, 402px"   /></a>(Src: rulesoftheroad.ie)</p>
+<h1>Cross-Process</h1>
+<p>Bạn có thể sử dụng chung một EventWaitHandle giữa các tiến trình (process) khác nhau trong hệ thống. Điều này giúp các tiến trình có thể tương tác và đồng bộ với nhau trong các tác vụ cần thiết. Để thực hiện, bạn chỉ cần đặt tên cho đối tượng EventWaitHandle khi tạo nó. Ví dụ tôi tạo một đối tượng EventWaitHandle với tên là &#8220;<strong>Foo.Bar</strong>:</p>
+<p>var signal = new EventWaitHandle(false, EventResetMode.AutoReset, &#8220;Foo.Bar&#8221;);</p>
+<p>Bạn sẽ tạo cùng một đối tượng này trong các process cần dùng chung nó và cách sử dụng giống như trong phần trên. Ví dụ, bạn tạo một Console project với lớp Program1 như sau:</p>
+<pre class="brush: csharp; title: ; notranslate" title="">
+using System;
+using System.Threading;
+
+class Program1
+{
+
+    static void Main()
+    {
+        var signal = new EventWaitHandle(false, EventResetMode.AutoReset, &quot;Foo.Bar&quot;);
+
+        Console.WriteLine(&quot;Press Enter to release the waiting thread.&quot;);
+        Console.ReadLine();
+
+        signal.Set();
+
+        Console.Read();
+    }
+}
+</pre>
+<p>Thêm một project mới vào solution với lớp Program2:</p>
+<pre class="brush: csharp; title: ; notranslate" title="">
+using System;
+using System.Threading;
+
+class Program2
+{
+    static void Main(string[] args)
+    {
+        var signal = new EventWaitHandle(false, EventResetMode.AutoReset, &quot;Foo.Bar&quot;);
+
+        new Thread(() =&gt;
+        {
+            Console.WriteLine(&quot;Waiting on Foo.Bar&quot;);
+            signal.WaitOne();
+
+            Console.WriteLine(&quot;Got the signal from Foo.Bar.&quot;);
+
+        }).Start();
+
+        Console.Read();
+    }
+}
+</pre>
+<blockquote><p><strong>Note</strong>: Để chạy được nhiều project trong một solution, bạn vào nhấn phải vào Solution &gt; Properties &gt; Common Properties &gt; Startup Project và chọn Multiple startup projects.<br />
+Khi cần chạy project nào, bạn nhấn phải project đó chọn Debug &gt; Start new instance.</p></blockquote>
+<p>Sau khi chạy hai project một lúc, bên Program1, nếu bạn nhấn {ENTER} thì Program2 sẽ hiển thị thông báo nhận được tín hiệu.</p>
+<h1>AutoResetEvent vs ManualResetEvent</h1>
+<p>Cách sử dụng hai lớp này tương tự nhau, nhưng cách hoạt động của chúng có một điểm khác biệt duy nhất. Đó là khi gọi phương thức Set():<br />
+&#8211; <strong>ManualResetEvent</strong>: giải phóng tất cả thread đang đợi. Nếu muốn trở lại trạng thái non-signaled, bạn phải gọi phương thức Reset().<br />
+&#8211; <strong>AutoResetEvent</strong>: chỉ giải phóng một thread đang đợi và lập tức chuyển trang trạng thái non-signaled. Do vậy, bạn không cần phải dùng đến phương thức Reset().</p>
+<p>Bạn có thể hình dung ManualResetEvent giống như cửa siêu thị, mỗi khi mở ra là bất kì ai cũng có thể tự do đi vào. Còn AutoResetEvent giống như cửa vào bãi giữ xe, mỗi người muốn ra/vào phải nhận/trả vé, theo thứ tự từng người một.</p>
+<h1></h1>
+<p>YinYangIt&#8217;s Blog</p>
+<div id="atatags-370373-5b23d516c442a">
+        <script type="text/javascript">
+            __ATA.cmd.push(function() {
+                __ATA.initVideoSlot('atatags-370373-5b23d516c442a', {
+                    sectionId: '370373',
+                    format: 'inread'
+                });
+            });
+        </script>
+    </div>		<div class="wpcnt">
+			<div class="wpa wpmrec">
+				<span class="wpa-about">Advertisements</span>
+				<div class="u">		<div style="padding-bottom:15px;width:300px;height:250px;float:left;margin-right:5px;margin-top:0px">
+		<div id="atatags-26942-5b23d516c4455">
+			<script type="text/javascript">
+			__ATA.cmd.push(function() {
+				__ATA.initSlot('atatags-26942-5b23d516c4455',  {
+					collapseEmpty: 'before',
+					sectionId: '26942',
+					width: 300,
+					height: 250
+				});
+			});
+			</script>
+		</div></div>		<div style="padding-bottom:15px;width:300px;height:250px;float:left;margin-top:0px">
+		<div id="atatags-114160-5b23d516c4456">
+			<script type="text/javascript">
+			__ATA.cmd.push(function() {
+				__ATA.initSlot('atatags-114160-5b23d516c4456',  {
+					collapseEmpty: 'before',
+					sectionId: '114160',
+					width: 300,
+					height: 250
+				});
+			});
+			</script>
+		</div></div></div>
+				
+			</div>
+		</div><div id="jp-post-flair" class="sharedaddy sd-rating-enabled sd-like-enabled sd-sharing-enabled"><div class="sd-block sd-rating"><h3 class="sd-title">Bình chọn</h3><div class="pd-rating" id="pd_rating_holder_514500_post_4942"></div></div><div class="sharedaddy sd-sharing-enabled"><div class="robots-nocontent sd-block sd-social sd-social-icon-text sd-sharing"><h3 class="sd-title">Share this:</h3><div class="sd-content"><ul><li class="share-print"><a rel="nofollow" data-shared="" class="share-print sd-button share-icon" href="https://yinyangit.wordpress.com/2012/12/04/c-thread-signaling-auto-va-manual-reset-event/#print" rel="noopener noreferrer" target="_blank" title="Click to print"><span>In</span></a></li><li class="share-email"><a rel="nofollow" data-shared="" class="share-email sd-button share-icon" href="https://yinyangit.wordpress.com/2012/12/04/c-thread-signaling-auto-va-manual-reset-event/?share=email" rel="noopener noreferrer" target="_blank" title="Click to email this to a friend"><span>Thư điện tử</span></a></li><li class="share-twitter"><a rel="nofollow" data-shared="sharing-twitter-4942" class="share-twitter sd-button share-icon" href="https://yinyangit.wordpress.com/2012/12/04/c-thread-signaling-auto-va-manual-reset-event/?share=twitter" rel="noopener noreferrer" target="_blank" title="Nhấn để chia sẻ trên Twitter"><span>Twitter</span></a></li><li class="share-facebook"><a rel="nofollow" data-shared="sharing-facebook-4942" class="share-facebook sd-button share-icon" href="https://yinyangit.wordpress.com/2012/12/04/c-thread-signaling-auto-va-manual-reset-event/?share=facebook" rel="noopener noreferrer" target="_blank" title="Click to share on Facebook"><span>Facebook</span></a></li><li class="share-google-plus-1"><a rel="nofollow" data-shared="sharing-google-4942" class="share-google-plus-1 sd-button share-icon" href="https://yinyangit.wordpress.com/2012/12/04/c-thread-signaling-auto-va-manual-reset-event/?share=google-plus-1" rel="noopener noreferrer" target="_blank" title="Nhấn để chia sẻ trên Google+"><span>Google</span></a></li><li class="share-end"></li></ul></div></div></div><div class='sharedaddy sd-block sd-like jetpack-likes-widget-wrapper jetpack-likes-widget-unloaded' id='like-post-wrapper-6992514-4942-5b23d516c64d2' data-src='//widgets.wp.com/likes/index.html?ver=20180319#blog_id=6992514&amp;post_id=4942&amp;origin=yinyangit.wordpress.com&amp;obj_id=6992514-4942-5b23d516c64d2' data-name='like-post-frame-6992514-4942-5b23d516c64d2'><h3 class='sd-title'>Like this:</h3><div class='likes-widget-placeholder post-likes-widget-placeholder' style='height: 55px;'><span class='button'><span>Số lượt thích</span></span> <span class="loading">Đang tải...</span></div><span class='sd-text-color'></span><a class='sd-link-color'></a></div>
+<div id='jp-relatedposts' class='jp-relatedposts' >
+	<h3 class="jp-relatedposts-headline"><em>Liên quan</em></h3>
+</div></div>			</div><!-- .entry-content -->
+	
+		<div class="entry-meta">
+		Bài này đã được đăng trong <a href="https://yinyangit.wordpress.com/category/dev-languages/c/" rel="category tag">C#</a> và được gắn thẻ <a href="https://yinyangit.wordpress.com/tag/thread/" rel="tag">Thread</a>. Đánh dấu <a href="https://yinyangit.wordpress.com/2012/12/04/c-thread-signaling-auto-va-manual-reset-event/" title="Đường dẫn tĩnh tới C# &#8211; Thread Signaling: Auto và Manual Reset&nbsp;Event" rel="bookmark">đường dẫn tĩnh</a>.	</div><!-- .entry-meta -->
+	</article><!-- #post-4942 -->
+
+	<div id="comments" class="comments-area">
+
+			<h2 class="comments-title genericon">
+			9 thoughts on &ldquo;<span>C# &#8211; Thread Signaling: Auto và Manual Reset&nbsp;Event</span>&rdquo;		</h2>
+
+		<ol class="commentlist">
+				<li class="comment even thread-even depth-1 highlander-comment" id="li-comment-4560">
+		<article id="comment-4560" class="comment">
+			<footer>
+				<div class="comment-author vcard">
+					<img alt='' src='https://0.gravatar.com/avatar/69896f20a96c54a5525b249794d464e9?s=48&#038;d=identicon&#038;r=G' class='avatar avatar-48' height='48' width='48' />					<cite class="fn">Anonymous</cite> <span class="says">nói:</span>				</div><!-- .comment-author .vcard -->
+
+				<div class="comment-meta commentmetadata">
+					<a href="https://yinyangit.wordpress.com/2012/12/04/c-thread-signaling-auto-va-manual-reset-event/#comment-4560"><time pubdate datetime="2012-12-04T17:31:33+00:00">
+					Thứ Ba, Tháng Mười Hai 4, 2012 lúc 5:31 chiều					</time></a>
+									</div><!-- .comment-meta .commentmetadata -->
+							</footer>
+
+			<div class="comment-content">
+
+				<div class="pd-rating" id="pd_rating_holder_514508_comm_4560"></div><p>Bài viết rất hay và bổ ích, Cám ơn bạn!</p>
+			</div>
+
+					</article><!-- #comment-## -->
+
+	</li><!-- #comment-## -->
+	<li class="comment odd alt thread-odd thread-alt depth-1 highlander-comment" id="li-comment-4564">
+		<article id="comment-4564" class="comment">
+			<footer>
+				<div class="comment-author vcard">
+					<img alt='' src='https://0.gravatar.com/avatar/cbc2ca37b6ddfd9db0b8e8a0d2450120?s=48&#038;d=identicon&#038;r=G' class='avatar avatar-48' height='48' width='48' />					<cite class="fn"><a href='http://gravatar.com/phamtanlong' rel='external nofollow' class='url'>phamtanlong</a></cite> <span class="says">nói:</span>				</div><!-- .comment-author .vcard -->
+
+				<div class="comment-meta commentmetadata">
+					<a href="https://yinyangit.wordpress.com/2012/12/04/c-thread-signaling-auto-va-manual-reset-event/#comment-4564"><time pubdate datetime="2012-12-05T09:10:25+00:00">
+					Thứ Tư, Tháng Mười Hai 5, 2012 lúc 9:10 sáng					</time></a>
+									</div><!-- .comment-meta .commentmetadata -->
+							</footer>
+
+			<div class="comment-content">
+
+				<div class="pd-rating" id="pd_rating_holder_514508_comm_4564"></div><p>Bài viết hay lắm,<br />
+Thank bạn!</p>
+			</div>
+
+					</article><!-- #comment-## -->
+
+	</li><!-- #comment-## -->
+	<li class="comment even thread-even depth-1 highlander-comment" id="li-comment-4676">
+		<article id="comment-4676" class="comment">
+			<footer>
+				<div class="comment-author vcard">
+					<img alt='' src='https://0.gravatar.com/avatar/69896f20a96c54a5525b249794d464e9?s=48&#038;d=identicon&#038;r=G' class='avatar avatar-48' height='48' width='48' />					<cite class="fn">Anonymous</cite> <span class="says">nói:</span>				</div><!-- .comment-author .vcard -->
+
+				<div class="comment-meta commentmetadata">
+					<a href="https://yinyangit.wordpress.com/2012/12/04/c-thread-signaling-auto-va-manual-reset-event/#comment-4676"><time pubdate datetime="2012-12-25T18:09:58+00:00">
+					Thứ Ba, Tháng Mười Hai 25, 2012 lúc 6:09 chiều					</time></a>
+									</div><!-- .comment-meta .commentmetadata -->
+							</footer>
+
+			<div class="comment-content">
+
+				<div class="pd-rating" id="pd_rating_holder_514508_comm_4676"></div><p>Bạn ơi cho mình hỏi là nếu mình dùng AutoResetEvent thì nếu có nhiều thread đang đợi thì nó sẽ giải phóng thread nào?</p>
+			</div>
+
+					</article><!-- #comment-## -->
+
+	<ul class="children">
+	<li class="comment byuser comment-author-yinyangit bypostauthor odd alt depth-2 highlander-comment" id="li-comment-4680">
+		<article id="comment-4680" class="comment">
+			<footer>
+				<div class="comment-author vcard">
+					<img alt='' src='https://1.gravatar.com/avatar/7cf6b18e49b589304c12d44e5affb97e?s=48&#038;d=identicon&#038;r=G' class='avatar avatar-48' height='48' width='48' />					<cite class="fn"><a href='https://yinyangit.wordpress.com' rel='external nofollow' class='url'>Yin Yang</a></cite> <span class="says">nói:</span>				</div><!-- .comment-author .vcard -->
+
+				<div class="comment-meta commentmetadata">
+					<a href="https://yinyangit.wordpress.com/2012/12/04/c-thread-signaling-auto-va-manual-reset-event/#comment-4680"><time pubdate datetime="2012-12-29T19:03:01+00:00">
+					Thứ Bảy, Tháng Mười Hai 29, 2012 lúc 7:03 chiều					</time></a>
+									</div><!-- .comment-meta .commentmetadata -->
+							</footer>
+
+			<div class="comment-content">
+
+				<div class="pd-rating" id="pd_rating_holder_514508_comm_4680"></div><p>Các thread sẽ được đưa vào 1 queue (first in first out), nên thread nào đến trước sẽ được giải phóng trước.</p>
+			</div>
+
+					</article><!-- #comment-## -->
+
+	</li><!-- #comment-## -->
+</ul><!-- .children -->
+</li><!-- #comment-## -->
+	<li class="comment even thread-odd thread-alt depth-1 highlander-comment" id="li-comment-5868">
+		<article id="comment-5868" class="comment">
+			<footer>
+				<div class="comment-author vcard">
+					<img alt='' src='https://0.gravatar.com/avatar/6f384c244a24d1b413fbafab488d04d5?s=48&#038;d=identicon&#038;r=G' class='avatar avatar-48' height='48' width='48' />					<cite class="fn">tung</cite> <span class="says">nói:</span>				</div><!-- .comment-author .vcard -->
+
+				<div class="comment-meta commentmetadata">
+					<a href="https://yinyangit.wordpress.com/2012/12/04/c-thread-signaling-auto-va-manual-reset-event/#comment-5868"><time pubdate datetime="2013-08-28T09:45:32+00:00">
+					Thứ Tư, Tháng Tám 28, 2013 lúc 9:45 sáng					</time></a>
+									</div><!-- .comment-meta .commentmetadata -->
+							</footer>
+
+			<div class="comment-content">
+
+				<div class="pd-rating" id="pd_rating_holder_514508_comm_5868"></div><p>Đọc bài viết của bạn về Thread rất hay . Nhưng mình còn chỗ thắc mác này mong bạn giúp :</p>
+<p>//sự kiện khi click button .<br />
+public  static ArrayList ArrayList = new ArrayList();<br />
+protected void Button1_Click(object sender, EventArgs e)<br />
+        {</p>
+<p>                EventWaitHandle signal = new EventWaitHandle(false, EventResetMode.AutoReset);</p>
+<p>                Thread thread = new Thread(parameter =&gt;<br />
+                {<br />
+                    Download();<br />
+                    //signaling that the thread finished.<br />
+                    signal.Set();<br />
+                });<br />
+                thread.Start();<br />
+              //thêm vào list<br />
+               ArrayList.Add(signal);<br />
+        }<br />
+ private void Download()<br />
+        {<br />
+             //code dơwnload<br />
+        }</p>
+<p> protected void Stop_Click(object sender, EventArgs e)<br />
+        {<br />
+            //Khi mình gọi ra để pause luồng trên thì không được .<br />
+              if (ArrayList.Count &gt; 0){</p>
+<p>                      ((EventWaitHandle)ArrayList[0]).WaitOne();<br />
+             }<br />
+        }</p>
+			</div>
+
+					</article><!-- #comment-## -->
+
+	</li><!-- #comment-## -->
+	<li class="comment odd alt thread-even depth-1 highlander-comment" id="li-comment-5869">
+		<article id="comment-5869" class="comment">
+			<footer>
+				<div class="comment-author vcard">
+					<img alt='' src='https://0.gravatar.com/avatar/6f384c244a24d1b413fbafab488d04d5?s=48&#038;d=identicon&#038;r=G' class='avatar avatar-48' height='48' width='48' />					<cite class="fn">tung</cite> <span class="says">nói:</span>				</div><!-- .comment-author .vcard -->
+
+				<div class="comment-meta commentmetadata">
+					<a href="https://yinyangit.wordpress.com/2012/12/04/c-thread-signaling-auto-va-manual-reset-event/#comment-5869"><time pubdate datetime="2013-08-28T09:51:08+00:00">
+					Thứ Tư, Tháng Tám 28, 2013 lúc 9:51 sáng					</time></a>
+									</div><!-- .comment-meta .commentmetadata -->
+							</footer>
+
+			<div class="comment-content">
+
+				<div class="pd-rating" id="pd_rating_holder_514508_comm_5869"></div><p>Đoạn code trên nghĩa là mình muốn quản lý Thread trong 1 list . Khi nhấn vào stop thì sẽ pause Thread tương ứng lại. Khi nào Start thì lai tiếp tục. Nhưng không biết mình có làm sai hoặc hiểu sai vấn đề không , mà stop không được . Mong bạn giúp mình nhé !</p>
+			</div>
+
+					</article><!-- #comment-## -->
+
+	<ul class="children">
+	<li class="comment byuser comment-author-yinyangit bypostauthor even depth-2 highlander-comment" id="li-comment-6459">
+		<article id="comment-6459" class="comment">
+			<footer>
+				<div class="comment-author vcard">
+					<img alt='' src='https://1.gravatar.com/avatar/7cf6b18e49b589304c12d44e5affb97e?s=48&#038;d=identicon&#038;r=G' class='avatar avatar-48' height='48' width='48' />					<cite class="fn"><a href='https://yinyangit.wordpress.com' rel='external nofollow' class='url'>Yin Yang</a></cite> <span class="says">nói:</span>				</div><!-- .comment-author .vcard -->
+
+				<div class="comment-meta commentmetadata">
+					<a href="https://yinyangit.wordpress.com/2012/12/04/c-thread-signaling-auto-va-manual-reset-event/#comment-6459"><time pubdate datetime="2014-08-04T14:56:07+00:00">
+					Thứ Hai, Tháng Tám 4, 2014 lúc 2:56 chiều					</time></a>
+									</div><!-- .comment-meta .commentmetadata -->
+							</footer>
+
+			<div class="comment-content">
+
+				<div class="pd-rating" id="pd_rating_holder_514508_comm_6459"></div><p>Khi sử dụng EventWaitHandle.WaitOne(), bạn phải sử dụng nó bên trong phần code mà thread thực thi. Cụ thể là bên trong phương thức Download(). Bạn có thể dùng 1 cờ gì đó để xác định khi nhấn nút Stop thì Download() sẽ gọi WaitOne().</p>
+			</div>
+
+					</article><!-- #comment-## -->
+
+	</li><!-- #comment-## -->
+</ul><!-- .children -->
+</li><!-- #comment-## -->
+	<li class="comment odd alt thread-odd thread-alt depth-1 highlander-comment" id="li-comment-5893">
+		<article id="comment-5893" class="comment">
+			<footer>
+				<div class="comment-author vcard">
+					<img alt='' src='https://2.gravatar.com/avatar/e0799df243c03ac57de8214a4167d2e6?s=48&#038;d=identicon&#038;r=G' class='avatar avatar-48' height='48' width='48' />					<cite class="fn">Long</cite> <span class="says">nói:</span>				</div><!-- .comment-author .vcard -->
+
+				<div class="comment-meta commentmetadata">
+					<a href="https://yinyangit.wordpress.com/2012/12/04/c-thread-signaling-auto-va-manual-reset-event/#comment-5893"><time pubdate datetime="2013-09-13T14:46:17+00:00">
+					Thứ Sáu, Tháng Chín 13, 2013 lúc 2:46 chiều					</time></a>
+									</div><!-- .comment-meta .commentmetadata -->
+							</footer>
+
+			<div class="comment-content">
+
+				<div class="pd-rating" id="pd_rating_holder_514508_comm_5893"></div><p>bài viết hay .thanks!</p>
+			</div>
+
+					</article><!-- #comment-## -->
+
+	</li><!-- #comment-## -->
+	<li class="comment even thread-even depth-1 highlander-comment" id="li-comment-7296">
+		<article id="comment-7296" class="comment">
+			<footer>
+				<div class="comment-author vcard">
+					<img alt='' src='https://i2.wp.com/graph.facebook.com/v2.2/1849005755315773/picture?q=type%3Dlarge%26_md5%3Dfd9940de363500c610f3b2897ab9c473&#038;resize=48%2C48' class='avatar avatar-48' height='48' width='48' />					<cite class="fn"><a href='https://www.facebook.com/app_scoped_user_id/1849005755315773/' rel='external nofollow' class='url'>Mèo's Con</a></cite> <span class="says">nói:</span>				</div><!-- .comment-author .vcard -->
+
+				<div class="comment-meta commentmetadata">
+					<a href="https://yinyangit.wordpress.com/2012/12/04/c-thread-signaling-auto-va-manual-reset-event/#comment-7296"><time pubdate datetime="2016-12-12T08:47:55+00:00">
+					Thứ Hai, Tháng Mười Hai 12, 2016 lúc 8:47 sáng					</time></a>
+									</div><!-- .comment-meta .commentmetadata -->
+							</footer>
+
+			<div class="comment-content">
+
+				<div class="pd-rating" id="pd_rating_holder_514508_comm_7296"></div><p>Mình có 1 chương trình bằng c# là chương trình gọi cơ điện cho các tổ sản xuất, nếu tổ nào cần cơ điện thì quẹt thẻ gọi cơ điện, mỗi lần gọi sẽ được đọc đi đọc lại 3 lần, xong 3 lần đó sẽ xóa đi, mình đã dùng 3 timer nhưng chương trình chạy chậm và đôi lúc bị treo, ad cho mình hỏi mình có thẻ dùng thread được không ạ</p>
+			</div>
+
+					</article><!-- #comment-## -->
+
+	</li><!-- #comment-## -->
+		</ol><!-- .commentlist -->
+
+		
+	
+			<p class="nocomments">Đã đóng bình luận.</p>
+	
+	
+</div><!-- #comments .comments-area -->
+	<nav role="navigation" id="nav-below" class="site-navigation post-navigation">
+		<h1 class="assistive-text">Điều hướng bài viết</h1>
+
+	
+		<div class="nav-previous"><a href="https://yinyangit.wordpress.com/2012/11/29/jquery-huong-dan-tong-quan-ve-jqgrid-plugin/" rel="prev"><span class="meta-nav">&larr;</span> jQuery &#8211; Hướng dẫn tổng quan về jqGrid&nbsp;Plugin</a></div>		<div class="nav-next"><a href="https://yinyangit.wordpress.com/2012/12/11/c-giao-tiep-giua-cac-process-bang-pipe-stream/" rel="next">C# &#8211; Giao tiếp giữa các process bằng Pipe Stream (Inter-process&nbsp;communication) <span class="meta-nav">&rarr;</span></a></div>
+	
+	</nav><!-- #nav-below -->
+	
+	</div><!-- #content .site-content -->
+</div><!-- #primary .content-area -->
+
+<div id="secondary" class="widget-area" role="complementary">
+	<aside id="search-3" class="widget widget_search">	<form method="get" id="searchform" action="https://yinyangit.wordpress.com/" role="search">
+		<label for="s" class="assistive-text">Tìm</label>
+		<input type="text" class="field" name="s" value="" id="s" placeholder="Search &hellip;" />
+		<input type="submit" class="submit" name="submit" id="searchsubmit" value="Tìm" />
+	</form>
+</aside><aside id="facebook-likebox-4" class="widget widget_facebook_likebox"><h1 class="widget-title"><a href="https://www.facebook.com/pages/Im-a-Programmer/259923790687571">I&#8217;m Programmer</a></h1>		<div id="fb-root"></div>
+		<div class="fb-page" data-href="https://www.facebook.com/pages/Im-a-Programmer/259923790687571" data-width="340"  data-height="130" data-hide-cover="false" data-show-facepile="true" data-show-posts="false">
+		<div class="fb-xfbml-parse-ignore"><blockquote cite="https://www.facebook.com/pages/Im-a-Programmer/259923790687571"><a href="https://www.facebook.com/pages/Im-a-Programmer/259923790687571">I&#8217;m Programmer</a></blockquote></div>
+		</div>
+		</aside><aside id="blog_subscription-3" class="widget widget_blog_subscription"><h1 class="widget-title"><label for="subscribe-field">Follow Blog via Email</label></h1>
+				<form action="https://subscribe.wordpress.com" method="post" accept-charset="utf-8" id="subscribe-blog">
+											<p>Enter your email address to follow this blog and receive notifications of new posts by email.</p>
+<p>Join 2&nbsp;846 other followers</p>
+						<p><input type="text" name="email" style="width: 95%; padding: 1px 2px" placeholder="Enter your email address" value="" id="subscribe-field"/></p>
+					
+					<p>
+						<input type="hidden" name="action" value="subscribe"/>
+						<input type="hidden" name="blog_id" value="6992514"/>
+						<input type="hidden" name="source" value="https://yinyangit.wordpress.com/2012/12/04/c-thread-signaling-auto-va-manual-reset-event/"/>
+						<input type="hidden" name="sub-type" value="widget"/>
+						<input type="hidden" name="redirect_fragment" value="blog_subscription-3" />
+						<input type="hidden" id="_wpnonce" name="_wpnonce" value="8f81b00f27" />						<input type="submit" value="Follow" />
+					</p>
+				</form>
+			
+</aside><aside id="author_grid-5" class="widget widget_author_grid"><h1 class="widget-title"></h1><ul><li><a href="https://yinyangit.wordpress.com/author/phtung-2/"> <img alt='' src='https://1.gravatar.com/avatar/4ec4de85f8edca71f4e3b55638c13fbb?s=32&#038;d=identicon&#038;r=G' class='avatar avatar-32' height='32' width='32' /></a></li><li><a href="https://yinyangit.wordpress.com/author/yinyangit/"> <img alt='' src='https://1.gravatar.com/avatar/7cf6b18e49b589304c12d44e5affb97e?s=32&#038;d=identicon&#038;r=G' class='avatar avatar-32' height='32' width='32' /></a></li></ul></aside><aside id="text-17" class="widget widget_text">			<div class="textwidget"><a href="https://yinyangit.wordpress.com/?random">Click for Random Post</a></div>
+		</aside><aside id="categories-4" class="widget widget_categories"><h1 class="widget-title">Chuyên mục</h1><form action="https://yinyangit.wordpress.com" method="get"><label class="screen-reader-text" for="cat">Chuyên mục</label><select  name='cat' id='cat' class='postform' >
+	<option value='-1'>Chọn chuyên mục</option>
+	<option class="level-0" value="3378">Algorithms&nbsp;&nbsp;(23)</option>
+	<option class="level-0" value="91921011">Blog / News / Relax&nbsp;&nbsp;(9)</option>
+	<option class="level-0" value="4884">Design Patterns&nbsp;&nbsp;(2)</option>
+	<option class="level-0" value="60826068">Dev Experiences&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="72056443">Dev Languages&nbsp;&nbsp;(83)</option>
+	<option class="level-1" value="2426">&nbsp;&nbsp;&nbsp;C#&nbsp;&nbsp;(67)</option>
+	<option class="level-1" value="1017">&nbsp;&nbsp;&nbsp;Java&nbsp;&nbsp;(3)</option>
+	<option class="level-1" value="1717642">&nbsp;&nbsp;&nbsp;MSIL&nbsp;&nbsp;(8)</option>
+	<option class="level-1" value="128708">&nbsp;&nbsp;&nbsp;Visual C++ / MFC&nbsp;&nbsp;(5)</option>
+	<option class="level-0" value="62764">Game Dev&nbsp;&nbsp;(43)</option>
+	<option class="level-1" value="83840640">&nbsp;&nbsp;&nbsp;General&nbsp;&nbsp;(13)</option>
+	<option class="level-1" value="20999524">&nbsp;&nbsp;&nbsp;HTML5 &#8211; Canvas&nbsp;&nbsp;(43)</option>
+	<option class="level-0" value="90407386">General / OS / Network&nbsp;&nbsp;(3)</option>
+	<option class="level-0" value="4826">OOP&nbsp;&nbsp;(1)</option>
+	<option class="level-0" value="9552">Platforms&nbsp;&nbsp;(73)</option>
+	<option class="level-1" value="136033">&nbsp;&nbsp;&nbsp;.Net Framework&nbsp;&nbsp;(14)</option>
+	<option class="level-1" value="181019">&nbsp;&nbsp;&nbsp;ADO.NET&nbsp;&nbsp;(15)</option>
+	<option class="level-1" value="506570">&nbsp;&nbsp;&nbsp;DLR&nbsp;&nbsp;(5)</option>
+	<option class="level-1" value="318057">&nbsp;&nbsp;&nbsp;GDI+&nbsp;&nbsp;(3)</option>
+	<option class="level-1" value="38109330">&nbsp;&nbsp;&nbsp;WCF / Web Service&nbsp;&nbsp;(3)</option>
+	<option class="level-1" value="46652">&nbsp;&nbsp;&nbsp;WPF&nbsp;&nbsp;(34)</option>
+	<option class="level-0" value="1784">Resources&nbsp;&nbsp;(18)</option>
+	<option class="level-0" value="2260">Web Development&nbsp;&nbsp;(75)</option>
+	<option class="level-1" value="141">&nbsp;&nbsp;&nbsp;Ajax&nbsp;&nbsp;(6)</option>
+	<option class="level-1" value="68515894">&nbsp;&nbsp;&nbsp;AngularJS&nbsp;&nbsp;(1)</option>
+	<option class="level-1" value="14210236">&nbsp;&nbsp;&nbsp;ASP.NET / MVC&nbsp;&nbsp;(10)</option>
+	<option class="level-1" value="8360200">&nbsp;&nbsp;&nbsp;HTML / CSS / XML&nbsp;&nbsp;(30)</option>
+	<option class="level-1" value="457">&nbsp;&nbsp;&nbsp;Javascript&nbsp;&nbsp;(24)</option>
+	<option class="level-1" value="203308">&nbsp;&nbsp;&nbsp;jQuery&nbsp;&nbsp;(15)</option>
+	<option class="level-1" value="19552431">&nbsp;&nbsp;&nbsp;PHP / Zend&nbsp;&nbsp;(10)</option>
+	<option class="level-0" value="21637242">YinYang&#039;s Soft&nbsp;&nbsp;(18)</option>
+</select>
+</form>
+<script type='text/javascript'>
+/* <![CDATA[ */
+(function() {
+	var dropdown = document.getElementById( "cat" );
+	function onCatChange() {
+		if ( dropdown.options[ dropdown.selectedIndex ].value > 0 ) {
+			dropdown.parentNode.submit();
+		}
+	}
+	dropdown.onchange = onCatChange;
+})();
+/* ]]> */
+</script>
+
+</aside><aside id="archives-6" class="widget widget_archive"><h1 class="widget-title">Thư viện</h1>		<label class="screen-reader-text" for="archives-dropdown-6">Thư viện</label>
+		<select id="archives-dropdown-6" name="archive-dropdown" onchange='document.location.href=this.options[this.selectedIndex].value;'>
+			
+			<option value="">Môn học</option>
+				<option value='https://yinyangit.wordpress.com/2015/10/'> Tháng Mười 2015 &nbsp;(1)</option>
+	<option value='https://yinyangit.wordpress.com/2015/09/'> Tháng Chín 2015 &nbsp;(4)</option>
+	<option value='https://yinyangit.wordpress.com/2015/08/'> Tháng Tám 2015 &nbsp;(2)</option>
+	<option value='https://yinyangit.wordpress.com/2015/07/'> Tháng Bảy 2015 &nbsp;(2)</option>
+	<option value='https://yinyangit.wordpress.com/2015/06/'> Tháng Sáu 2015 &nbsp;(2)</option>
+	<option value='https://yinyangit.wordpress.com/2013/08/'> Tháng Tám 2013 &nbsp;(1)</option>
+	<option value='https://yinyangit.wordpress.com/2013/07/'> Tháng Bảy 2013 &nbsp;(2)</option>
+	<option value='https://yinyangit.wordpress.com/2013/03/'> Tháng Ba 2013 &nbsp;(5)</option>
+	<option value='https://yinyangit.wordpress.com/2012/12/'> Tháng Mười Hai 2012 &nbsp;(2)</option>
+	<option value='https://yinyangit.wordpress.com/2012/11/'> Tháng Mười Một 2012 &nbsp;(2)</option>
+	<option value='https://yinyangit.wordpress.com/2012/10/'> Tháng Mười 2012 &nbsp;(4)</option>
+	<option value='https://yinyangit.wordpress.com/2012/09/'> Tháng Chín 2012 &nbsp;(3)</option>
+	<option value='https://yinyangit.wordpress.com/2012/07/'> Tháng Bảy 2012 &nbsp;(7)</option>
+	<option value='https://yinyangit.wordpress.com/2012/06/'> Tháng Sáu 2012 &nbsp;(11)</option>
+	<option value='https://yinyangit.wordpress.com/2012/05/'> Tháng Năm 2012 &nbsp;(19)</option>
+	<option value='https://yinyangit.wordpress.com/2012/04/'> Tháng Tư 2012 &nbsp;(5)</option>
+	<option value='https://yinyangit.wordpress.com/2012/03/'> Tháng Ba 2012 &nbsp;(15)</option>
+	<option value='https://yinyangit.wordpress.com/2012/02/'> Tháng Hai 2012 &nbsp;(17)</option>
+	<option value='https://yinyangit.wordpress.com/2012/01/'> Tháng Một 2012 &nbsp;(11)</option>
+	<option value='https://yinyangit.wordpress.com/2011/12/'> Tháng Mười Hai 2011 &nbsp;(19)</option>
+	<option value='https://yinyangit.wordpress.com/2011/11/'> Tháng Mười Một 2011 &nbsp;(7)</option>
+	<option value='https://yinyangit.wordpress.com/2011/10/'> Tháng Mười 2011 &nbsp;(6)</option>
+	<option value='https://yinyangit.wordpress.com/2011/09/'> Tháng Chín 2011 &nbsp;(24)</option>
+	<option value='https://yinyangit.wordpress.com/2011/08/'> Tháng Tám 2011 &nbsp;(24)</option>
+	<option value='https://yinyangit.wordpress.com/2011/07/'> Tháng Bảy 2011 &nbsp;(20)</option>
+	<option value='https://yinyangit.wordpress.com/2011/06/'> Tháng Sáu 2011 &nbsp;(16)</option>
+	<option value='https://yinyangit.wordpress.com/2011/05/'> Tháng Năm 2011 &nbsp;(7)</option>
+	<option value='https://yinyangit.wordpress.com/2011/04/'> Tháng Tư 2011 &nbsp;(8)</option>
+	<option value='https://yinyangit.wordpress.com/2011/03/'> Tháng Ba 2011 &nbsp;(8)</option>
+	<option value='https://yinyangit.wordpress.com/2011/02/'> Tháng Hai 2011 &nbsp;(9)</option>
+	<option value='https://yinyangit.wordpress.com/2011/01/'> Tháng Một 2011 &nbsp;(22)</option>
+	<option value='https://yinyangit.wordpress.com/2010/12/'> Tháng Mười Hai 2010 &nbsp;(5)</option>
+	<option value='https://yinyangit.wordpress.com/2010/02/'> Tháng Hai 2010 &nbsp;(2)</option>
+	<option value='https://yinyangit.wordpress.com/2010/01/'> Tháng Một 2010 &nbsp;(2)</option>
+	<option value='https://yinyangit.wordpress.com/2009/12/'> Tháng Mười Hai 2009 &nbsp;(2)</option>
+	<option value='https://yinyangit.wordpress.com/2009/10/'> Tháng Mười 2009 &nbsp;(1)</option>
+	<option value='https://yinyangit.wordpress.com/2009/09/'> Tháng Chín 2009 &nbsp;(2)</option>
+	<option value='https://yinyangit.wordpress.com/2009/08/'> Tháng Tám 2009 &nbsp;(3)</option>
+	<option value='https://yinyangit.wordpress.com/2009/07/'> Tháng Bảy 2009 &nbsp;(3)</option>
+	<option value='https://yinyangit.wordpress.com/2009/06/'> Tháng Sáu 2009 &nbsp;(8)</option>
+
+		</select>
+		</aside><aside id="top-posts-4" class="widget widget_top-posts"><h1 class="widget-title">Bài &amp; Trang được đáng chú ý</h1><ul>				<li>
+										<a href="https://yinyangit.wordpress.com/2011/06/22/socket-communication-with-tcp-client-server/" class="bump-view" data-bump-view="tp">
+						C# – Lập trình Socket giao tiếp TCP client/server					</a>
+									</li>
+							<li>
+										<a href="https://yinyangit.wordpress.com/2011/04/11/c-thread-basic/" class="bump-view" data-bump-view="tp">
+						C# - Cơ bản về Thread					</a>
+									</li>
+							<li>
+										<a href="https://yinyangit.wordpress.com/2011/07/31/ado-net-tutorial-lesson-01-introduction-to-ado-net/" class="bump-view" data-bump-view="tp">
+						[ADO.NET Tutorial] Lesson 01: Giới thiệu về ADO.NET					</a>
+									</li>
+							<li>
+										<a href="https://yinyangit.wordpress.com/2011/07/08/web-service-basic-concepts-soap-wsdl-asp-net-webservice/" class="bump-view" data-bump-view="tp">
+						WebService – Cơ bản về SOAP, WSDL và ASP.NET Web Service					</a>
+									</li>
+							<li>
+										<a href="https://yinyangit.wordpress.com/2011/01/26/algorithm-chuy%e1%bb%83n-bi%e1%bb%83u-th%e1%bb%a9c-trung-t%e1%bb%91-sang-ti%e1%bb%81n-t%e1%bb%91-va-h%e1%ba%adu-t%e1%bb%91-b%e1%ba%b1ng-stack/" class="bump-view" data-bump-view="tp">
+						Algorithm - Chuyển biểu thức trung tố sang tiền tố và hậu tố bằng Stack					</a>
+									</li>
+							<li>
+										<a href="https://yinyangit.wordpress.com/2011/08/02/ado-net-tutorial-lesson-03-the-sqlcommand-object/" class="bump-view" data-bump-view="tp">
+						[ADO.NET Tutorial] Lesson 03: Đối tượng SqlCommand					</a>
+									</li>
+							<li>
+										<a href="https://yinyangit.wordpress.com/2011/08/25/csharp-dinh-dang-chuoi-voi-string-format/" class="bump-view" data-bump-view="tp">
+						C# - Định dạng chuỗi với String.Format					</a>
+									</li>
+							<li>
+										<a href="https://yinyangit.wordpress.com/2011/08/01/ado-net-tutorial-lesson-02-the-sqlconnection-object/" class="bump-view" data-bump-view="tp">
+						[ADO.NET Tutorial] Lesson 02: Đối tượng SqlConnection					</a>
+									</li>
+							<li>
+										<a href="https://yinyangit.wordpress.com/2011/07/18/csharp-basic-delegate-very-basic/" class="bump-view" data-bump-view="tp">
+						C# - Cơ bản Delegate (very basic)					</a>
+									</li>
+							<li>
+										<a href="https://yinyangit.wordpress.com/2011/12/02/co-ban-ve-mvvm-model-view-viewmodel-pattern/" class="bump-view" data-bump-view="tp">
+						Cơ bản về MVVM (Model – View – ViewModel) Pattern 					</a>
+									</li>
+			</ul></aside><aside id="wp_tag_cloud-4" class="widget wp_widget_tag_cloud"><h1 class="widget-title">Thẻ</h1><div style="overflow:hidden"><a href="https://yinyangit.wordpress.com/tag/net4/" class="tag-cloud-link tag-link-2859806 tag-link-position-1" style="font-size: 13.133333333333pt;" aria-label=".Net4 (4 mục)">.Net4</a>
+<a href="https://yinyangit.wordpress.com/tag/ai/" class="tag-cloud-link tag-link-14067 tag-link-position-2" style="font-size: 15pt;" aria-label="AI (5 mục)">AI</a>
+<a href="https://yinyangit.wordpress.com/tag/ajax/" class="tag-cloud-link tag-link-141 tag-link-position-3" style="font-size: 8pt;" aria-label="Ajax (2 mục)">Ajax</a>
+<a href="https://yinyangit.wordpress.com/tag/animation/" class="tag-cloud-link tag-link-1807 tag-link-position-4" style="font-size: 10.8pt;" aria-label="animation (3 mục)">animation</a>
+<a href="https://yinyangit.wordpress.com/tag/anonymous/" class="tag-cloud-link tag-link-17835 tag-link-position-5" style="font-size: 10.8pt;" aria-label="Anonymous (3 mục)">Anonymous</a>
+<a href="https://yinyangit.wordpress.com/tag/asp-net-mvc/" class="tag-cloud-link tag-link-14210236 tag-link-position-6" style="font-size: 10.8pt;" aria-label="ASP.NET / MVC (3 mục)">ASP.NET / MVC</a>
+<a href="https://yinyangit.wordpress.com/tag/assembly/" class="tag-cloud-link tag-link-6595 tag-link-position-7" style="font-size: 8pt;" aria-label="Assembly (2 mục)">Assembly</a>
+<a href="https://yinyangit.wordpress.com/tag/binary-tree/" class="tag-cloud-link tag-link-237890 tag-link-position-8" style="font-size: 10.8pt;" aria-label="Binary Tree (3 mục)">Binary Tree</a>
+<a href="https://yinyangit.wordpress.com/tag/binding-wpf/" class="tag-cloud-link tag-link-104233870 tag-link-position-9" style="font-size: 16.633333333333pt;" aria-label="Binding (WPF) (6 mục)">Binding (WPF)</a>
+<a href="https://yinyangit.wordpress.com/tag/c3/" class="tag-cloud-link tag-link-82276 tag-link-position-10" style="font-size: 10.8pt;" aria-label="C#3 (3 mục)">C#3</a>
+<a href="https://yinyangit.wordpress.com/tag/c4/" class="tag-cloud-link tag-link-62064 tag-link-position-11" style="font-size: 15pt;" aria-label="C#4 (5 mục)">C#4</a>
+<a href="https://yinyangit.wordpress.com/tag/captcha/" class="tag-cloud-link tag-link-245731 tag-link-position-12" style="font-size: 16.633333333333pt;" aria-label="Captcha (6 mục)">Captcha</a>
+<a href="https://yinyangit.wordpress.com/tag/client/" class="tag-cloud-link tag-link-124397 tag-link-position-13" style="font-size: 8pt;" aria-label="Client (2 mục)">Client</a>
+<a href="https://yinyangit.wordpress.com/tag/collision/" class="tag-cloud-link tag-link-250993 tag-link-position-14" style="font-size: 16.633333333333pt;" aria-label="Collision (6 mục)">Collision</a>
+<a href="https://yinyangit.wordpress.com/tag/compiler/" class="tag-cloud-link tag-link-9565 tag-link-position-15" style="font-size: 8pt;" aria-label="Compiler (2 mục)">Compiler</a>
+<a href="https://yinyangit.wordpress.com/tag/css3/" class="tag-cloud-link tag-link-66426 tag-link-position-16" style="font-size: 10.8pt;" aria-label="CSS3 (3 mục)">CSS3</a>
+<a href="https://yinyangit.wordpress.com/tag/datacontext/" class="tag-cloud-link tag-link-4550699 tag-link-position-17" style="font-size: 10.8pt;" aria-label="DataContext (3 mục)">DataContext</a>
+<a href="https://yinyangit.wordpress.com/tag/dataset/" class="tag-cloud-link tag-link-17799 tag-link-position-18" style="font-size: 16.633333333333pt;" aria-label="DataSet (6 mục)">DataSet</a>
+<a href="https://yinyangit.wordpress.com/tag/delegate/" class="tag-cloud-link tag-link-445004 tag-link-position-19" style="font-size: 13.133333333333pt;" aria-label="Delegate (4 mục)">Delegate</a>
+<a href="https://yinyangit.wordpress.com/tag/ebook/" class="tag-cloud-link tag-link-1719 tag-link-position-20" style="font-size: 16.633333333333pt;" aria-label="Ebook (6 mục)">Ebook</a>
+<a href="https://yinyangit.wordpress.com/tag/editor/" class="tag-cloud-link tag-link-32974 tag-link-position-21" style="font-size: 10.8pt;" aria-label="Editor (3 mục)">Editor</a>
+<a href="https://yinyangit.wordpress.com/tag/emit/" class="tag-cloud-link tag-link-5121103 tag-link-position-22" style="font-size: 10.8pt;" aria-label="Emit (3 mục)">Emit</a>
+<a href="https://yinyangit.wordpress.com/tag/entity-framework/" class="tag-cloud-link tag-link-1047186 tag-link-position-23" style="font-size: 15pt;" aria-label="Entity Framework (5 mục)">Entity Framework</a>
+<a href="https://yinyangit.wordpress.com/tag/event/" class="tag-cloud-link tag-link-5784 tag-link-position-24" style="font-size: 8pt;" aria-label="Event (2 mục)">Event</a>
+<a href="https://yinyangit.wordpress.com/tag/expression/" class="tag-cloud-link tag-link-23527 tag-link-position-25" style="font-size: 10.8pt;" aria-label="Expression (3 mục)">Expression</a>
+<a href="https://yinyangit.wordpress.com/tag/expression-tree/" class="tag-cloud-link tag-link-9276709 tag-link-position-26" style="font-size: 15pt;" aria-label="Expression Tree (5 mục)">Expression Tree</a>
+<a href="https://yinyangit.wordpress.com/tag/extension/" class="tag-cloud-link tag-link-5024 tag-link-position-27" style="font-size: 8pt;" aria-label="Extension (2 mục)">Extension</a>
+<a href="https://yinyangit.wordpress.com/tag/gdi/" class="tag-cloud-link tag-link-318057 tag-link-position-28" style="font-size: 8pt;" aria-label="GDI+ (2 mục)">GDI+</a>
+<a href="https://yinyangit.wordpress.com/tag/graph/" class="tag-cloud-link tag-link-18224 tag-link-position-29" style="font-size: 10.8pt;" aria-label="Graph (3 mục)">Graph</a>
+<a href="https://yinyangit.wordpress.com/tag/helloworld/" class="tag-cloud-link tag-link-1375 tag-link-position-30" style="font-size: 13.133333333333pt;" aria-label="HelloWorld (4 mục)">HelloWorld</a>
+<a href="https://yinyangit.wordpress.com/tag/hooking/" class="tag-cloud-link tag-link-705962 tag-link-position-31" style="font-size: 10.8pt;" aria-label="Hooking (3 mục)">Hooking</a>
+<a href="https://yinyangit.wordpress.com/tag/html5/" class="tag-cloud-link tag-link-53242 tag-link-position-32" style="font-size: 10.8pt;" aria-label="HTML5 (3 mục)">HTML5</a>
+<a href="https://yinyangit.wordpress.com/tag/interpreter/" class="tag-cloud-link tag-link-145809 tag-link-position-33" style="font-size: 13.133333333333pt;" aria-label="Interpreter (4 mục)">Interpreter</a>
+<a href="https://yinyangit.wordpress.com/tag/java/" class="tag-cloud-link tag-link-1017 tag-link-position-34" style="font-size: 8pt;" aria-label="Java (2 mục)">Java</a>
+<a href="https://yinyangit.wordpress.com/tag/javascript/" class="tag-cloud-link tag-link-457 tag-link-position-35" style="font-size: 8pt;" aria-label="Javascript (2 mục)">Javascript</a>
+<a href="https://yinyangit.wordpress.com/tag/jquery-plugin/" class="tag-cloud-link tag-link-4294273 tag-link-position-36" style="font-size: 10.8pt;" aria-label="jQuery Plugin (3 mục)">jQuery Plugin</a>
+<a href="https://yinyangit.wordpress.com/tag/keyboard/" class="tag-cloud-link tag-link-105984 tag-link-position-37" style="font-size: 13.133333333333pt;" aria-label="Keyboard (4 mục)">Keyboard</a>
+<a href="https://yinyangit.wordpress.com/tag/lambda/" class="tag-cloud-link tag-link-172054 tag-link-position-38" style="font-size: 10.8pt;" aria-label="Lambda (3 mục)">Lambda</a>
+<a href="https://yinyangit.wordpress.com/tag/languages/" class="tag-cloud-link tag-link-2761 tag-link-position-39" style="font-size: 8pt;" aria-label="Languages (2 mục)">Languages</a>
+<a href="https://yinyangit.wordpress.com/tag/linq/" class="tag-cloud-link tag-link-114227 tag-link-position-40" style="font-size: 22pt;" aria-label="LINQ (11 mục)">LINQ</a>
+<a href="https://yinyangit.wordpress.com/tag/mario/" class="tag-cloud-link tag-link-57490 tag-link-position-41" style="font-size: 15pt;" aria-label="Mario (5 mục)">Mario</a>
+<a href="https://yinyangit.wordpress.com/tag/mci/" class="tag-cloud-link tag-link-365364 tag-link-position-42" style="font-size: 8pt;" aria-label="MCI (2 mục)">MCI</a>
+<a href="https://yinyangit.wordpress.com/tag/mfc/" class="tag-cloud-link tag-link-107738 tag-link-position-43" style="font-size: 13.133333333333pt;" aria-label="MFC (4 mục)">MFC</a>
+<a href="https://yinyangit.wordpress.com/tag/monodevelop/" class="tag-cloud-link tag-link-224891 tag-link-position-44" style="font-size: 8pt;" aria-label="MonoDevelop (2 mục)">MonoDevelop</a>
+<a href="https://yinyangit.wordpress.com/tag/mvc/" class="tag-cloud-link tag-link-36699 tag-link-position-45" style="font-size: 10.8pt;" aria-label="MVC (3 mục)">MVC</a>
+<a href="https://yinyangit.wordpress.com/tag/mvvm/" class="tag-cloud-link tag-link-9258762 tag-link-position-46" style="font-size: 15pt;" aria-label="MVVM (5 mục)">MVVM</a>
+<a href="https://yinyangit.wordpress.com/tag/n-puzzle/" class="tag-cloud-link tag-link-47595392 tag-link-position-47" style="font-size: 10.8pt;" aria-label="N-puzzle (3 mục)">N-puzzle</a>
+<a href="https://yinyangit.wordpress.com/tag/optimization/" class="tag-cloud-link tag-link-133147 tag-link-position-48" style="font-size: 8pt;" aria-label="Optimization (2 mục)">Optimization</a>
+<a href="https://yinyangit.wordpress.com/tag/orm/" class="tag-cloud-link tag-link-43230 tag-link-position-49" style="font-size: 13.133333333333pt;" aria-label="ORM (4 mục)">ORM</a>
+<a href="https://yinyangit.wordpress.com/tag/postfix/" class="tag-cloud-link tag-link-93301 tag-link-position-50" style="font-size: 10.8pt;" aria-label="postfix (3 mục)">postfix</a>
+<a href="https://yinyangit.wordpress.com/tag/prefix/" class="tag-cloud-link tag-link-404437 tag-link-position-51" style="font-size: 10.8pt;" aria-label="prefix (3 mục)">prefix</a>
+<a href="https://yinyangit.wordpress.com/tag/razor/" class="tag-cloud-link tag-link-294557 tag-link-position-52" style="font-size: 10.8pt;" aria-label="Razor (3 mục)">Razor</a>
+<a href="https://yinyangit.wordpress.com/tag/reflection/" class="tag-cloud-link tag-link-8408 tag-link-position-53" style="font-size: 16.633333333333pt;" aria-label="Reflection (6 mục)">Reflection</a>
+<a href="https://yinyangit.wordpress.com/tag/reflector/" class="tag-cloud-link tag-link-422176 tag-link-position-54" style="font-size: 8pt;" aria-label="Reflector (2 mục)">Reflector</a>
+<a href="https://yinyangit.wordpress.com/tag/regularexpression/" class="tag-cloud-link tag-link-7109345 tag-link-position-55" style="font-size: 8pt;" aria-label="RegularExpression (2 mục)">RegularExpression</a>
+<a href="https://yinyangit.wordpress.com/tag/rpn/" class="tag-cloud-link tag-link-448294 tag-link-position-56" style="font-size: 13.133333333333pt;" aria-label="RPN (4 mục)">RPN</a>
+<a href="https://yinyangit.wordpress.com/tag/serialization/" class="tag-cloud-link tag-link-566122 tag-link-position-57" style="font-size: 10.8pt;" aria-label="Serialization (3 mục)">Serialization</a>
+<a href="https://yinyangit.wordpress.com/tag/server/" class="tag-cloud-link tag-link-18568 tag-link-position-58" style="font-size: 10.8pt;" aria-label="Server (3 mục)">Server</a>
+<a href="https://yinyangit.wordpress.com/tag/snake/" class="tag-cloud-link tag-link-8849 tag-link-position-59" style="font-size: 10.8pt;" aria-label="Snake (3 mục)">Snake</a>
+<a href="https://yinyangit.wordpress.com/tag/soap/" class="tag-cloud-link tag-link-8791 tag-link-position-60" style="font-size: 8pt;" aria-label="Soap (2 mục)">Soap</a>
+<a href="https://yinyangit.wordpress.com/tag/socket/" class="tag-cloud-link tag-link-1034664 tag-link-position-61" style="font-size: 10.8pt;" aria-label="Socket (3 mục)">Socket</a>
+<a href="https://yinyangit.wordpress.com/tag/string/" class="tag-cloud-link tag-link-540526 tag-link-position-62" style="font-size: 13.133333333333pt;" aria-label="string (4 mục)">string</a>
+<a href="https://yinyangit.wordpress.com/tag/strongly-typed/" class="tag-cloud-link tag-link-19557264 tag-link-position-63" style="font-size: 8pt;" aria-label="Strongly typed (2 mục)">Strongly typed</a>
+<a href="https://yinyangit.wordpress.com/tag/style/" class="tag-cloud-link tag-link-2286 tag-link-position-64" style="font-size: 15pt;" aria-label="Style (5 mục)">Style</a>
+<a href="https://yinyangit.wordpress.com/tag/tcp/" class="tag-cloud-link tag-link-129845 tag-link-position-65" style="font-size: 10.8pt;" aria-label="TCP (3 mục)">TCP</a>
+<a href="https://yinyangit.wordpress.com/tag/template/" class="tag-cloud-link tag-link-11867 tag-link-position-66" style="font-size: 10.8pt;" aria-label="Template (3 mục)">Template</a>
+<a href="https://yinyangit.wordpress.com/tag/thread/" class="tag-cloud-link tag-link-12932 tag-link-position-67" style="font-size: 13.133333333333pt;" aria-label="Thread (4 mục)">Thread</a>
+<a href="https://yinyangit.wordpress.com/tag/towerdefense/" class="tag-cloud-link tag-link-3038537 tag-link-position-68" style="font-size: 13.133333333333pt;" aria-label="TowerDefense (4 mục)">TowerDefense</a>
+<a href="https://yinyangit.wordpress.com/tag/vector/" class="tag-cloud-link tag-link-2483 tag-link-position-69" style="font-size: 16.633333333333pt;" aria-label="Vector (6 mục)">Vector</a>
+<a href="https://yinyangit.wordpress.com/tag/visualstudio/" class="tag-cloud-link tag-link-43662 tag-link-position-70" style="font-size: 13.133333333333pt;" aria-label="VisualStudio (4 mục)">VisualStudio</a>
+<a href="https://yinyangit.wordpress.com/tag/winforms/" class="tag-cloud-link tag-link-46654 tag-link-position-71" style="font-size: 15pt;" aria-label="WinForms (5 mục)">WinForms</a>
+<a href="https://yinyangit.wordpress.com/tag/xaml/" class="tag-cloud-link tag-link-103962 tag-link-position-72" style="font-size: 10.8pt;" aria-label="XAML (3 mục)">XAML</a>
+<a href="https://yinyangit.wordpress.com/tag/xmlhttprequest/" class="tag-cloud-link tag-link-298463 tag-link-position-73" style="font-size: 10.8pt;" aria-label="XMLHttpRequest (3 mục)">XMLHttpRequest</a>
+<a href="https://yinyangit.wordpress.com/tag/xml-schema/" class="tag-cloud-link tag-link-265162 tag-link-position-74" style="font-size: 8pt;" aria-label="XML Schema (2 mục)">XML Schema</a>
+<a href="https://yinyangit.wordpress.com/tag/zendframework2/" class="tag-cloud-link tag-link-96233516 tag-link-position-75" style="font-size: 10.8pt;" aria-label="ZendFramework2 (3 mục)">ZendFramework2</a></div></aside><aside id="recent-comments-4" class="widget widget_recent_comments"><h1 class="widget-title">Bình luận mới nhất</h1>				<table class="recentcommentsavatar" cellspacing="0" cellpadding="0" border="0">
+					<tr><td title="Sơn Nguyễn" class="recentcommentsavatartop" style="height:32px; width:32px;"><img alt='' src='https://2.gravatar.com/avatar/efb6d91e814ba8f179201c46dd7191e9?s=32&#038;d=identicon&#038;r=G' class='avatar avatar-32' height='32' width='32' /></td><td class="recentcommentstexttop" style="">Sơn Nguyễn on <a href="https://yinyangit.wordpress.com/2015/10/02/c-tim-hieu-ve-closure/comment-page-1/#comment-8699">C# &#8211; Tìm hiểu về&nbsp;Cl&hellip;</a></td></tr><tr><td title="Instant AJAX Search (Tìm kiếm tức thì) với Laravel và Vuejs &#8211; At Least Cost" class="recentcommentsavatarend" style="height:32px; width:32px;"><a href="http://atleast.net/2017/11/27/instant-ajax-search-tim-kiem-tuc-thi-voi-laravel-va-vuejs/" rel="nofollow"></a></td><td class="recentcommentstextend" style=""><a href="http://atleast.net/2017/11/27/instant-ajax-search-tim-kiem-tuc-thi-voi-laravel-va-vuejs/" rel="nofollow">Instant AJAX Search&hellip;</a> on <a href="https://yinyangit.wordpress.com/2015/06/24/javascript-gioi-thieu-ve-debounce-function/comment-page-1/#comment-7826">Javascript &#8211; Giới thiệu&hellip;</a></td></tr><tr><td title="diep123 diep123" class="recentcommentsavatarend" style="height:32px; width:32px;"><a href="https://plus.google.com/117255722156845026209" rel="nofollow"><img alt='' src='https://i2.wp.com/lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg?resize=32%2C32&#038;ssl=1' class='avatar avatar-32' height='32' width='32' /></a></td><td class="recentcommentstextend" style=""><a href="https://plus.google.com/117255722156845026209" rel="nofollow">diep123 diep123</a> on <a href="https://yinyangit.wordpress.com/2012/01/21/javascript-phuong-thuc-execommand-va-wysiwyg-html-editor/comment-page-1/#comment-7712">Javascript –Phương thức exeCom&hellip;</a></td></tr><tr><td title="long" class="recentcommentsavatarend" style="height:32px; width:32px;"><img alt='' src='https://0.gravatar.com/avatar/c18ed25460181d9be6ad04b0bcea614a?s=32&#038;d=identicon&#038;r=G' class='avatar avatar-32' height='32' width='32' /></td><td class="recentcommentstextend" style="">long on <a href="https://yinyangit.wordpress.com/2012/03/26/algorithm-kiem-tra-mot-diem-nam-tren-doan-thang/comment-page-1/#comment-7646">Algorithm &#8211; Kiểm tra một&hellip;</a></td></tr><tr><td title="Note lại &#8211; temp &#8211; Note và share lại kiến thức" class="recentcommentsavatarend" style="height:32px; width:32px;"><a href="http://hrpb.ddns.net/index.php/2017/09/25/note-lai-temp/" rel="nofollow"></a></td><td class="recentcommentstextend" style=""><a href="http://hrpb.ddns.net/index.php/2017/09/25/note-lai-temp/" rel="nofollow">Note lại &#8211; tem&hellip;</a> on <a href="https://yinyangit.wordpress.com/2013/08/03/javascript-hoisting-la-gi/comment-page-1/#comment-7571">Javascript Hoisting là&nbsp;gì&hellip;</a></td></tr><tr><td title="Hoaavoibhub" class="recentcommentsavatarend" style="height:32px; width:32px;"><img alt='' src='https://2.gravatar.com/avatar/e5a4567b2d0c61025ed7985ef9e15b7b?s=32&#038;d=identicon&#038;r=G' class='avatar avatar-32' height='32' width='32' /></td><td class="recentcommentstextend" style="">Hoaavoibhub on <a href="https://yinyangit.wordpress.com/2011/04/11/c-thread-basic/comment-page-1/#comment-7569">C# &#8211; Cơ bản về&nbsp;Thre&hellip;</a></td></tr><tr><td title="Thanh Hoài" class="recentcommentsavatarend" style="height:32px; width:32px;"><img alt='' src='https://0.gravatar.com/avatar/94abef68459b5cbd9612e0b7b9b2cc30?s=32&#038;d=identicon&#038;r=G' class='avatar avatar-32' height='32' width='32' /></td><td class="recentcommentstextend" style="">Thanh Hoài on <a href="https://yinyangit.wordpress.com/2012/06/22/wpf-gioi-thieu-ve-animation/comment-page-1/#comment-7554">WPF &#8211; Giới thiệu về&hellip;</a></td></tr>				</table>
+				</aside><aside id="linkcat-1356" class="widget widget_links"><h1 class="widget-title">Blogroll</h1>
+	<ul class='xoxo blogroll'>
+<li><a href="http://nmhblog.wordpress.com" title="nguyen(dot)minh(dot)hai(at)live(dot)com" target="_blank">Blog Nguyễn Minh Hải</a></li>
+<li><a href="http://www.buunguyen.net/blog/" title="Thoughts on Software Engineering" target="_blank">Buu Nguyen&#039;s Blog</a></li>
+<li><a href="http://d.jou.vn/" target="_blank">Do Jou Lập trình</a></li>
+<li><a href="http://hoangtx.wordpress.com/" target="_blank">Hoangtx &#039;s Blog</a></li>
+<li><a href="http://microsofttech.net/" title="Lập trình Csharp | Công nghệ Microsoft" target="_blank">MicrosoftTech.Net</a></li>
+<li><a href="http://nhatkyhoctap.blogspot.com/" rel="contact" title="Án Bình Trọng" target="_blank">Nhật ký học tập</a></li>
+<li><a href="http://neong.wordpress.com/" target="_blank">Tam Quang Blog</a></li>
+<li><a href="http://morebook.vn" title="MoreBook.Vn | Thư viện Sách điện tử Việt Nam" target="_blank">Thư viện Sách điện tử Việt Nam</a></li>
+<li><a href="http://tumivn.com/" target="_blank">Tumivn</a></li>
+<li><a href="http://nvkien.wordpress.com/" target="_blank">Yên Thư Thôn – IT</a></li>
+<li><a href="http://zstar2.wordpress.com/" rel="friend" target="_blank">Zstar&#039;s Blog</a></li>
+
+	</ul>
+</aside>
+</div><!-- #secondary -->
+
+		</div><!-- #main .site-main -->
+
+		<footer id="colophon" class="site-footer" role="contentinfo">
+			<div class="site-info">
+								
+				
+							</div><!-- .site-info -->
+		</footer><!-- #colophon .site-footer -->
+	</div><!-- #wrapper .site-wrapper -->
+</div><!-- #page .hfeed .site -->
+
+<!--  -->
+<script type='text/javascript' src='//0.gravatar.com/js/gprofiles.js?ver=201824y'></script>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var WPGroHo = {"my_hash":""};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://s1.wp.com/wp-content/mu-plugins/gravatar-hovercards/wpgroho.js?m=1380573781h'></script>
+
+	<script>
+		//initialize and attach hovercards to all gravatars
+		jQuery( document ).ready( function( $ ) {
+
+			if (typeof Gravatar === "undefined"){
+				return;
+			}
+
+			if ( typeof Gravatar.init !== "function" ) {
+				return;
+			}			
+
+			Gravatar.profile_cb = function( hash, id ) {
+				WPGroHo.syncProfileData( hash, id );
+			};
+			Gravatar.my_hash = WPGroHo.my_hash;
+			Gravatar.init( 'body', '#wp-admin-bar-my-account' );
+		});
+	</script>
+
+		<div style="display:none">
+	<div class="grofile-hash-map-69896f20a96c54a5525b249794d464e9">
+	</div>
+	<div class="grofile-hash-map-cbc2ca37b6ddfd9db0b8e8a0d2450120">
+	</div>
+	<div class="grofile-hash-map-7cf6b18e49b589304c12d44e5affb97e">
+	</div>
+	<div class="grofile-hash-map-6f384c244a24d1b413fbafab488d04d5">
+	</div>
+	<div class="grofile-hash-map-e0799df243c03ac57de8214a4167d2e6">
+	</div>
+	<div class="grofile-hash-map-4494feb364431003c8cd3a850832bd1b">
+	</div>
+	<div class="grofile-hash-map-efb6d91e814ba8f179201c46dd7191e9">
+	</div>
+	<div class="grofile-hash-map-3f871ed41751026d394714d95873e467">
+	</div>
+	<div class="grofile-hash-map-c18ed25460181d9be6ad04b0bcea614a">
+	</div>
+	<div class="grofile-hash-map-e5a4567b2d0c61025ed7985ef9e15b7b">
+	</div>
+	<div class="grofile-hash-map-94abef68459b5cbd9612e0b7b9b2cc30">
+	</div>
+	</div>
+
+	<div id="carousel-reblog-box">
+		<form action="#" name="carousel-reblog">
+			<textarea id="carousel-reblog-content" name="carousel-reblog-content" placeholder="Add your thoughts here... (optional)"></textarea>
+			<label for="carousel-reblog-to-blog-id" id="carousel-reblog-lblogid">Post to</label>
+			<select name="carousel-reblog-to-blog-id" id="carousel-reblog-to-blog-id">
+						</select>
+
+			<div class="submit">
+				<span class="canceltext"><a href="#" class="cancel">Hủy bỏ</a></span>
+				<input type="submit" name="carousel-reblog-submit" class="button" id="carousel-reblog-submit" value="Reblog Post" />
+				<input type="hidden" id="carousel-reblog-blog-id" value="6992514" />
+				<input type="hidden" id="carousel-reblog-blog-url" value="https://yinyangit.wordpress.com" />
+				<input type="hidden" id="carousel-reblog-blog-title" value="YinYang&#039;s Programing Blog" />
+				<input type="hidden" id="carousel-reblog-post-url" value="" />
+				<input type="hidden" id="carousel-reblog-post-title" value="" />
+			</div>
+
+			<input type="hidden" id="_wpnonce" name="_wpnonce" value="5d44b44188" /><input type="hidden" name="_wp_http_referer" value="/2012/12/04/c-thread-signaling-auto-va-manual-reset-event/" />		</form>
+
+		<div class="arrow"></div>
+	</div>
+<script type='text/javascript' charset='UTF-8' id='polldaddyRatings'><!--//--><![CDATA[//><!--
+PDRTJS_settings_514500_post_4942={"id":514500,"unique_id":"wp-post-4942","title":"C%23%20%26%238211%3B%20Thread%20Signaling%3A%20Auto%20v%C3%A0%20Manual%20Reset%26nbsp%3BEvent","permalink":"https:\/\/yinyangit.wordpress.com\/2012\/12\/04\/c-thread-signaling-auto-va-manual-reset-event\/","item_id":"_post_4942"}; if ( typeof PDRTJS_RATING !== 'undefined' ){if ( typeof PDRTJS_514500_post_4942 == 'undefined' ){PDRTJS_514500_post_4942 = new PDRTJS_RATING( PDRTJS_settings_514500_post_4942 );}}PDRTJS_settings_514508_comm_4560={"id":514508,"unique_id":"wp-comment-4560","title":"Bi%20vit%20rt%20hay%20v%20b%20ch%2C%20Cm%20n%20bn%21...","permalink":"https:\/\/yinyangit.wordpress.com\/2012\/12\/04\/c-thread-signaling-auto-va-manual-reset-event\/#comment-4560","item_id":"_comm_4560"}; if ( typeof PDRTJS_RATING !== 'undefined' ){if ( typeof PDRTJS_514508_comm_4560 == 'undefined' ){PDRTJS_514508_comm_4560 = new PDRTJS_RATING( PDRTJS_settings_514508_comm_4560 );}}PDRTJS_settings_514508_comm_4564={"id":514508,"unique_id":"wp-comment-4564","title":"Bi%20vit%20hay%20lm%2CThank%20bn%21...","permalink":"https:\/\/yinyangit.wordpress.com\/2012\/12\/04\/c-thread-signaling-auto-va-manual-reset-event\/#comment-4564","item_id":"_comm_4564"}; if ( typeof PDRTJS_RATING !== 'undefined' ){if ( typeof PDRTJS_514508_comm_4564 == 'undefined' ){PDRTJS_514508_comm_4564 = new PDRTJS_RATING( PDRTJS_settings_514508_comm_4564 );}}PDRTJS_settings_514508_comm_4676={"id":514508,"unique_id":"wp-comment-4676","title":"Bn%20i%20cho%20mnh%20hi%20l%20nu%20mnh%20dng%20AutoResetEvent%20th%20nu%20c%20nhiu%20thread%20ang%20i%20th%20n%20s%20gii%20phng%20thread%20no%3F...","permalink":"https:\/\/yinyangit.wordpress.com\/2012\/12\/04\/c-thread-signaling-auto-va-manual-reset-event\/#comment-4676","item_id":"_comm_4676"}; if ( typeof PDRTJS_RATING !== 'undefined' ){if ( typeof PDRTJS_514508_comm_4676 == 'undefined' ){PDRTJS_514508_comm_4676 = new PDRTJS_RATING( PDRTJS_settings_514508_comm_4676 );}}PDRTJS_settings_514508_comm_4680={"id":514508,"unique_id":"wp-comment-4680","title":"Cc%20thread%20s%20c%20a%20vo%201%20queue%20%28first%20in%20first%20out%29%2C%20nn%20thread%20no%20n%20trc%20s%20c%20gii%20phng%20trc....","permalink":"https:\/\/yinyangit.wordpress.com\/2012\/12\/04\/c-thread-signaling-auto-va-manual-reset-event\/#comment-4680","item_id":"_comm_4680"}; if ( typeof PDRTJS_RATING !== 'undefined' ){if ( typeof PDRTJS_514508_comm_4680 == 'undefined' ){PDRTJS_514508_comm_4680 = new PDRTJS_RATING( PDRTJS_settings_514508_comm_4680 );}}PDRTJS_settings_514508_comm_5868={"id":514508,"unique_id":"wp-comment-5868","title":"c%20bi%20vit%20ca%20bn%20v%20Thread%20rt%20hay%20.%20Nhng%20mnh%20cn%20ch%20thc%20mc%20ny%20mong%20bn%20gip%20%3A%2F%2Fs%20kin%20khi%20click%20button%20.%20public%20%20static%20ArrayList%20ArrayList%20%3D%20new%20ArrayList%28%29%3Bprotected%20void%20Button1_Click%28object%20sender%2C%20...","permalink":"https:\/\/yinyangit.wordpress.com\/2012\/12\/04\/c-thread-signaling-auto-va-manual-reset-event\/#comment-5868","item_id":"_comm_5868"}; if ( typeof PDRTJS_RATING !== 'undefined' ){if ( typeof PDRTJS_514508_comm_5868 == 'undefined' ){PDRTJS_514508_comm_5868 = new PDRTJS_RATING( PDRTJS_settings_514508_comm_5868 );}}PDRTJS_settings_514508_comm_5869={"id":514508,"unique_id":"wp-comment-5869","title":"on%20code%20trn%20ngha%20l%20mnh%20mun%20qun%20l%20Thread%20trong%201%20list%20.%20Khi%20nhn%20vo%20stop%20th%20s%20pause%20Thread%20tng%20ng%20li.%20Khi%20no%20Start%20th%20lai%20tip%20tc.%20Nhng%20khng%20bit%20mnh%20c%20lm%20sai%20hoc%20hiu%20sai%20vn%20%20khng%20%2C%20m%20stop%20khng%20c%20.%20M...","permalink":"https:\/\/yinyangit.wordpress.com\/2012\/12\/04\/c-thread-signaling-auto-va-manual-reset-event\/#comment-5869","item_id":"_comm_5869"}; if ( typeof PDRTJS_RATING !== 'undefined' ){if ( typeof PDRTJS_514508_comm_5869 == 'undefined' ){PDRTJS_514508_comm_5869 = new PDRTJS_RATING( PDRTJS_settings_514508_comm_5869 );}}PDRTJS_settings_514508_comm_6459={"id":514508,"unique_id":"wp-comment-6459","title":"Khi%20s%20dng%20EventWaitHandle.WaitOne%28%29%2C%20bn%20phi%20s%20dng%20n%20bn%20trong%20phn%20code%20m%20thread%20thc%20thi.%20C%20th%20l%20bn%20trong%20phng%20thc%20Download%28%29.%20Bn%20c%20th%20dng%201%20c%20g%20%20%20xc%20nh%20khi%20nhn%20nt%20Stop%20th%20Download%28%29%20s%20gi%20WaitOne%28%29...","permalink":"https:\/\/yinyangit.wordpress.com\/2012\/12\/04\/c-thread-signaling-auto-va-manual-reset-event\/#comment-6459","item_id":"_comm_6459"}; if ( typeof PDRTJS_RATING !== 'undefined' ){if ( typeof PDRTJS_514508_comm_6459 == 'undefined' ){PDRTJS_514508_comm_6459 = new PDRTJS_RATING( PDRTJS_settings_514508_comm_6459 );}}PDRTJS_settings_514508_comm_5893={"id":514508,"unique_id":"wp-comment-5893","title":"bi%20vit%20hay%20.thanks%21...","permalink":"https:\/\/yinyangit.wordpress.com\/2012\/12\/04\/c-thread-signaling-auto-va-manual-reset-event\/#comment-5893","item_id":"_comm_5893"}; if ( typeof PDRTJS_RATING !== 'undefined' ){if ( typeof PDRTJS_514508_comm_5893 == 'undefined' ){PDRTJS_514508_comm_5893 = new PDRTJS_RATING( PDRTJS_settings_514508_comm_5893 );}}PDRTJS_settings_514508_comm_7296={"id":514508,"unique_id":"wp-comment-7296","title":"Mnh%20c%201%20chng%20trnh%20bng%20c%23%20l%20chng%20trnh%20gi%20c%20in%20cho%20cc%20t%20sn%20xut%2C%20nu%20t%20no%20cn%20c%20in%20th%20qut%20th%20gi%20c%20in%2C%20mi%20ln%20gi%20s%20c%20c%20i%20c%20li%203%20ln%2C%20xong%203%20ln%20%20s%20xa%20i%2C%20mnh%20%20dng%203%20timer%20nhng%20chng%20trnh%20chy%20chm%20v%20i%20lc%20b%20tr...","permalink":"https:\/\/yinyangit.wordpress.com\/2012\/12\/04\/c-thread-signaling-auto-va-manual-reset-event\/#comment-7296","item_id":"_comm_7296"}; if ( typeof PDRTJS_RATING !== 'undefined' ){if ( typeof PDRTJS_514508_comm_7296 == 'undefined' ){PDRTJS_514508_comm_7296 = new PDRTJS_RATING( PDRTJS_settings_514508_comm_7296 );}}
+//--><!]]></script><script type='text/javascript' charset='UTF-8' src='https://polldaddy.com/js/rating/rating.js'></script>
+	<script type="text/javascript">
+		window.WPCOM_sharing_counts = {"https:\/\/yinyangit.wordpress.com\/2012\/12\/04\/c-thread-signaling-auto-va-manual-reset-event\/":4942};
+	</script>
+	<div id="sharing_email" style="display: none;">
+		<form action="/2012/12/04/c-thread-signaling-auto-va-manual-reset-event/" method="post">
+			<label for="target_email">Send to Email Address</label>
+			<input type="email" name="target_email" id="target_email" value="" />
+
+			
+				<label for="source_name">Your Name</label>
+				<input type="text" name="source_name" id="source_name" value="" />
+
+				<label for="source_email">Your Email Address</label>
+				<input type="email" name="source_email" id="source_email" value="" />
+
+						<input type="text" id="jetpack-source_f_name" name="source_f_name" class="input" value="" size="25" autocomplete="off" title="This field is for validation and should not be changed" />
+			
+			<div
+				class="g-recaptcha"
+				data-sitekey="6LcmyE0UAAAAALID28yVNg7pFCodGaArJzHitez_"
+				data-theme="light"
+				data-type="image"
+				data-tabindex="0"></div>
+			<script type="text/javascript" src="https://www.google.com/recaptcha/api.js?hl=vi" async></script>
+			
+			<img style="float: right; display: none" class="loading" src="https://s2.wp.com/wp-content/mu-plugins/post-flair/sharing/images/loading.gif" alt="loading" width="16" height="16" />
+			<input type="submit" value="Send Email" class="sharing_send" />
+			<a rel="nofollow" href="#cancel" class="sharing_cancel">Hủy bỏ</a>
+
+			<div class="errors errors-1" style="display: none;">
+				Post was not sent - check your email addresses!			</div>
+
+			<div class="errors errors-2" style="display: none;">
+				Email check failed, please try again			</div>
+
+			<div class="errors errors-3" style="display: none;">
+				Sorry, your blog cannot share posts by email.			</div>
+		</form>
+	</div>
+<div class="widget widget_eu_cookie_law_widget"><div
+	class="hide-on-button ads-active"
+	data-hide-timeout="30"
+	data-consent-expiration="180"
+	id="eu-cookie-law"
+>
+	<form method="post">
+		<input type="submit" value="Close and accept" class="accept" />
+
+		Privacy &amp; Cookies: This site uses cookies. By continuing to use this website, you agree to their use. <br />
+To find out more, including how to control cookies, see here:
+		<a href="https://automattic.com/cookies" >
+			Cookie Policy		</a>
+ </form>
+</div>
+</div><script type='text/javascript' src='https://s1.wp.com/_static/??-eJzTLy/QTc7PK0nNK9EvyClNz8wr1i+uzCtJrMjITM/IAeKS1CJMEWP94uSizIISoOIM5/yiVL2sYh19yo1yKioFmheckVhUADTRPtfW0MTIyNjEyNDYJAsAVVpAuA=='></script>
+<script type='text/javascript'>
+	(function(){
+		var corecss = document.createElement('link');
+		var themecss = document.createElement('link');
+		var corecssurl = "https://s1.wp.com/wp-content/plugins/syntaxhighlighter/syntaxhighlighter3/styles/shCore.css?ver=3.0.9b";
+		if ( corecss.setAttribute ) {
+				corecss.setAttribute( "rel", "stylesheet" );
+				corecss.setAttribute( "type", "text/css" );
+				corecss.setAttribute( "href", corecssurl );
+		} else {
+				corecss.rel = "stylesheet";
+				corecss.href = corecssurl;
+		}
+		document.getElementsByTagName("head")[0].insertBefore( corecss, document.getElementById("syntaxhighlighteranchor") );
+		var themecssurl = "https://s2.wp.com/wp-content/plugins/syntaxhighlighter/syntaxhighlighter3/styles/shThemeDefault.css?m=1363304414h&amp;ver=3.0.9b";
+		if ( themecss.setAttribute ) {
+				themecss.setAttribute( "rel", "stylesheet" );
+				themecss.setAttribute( "type", "text/css" );
+				themecss.setAttribute( "href", themecssurl );
+		} else {
+				themecss.rel = "stylesheet";
+				themecss.href = themecssurl;
+		}
+		//document.getElementById("syntaxhighlighteranchor").appendChild(themecss);
+		document.getElementsByTagName("head")[0].insertBefore( themecss, document.getElementById("syntaxhighlighteranchor") );
+	})();
+	SyntaxHighlighter.config.strings.expandSource = '+ expand source';
+	SyntaxHighlighter.config.strings.help = '?';
+	SyntaxHighlighter.config.strings.alert = 'SyntaxHighlighter\n\n';
+	SyntaxHighlighter.config.strings.noBrush = 'Can\'t find brush for: ';
+	SyntaxHighlighter.config.strings.brushNotHtmlScript = 'Brush wasn\'t configured for html-script option: ';
+	SyntaxHighlighter.defaults['pad-line-numbers'] = false;
+	SyntaxHighlighter.defaults['toolbar'] = false;
+	SyntaxHighlighter.all();
+
+// Infinite scroll support
+jQuery( function( $ ) {
+	$( document.body ).on( 'post-load', function() {
+		SyntaxHighlighter.highlight();
+	} );
+} );
+</script>
+<link rel='stylesheet' id='all-css-0-2' href='https://s2.wp.com/_static/??/wp-content/mu-plugins/widgets/author-grid/author-grid.css,/wp-content/mu-plugins/carousel/jetpack-carousel.css?m=1524699534j&cssminify=yes' type='text/css' media='all' />
+<!--[if lte IE 8]>
+<link rel='stylesheet' id='jetpack-carousel-ie8fix-css'  href='https://s1.wp.com/wp-content/mu-plugins/carousel/jetpack-carousel-ie8fix.css?m=1412618825h&#038;ver=20121024' type='text/css' media='all' />
+<![endif]-->
+<script type='text/javascript'>
+/* <![CDATA[ */
+var silesia = {"open_sidebar_title":"Open sidebar","close_sidebar_title":"Close sidebar"};
+/* ]]> */
+</script>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var jpfbembed = {"appid":"249643311490","locale":"vi_VN"};
+/* ]]> */
+</script>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var actionbardata = {"siteID":"6992514","siteName":"YinYang's Programing Blog","siteURL":"http:\/\/yinyangit.wordpress.com","icon":"<img alt='' src='https:\/\/secure.gravatar.com\/blavatar\/7fa3ae3f2dc76be062dbc7aa3aa65eb9?s=50&d=https%3A%2F%2Fs2.wp.com%2Fi%2Flogo%2Fwpcom-gray-white.png' class='avatar avatar-50' height='50' width='50' \/>","canManageOptions":"","canCustomizeSite":"","isFollowing":"","themeSlug":"pub\/silesia","signupURL":"https:\/\/wordpress.com\/start\/","loginURL":"https:\/\/yinyangit.wordpress.com\/wp-login.php?redirect_to=https%3A%2F%2Fyinyangit.wordpress.com%2F2012%2F12%2F04%2Fc-thread-signaling-auto-va-manual-reset-event%2F","themeURL":"","xhrURL":"https:\/\/yinyangit.wordpress.com\/wp-admin\/admin-ajax.php","nonce":"15017de75c","isSingular":"1","isFolded":"","isLoggedIn":"","isMobile":"","subscribeNonce":"<input type=\"hidden\" id=\"_wpnonce\" name=\"_wpnonce\" value=\"8f81b00f27\" \/>","referer":"https:\/\/yinyangit.wordpress.com\/2012\/12\/04\/c-thread-signaling-auto-va-manual-reset-event\/","canFollow":"1","feedID":"327264","statusMessage":"","customizeLink":"https:\/\/yinyangit.wordpress.com\/wp-admin\/customize.php?url=https%3A%2F%2Fyinyangit.wordpress.com%2F2012%2F12%2F04%2Fc-thread-signaling-auto-va-manual-reset-event%2F","postID":"4942","shortlink":"https:\/\/wp.me\/ptl4u-1hI","canEditPost":"","editLink":"https:\/\/wordpress.com\/post\/yinyangit.wordpress.com\/4942","statsLink":"https:\/\/wordpress.com\/stats\/post\/4942\/yinyangit.wordpress.com","i18n":{"view":"View site","follow":"Theo d\u00f5i","following":"Following","edit":"Edit","login":"\u0110\u0103ng nh\u1eadp","signup":"\u0110\u0103ng k\u00fd","customize":"T\u00f9y ch\u1ec9nh","report":"Report this content","themeInfo":"Get theme: Silesia","shortlink":"Copy shortlink","copied":"\u0110\u00e3 sao ch\u00e9p","followedText":"New posts from this site will now appear in your <a href=\"https:\/\/wordpress.com\/\">Reader<\/a>","foldBar":"M\u1edf r\u1ed9ng","unfoldBar":"Expand this bar","editSubs":"Qu\u1ea3n l\u00fd s\u1ef1 \u0111\u0103ng k\u00ed theo d\u00f5i","viewReader":"Xem trang v\u1edbi t\u01b0 c\u00e1ch ng\u01b0\u1eddi \u0111\u1ecdc","viewReadPost":"View post in Reader","subscribe":"Sign me up","enterEmail":"Enter your email address","followers":"Join 2&nbsp;846 other followers","alreadyUser":"Already have a WordPress.com account? <a href=\"https:\/\/yinyangit.wordpress.com\/wp-login.php?redirect_to=https%3A%2F%2Fyinyangit.wordpress.com%2F2012%2F12%2F04%2Fc-thread-signaling-auto-va-manual-reset-event%2F\">Log in now.<\/a>","stats":"Th\u1ed1ng k\u00ea"}};
+/* ]]> */
+</script>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var jetpackCarouselStrings = {"widths":[370,700,1000,1200,1400,2000],"is_logged_in":"","lang":"vi","ajaxurl":"https:\/\/yinyangit.wordpress.com\/wp-admin\/admin-ajax.php","nonce":"b505e24fcd","display_exif":"1","display_geo":"1","single_image_gallery":"1","single_image_gallery_media_file":"","background_color":"black","comment":"B\u00ecnh lu\u1eadn","post_comment":"G\u1eedi b\u00ecnh lu\u1eadn","write_comment":"Write a Comment...","loading_comments":"\u0110ang t\u1ea3i B\u00ecnh lu\u1eadn...","download_original":"View full size <span class=\"photo-size\">{0}<span class=\"photo-size-times\">\u00d7<\/span>{1}<\/span>","no_comment_text":"Please be sure to submit some text with your comment.","no_comment_email":"Please provide an email address to comment.","no_comment_author":"Please provide your name to comment.","comment_post_error":"Sorry, but there was an error posting your comment. Please try again later.","comment_approved":"Your comment was approved.","comment_unapproved":"Your comment is in moderation.","camera":"Camera","aperture":"Aperture","shutter_speed":"Shutter Speed","focal_length":"Focal Length","copyright":"Copyright","comment_registration":"0","require_name_email":"1","login_url":"https:\/\/yinyangit.wordpress.com\/wp-login.php?redirect_to=https%3A%2F%2Fyinyangit.wordpress.com%2F2012%2F12%2F04%2Fc-thread-signaling-auto-va-manual-reset-event%2F","blog_id":"6992514","meta_data":["camera","aperture","shutter_speed","focal_length","copyright"],"local_comments_commenting_as":"<fieldset><label for=\"email\">Th\u01b0 \u0111i\u1ec7n t\u1eed (Required)<\/label> <input type=\"text\" name=\"email\" class=\"jp-carousel-comment-form-field jp-carousel-comment-form-text-field\" id=\"jp-carousel-comment-form-email-field\" \/><\/fieldset><fieldset><label for=\"author\">T\u00ean (Required)<\/label> <input type=\"text\" name=\"author\" class=\"jp-carousel-comment-form-field jp-carousel-comment-form-text-field\" id=\"jp-carousel-comment-form-author-field\" \/><\/fieldset><fieldset><label for=\"url\">Trang web<\/label> <input type=\"text\" name=\"url\" class=\"jp-carousel-comment-form-field jp-carousel-comment-form-text-field\" id=\"jp-carousel-comment-form-url-field\" \/><\/fieldset>","reblog":"Reblog","reblogged":"Reblogged","reblog_add_thoughts":"Add your thoughts here... (optional)","reblogging":"Reblogging...","post_reblog":"Post Reblog","stats_query_args":"blog=6992514&v=wpcom&tz=7&user_id=0&subd=yinyangit","is_public":"1","reblog_enabled":""};
+/* ]]> */
+</script>
+<script type='text/javascript'>
+/* <![CDATA[ */
+var sharing_js_options = {"lang":"en","counts":"1"};
+/* ]]> */
+</script>
+<script type='text/javascript' src='https://s1.wp.com/_static/??-eJyVUdtqwzAM/aG52grd5WHsU4Ziq4kS32rJzfb3c6AppZTAniSOzkVIMGdjU1SKCqOAozNbyj+7UZ7gZhSqyb72HAU8TyRwqlRpwOg8lXuyDhQaJdcOhD0J42J9aTecZ3Y9qQDVNk0Tk/E4g1LIHpXu8A2fkTSjneCbo4UjWuqaylDoyG2o0AWOpsMCAUWptM6kM5XCrmVfsX86aGmbyJbIKqe4iK7dym7r+7qEL9fLHB/hY3tE+b2U3S3rQZbFkqqQXy9kVmBDk5OoOXrkAjJg4divtYm+wufLYf/2vD98vL+OfxA/3EM='></script>
+<script type='text/javascript'>
+var windowOpen;
+			jQuery( document.body ).on( 'click', 'a.share-twitter', function() {
+				// If there's another sharing window open, close it.
+				if ( 'undefined' !== typeof windowOpen ) {
+					windowOpen.close();
+				}
+				windowOpen = window.open( jQuery( this ).attr( 'href' ), 'wpcomtwitter', 'menubar=1,resizable=1,width=600,height=350' );
+				return false;
+			});
+var windowOpen;
+			jQuery( document.body ).on( 'click', 'a.share-facebook', function() {
+				// If there's another sharing window open, close it.
+				if ( 'undefined' !== typeof windowOpen ) {
+					windowOpen.close();
+				}
+				windowOpen = window.open( jQuery( this ).attr( 'href' ), 'wpcomfacebook', 'menubar=1,resizable=1,width=600,height=400' );
+				return false;
+			});
+var windowOpen;
+			jQuery( document.body ).on( 'click', 'a.share-google-plus-1', function() {
+				// If there's another sharing window open, close it.
+				if ( 'undefined' !== typeof windowOpen ) {
+					windowOpen.close();
+				}
+				windowOpen = window.open( jQuery( this ).attr( 'href' ), 'wpcomgoogle-plus-1', 'menubar=1,resizable=1,width=480,height=550' );
+				return false;
+			});
+</script>
+<script type="text/javascript">
+// <![CDATA[
+(function() {
+try{
+  if ( window.external &&'msIsSiteMode' in window.external) {
+    if (window.external.msIsSiteMode()) {
+      var jl = document.createElement('script');
+      jl.type='text/javascript';
+      jl.async=true;
+      jl.src='/wp-content/plugins/ie-sitemode/custom-jumplist.php';
+      var s = document.getElementsByTagName('script')[0];
+      s.parentNode.insertBefore(jl, s);
+    }
+  }
+}catch(e){}
+})();
+// ]]>
+</script>		<iframe src='https://widgets.wp.com/likes/master.html?ver=20180319#ver=20180319&amp;lang=vi' scrolling='no' id='likes-master' name='likes-master' style='display:none;'></iframe>
+		<div id='likes-other-gravatars'><div class="likes-text"><span>%d</span> bloggers like this:</div><ul class="wpl-avatars sd-like-gravatars"></ul></div>
+<script src="//stats.wp.com/w.js?56" type="text/javascript" async defer></script>
+<script type="text/javascript">
+_tkq = window._tkq || [];
+_stq = window._stq || [];
+_tkq.push(['storeContext', {'blog_id':'6992514','blog_tz':'7','user_lang':'vi','blog_lang':'vi','user_id':'0'}]);
+_stq.push(['view', {'blog':'6992514','v':'wpcom','tz':'7','user_id':'0','post':'4942','subd':'yinyangit'}]);
+_stq.push(['extra', {'crypt':'UE5XaGUuOTlwaD85flAmcm1mcmZsaDhkV11YdWpYP2xZaVBVeHZiOUhkaixZNmE9PzF6Jl9aRTBjRl1mdUdBY1V0ZVV6ZThkVl03V21IRFpJOW1DLVNucmpHZz01clgrcnlna1ZQT0xbME1BUTEtUnEmNnZYfDBKeV0vSzFsbnJdUHxQcDg5SHF0UTR1NyYvUiw3MTZ3WDBRVVA5RGwmbFIrN0RWQzdXcDZXQnBneG4vWF1lL1lRaDlDUnNoJjNtK2wvZW1PXXoxdWg9OV1GdEdpN1FsZjc9MjhjYlVTVV1QQXY2b0QsSVZyLzlrMmNXeDYwLzROVDZBemJHMF1vd2ExTz9OUmZZamNfTi5LS01xaSY/cFdTPS1GQ2pvX1ticTByUVhRQ24sZTg5V2V8Z254OC1BNEh5a1dTRl9IV3cuQWNzcFVRL3xKaT1HZlE2Z3U5fg=='}]);
+_stq.push([ 'clickTrackerInit', '6992514', '4942' ]);
+	</script>
+<noscript><img src="https://pixel.wp.com/b.gif?v=noscript" style="height:0px;width:0px;overflow:hidden" alt="" /></noscript>
+<script>
+if ( 'object' === typeof wpcom_mobile_user_agent_info ) {
+
+	wpcom_mobile_user_agent_info.init();
+	var mobileStatsQueryString = "";
+	
+	if( false !== wpcom_mobile_user_agent_info.matchedPlatformName )
+		mobileStatsQueryString += "&x_" + 'mobile_platforms' + '=' + wpcom_mobile_user_agent_info.matchedPlatformName;
+	
+	if( false !== wpcom_mobile_user_agent_info.matchedUserAgentName )
+		mobileStatsQueryString += "&x_" + 'mobile_devices' + '=' + wpcom_mobile_user_agent_info.matchedUserAgentName;
+	
+	if( wpcom_mobile_user_agent_info.isIPad() )
+		mobileStatsQueryString += "&x_" + 'ipad_views' + '=' + 'views';
+
+	if( "" != mobileStatsQueryString ) {
+		new Image().src = document.location.protocol + '//pixel.wp.com/g.gif?v=wpcom-no-pv' + mobileStatsQueryString + '&baba=' + Math.random();
+	}
+	
+}
+</script>
+</body>
+</html>
+<!--
+	generated in 0.193 seconds
+	108227 bytes batcached for 300 seconds
+-->
