@@ -10,6 +10,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace appie
@@ -47,7 +48,7 @@ namespace appie
         WebBrowser_V1 m_browser_ax = null;
         HTMLDocument m_browser_doc = null;
 
-        SynchronizedCacheString dicHtml = new SynchronizedCacheString();
+        DictionaryThreadSafe<string,string> dicHtml = new DictionaryThreadSafe<string, string>();
 
         #endregion
 
@@ -402,7 +403,7 @@ namespace appie
                 this.Text = fi_name;
                 //brow_URL_Text.Tag = fi_name;
 
-                dicHtml.ReadFile(fi_name);
+                //dicHtml.ReadFile(fi_name);
 
                 m_link_items_listBox.Items.Clear();
 
@@ -445,7 +446,9 @@ namespace appie
                 && dicHtml.ContainsKey(it.Item1))
             {
                 m_url_textBox.Text = it.Item1;
-                f_browser_loadHTML(it.Item2, dicHtml.Get(it.Item1));
+                string val;
+                dicHtml.TryGetValue(it.Item1, out val);
+                f_browser_loadHTML(it.Item2, val);
             }
         }
 

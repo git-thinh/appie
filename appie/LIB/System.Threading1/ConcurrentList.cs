@@ -98,7 +98,7 @@ namespace System
             }
             return new K[] { };
         }
-        public K[] Splice(int number)
+        public K[] Slice(int number)
         {
             _lock.EnterReadLock();
             try

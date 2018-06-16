@@ -4,6 +4,7 @@ using System.IO;
 using System.Net;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace appie
@@ -44,7 +45,7 @@ namespace appie
 
         static fCrawler fom;
 
-        static ConcurrentQueue<msg> api_msg_queue = null;
+        static QueueThreadSafe<msg> api_msg_queue = null;
         //static System.Threading.Timer api_msg_timer = null;
         //static ConcurrentDictionary<string, IthreadMsg> dicService = null;
         //static ConcurrentDictionary<string, msg> dicResponses = null;
@@ -122,12 +123,22 @@ namespace appie
         static void Main(string[] args)
         {
             System.Net.ServicePointManager.DefaultConnectionLimit = 1000;
-            // active SSL 1.1, 1.2, 1.3 for WebClient request HTTPS
-            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3
-                | (SecurityProtocolType)3072
-                | (SecurityProtocolType)0x00000C00
-                | SecurityProtocolType.Tls;
+            try
+            {
+                // active SSL 1.1, 1.2, 1.3 for WebClient request HTTPS
+                ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3
+                    | (SecurityProtocolType)3072
+                    | (SecurityProtocolType)0x00000C00
+                    | SecurityProtocolType.Tls;
+            }
+            catch
+            {
+                // active SSL 1.1, 1.2, 1.3 for WebClient request HTTPS
+                ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 
+                    | SecurityProtocolType.Tls; 
+            }
             app.RUN();
 
 

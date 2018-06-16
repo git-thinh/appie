@@ -122,19 +122,11 @@
     <Compile Include="LIB\CTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="LIB\System.Threading\FetchUrl.cs" />
-    <Compile Include="LIB\System.Threading\SynchronizedQueue.cs" />
-    <Compile Include="LIB\System.Threading\Worker.cs" />
-    <Compile Include="LIB\System.Threading\Tester_Monitor.cs" />
-    <Compile Include="LIB\System.Threading\EntityCache.cs" />
-    <Compile Include="LIB\System.Threading\ListLocked.cs" />
-    <Compile Include="LIB\System.Threading\ConcurrentList.cs" />
     <Compile Include="LIB\ControlTransparent.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="LIB\System.Threading\SynchronizedDictionary.cs" />
-    <Compile Include="LIB\System\ReaderWriterLockSlimExtensions.cs" />
-    <Compile Include="LIB\System\CrossThreadExtensions.cs" />
+    <Compile Include="LIB\ThreadSafe\ReaderWriterLockSlimExtensions.cs" />
+    <Compile Include="LIB\ThreadSafe\CrossThreadExtensions.cs" />
     <Compile Include="LIB\HtmlAgilityPack.CssSelectors\CssSelector.cs" />
     <Compile Include="LIB\HtmlAgilityPack.CssSelectors\ExtensionMethods.cs" />
     <Compile Include="LIB\HtmlAgilityPack.CssSelectors\NodeExtensionMethods.cs" />
@@ -326,9 +318,9 @@
     <Compile Include="LIB\ProtoBuf\WireType.cs" />
     <Compile Include="LIB\ProtoBuf\_demo.cs" />
     <Compile Include="LIB\System.Linq\DeepCopy.Assign.cs" />
-    <Compile Include="LIB\System\IsNumber.cs" />
-    <Compile Include="LIB\System\Lucene.Net.cs" />
-    <Compile Include="LIB\System\ReaderWriterLockSlim.cs" />
+    <Compile Include="LIB\System.Linq\IsNumber.cs" />
+    <Compile Include="LIB\System.Linq\Lucene.Net.cs" />
+    <Compile Include="LIB\ThreadSafe\ReaderWriterLockSlim.cs" />
     <Compile Include="LIB\System.Linq\System.Collections.Generic\HashSet.cs" />
     <Compile Include="LIB\System.Linq\System.Collections.Generic\ISet.cs" />
     <Compile Include="LIB\System.Linq\System.Data.Linq\MonoTODOAttribute.cs" />
@@ -394,8 +386,6 @@
     <Compile Include="LIB\System.Linq\Tuple\IStructuralEquatable.cs" />
     <Compile Include="LIB\System.Linq\Tuple\Tuple.cs" />
     <Compile Include="app.cs" />
-    <Compile Include="LIB\System.Threading\ConcurrentQueue.cs" />
-    <Compile Include="LIB\System.Threading\SynchronizedCacheString.cs" />
     <Compile Include="LIB\TabStrip\BaseClasses\BaseStyledPanel.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -415,6 +405,11 @@
     <Compile Include="LIB\TabStrip\Enums.cs" />
     <Compile Include="LIB\TabStrip\Helpers\CollectionWithEvents.cs" />
     <Compile Include="LIB\TabStrip\_CONST_TAB.cs" />
+    <Compile Include="LIB\ThreadSafe\ReadWriteLockSlimExtend.cs" />
+    <Compile Include="LIB\ThreadSafe\DictionaryThreadSafe.cs" />
+    <Compile Include="LIB\ThreadSafe\ListThreadSafe.cs" />
+    <Compile Include="LIB\ThreadSafe\QueueThreadSafe.cs" />
+    <Compile Include="LIB\ThreadSafe\StackThreadSafe.cs" />
     <Compile Include="LIB\YYProject.RichTextBoxEx\InternalNativeMembers.cs" />
     <Compile Include="LIB\YYProject.RichTextBoxEx\RichTextBoxEx.cs">
       <SubType>Component</SubType>
@@ -440,7 +435,6 @@
     <Content Include="bin\Debug\browser.html" />
     <Content Include="bin\Debug\xpath.html" />
     <Content Include="bin\Debug\template.html" />
-    <Content Include="LIB\System.Threading\ReadMe.txt" />
     <EmbeddedResource Include="DLL\Newtonsoft.Json.dll" />
     <EmbeddedResource Include="DLL\System.Speech.dll" />
     <Content Include="LIB\ProtoBuf\_ReadMe.txt" />

@@ -149,14 +149,14 @@ namespace appie
                         //if (Channel != null)
                         //    Channel.RecieveDataFormWorker(dicHTML); 
                         //dicHTML.Clear();
-                        dicHTML.RemoveValueEmpty();
-                        dicHTML.WriteFile("demo.bin");
+                        ////////dicHTML.RemoveValueEmpty();
+                        ////////dicHTML.WriteFile("demo.bin");
                         Console.WriteLine("---------------------> COMPLETE: " + dicHTML.Count.ToString());
                         Interlocked.Exchange(ref requestCounter, 0);
                     }
                     else
                     {
-                        string[] urls = listURL.Splice(20).ToArray(); 
+                        string[] urls = listURL.Slice(20).ToArray();
                         PostDataToWorker(urls);
                     }
                 }
@@ -209,7 +209,7 @@ namespace appie
                                     HttpWebResponse rs = (HttpWebResponse)w.EndGetResponse(asyncResult); //add a break point here 
                                                                                                          //url = rs.ResponseUri.ToString();
 
-                                if (rs.StatusCode == HttpStatusCode.OK)
+                                    if (rs.StatusCode == HttpStatusCode.OK)
                                     {
                                         using (StreamReader sr = new StreamReader(rs.GetResponseStream(), Encoding.UTF8))
                                             htm = sr.ReadToEnd();
@@ -220,7 +220,7 @@ namespace appie
                                     {
                                         htm = HttpUtility.HtmlDecode(htm);
                                         htm = format_HTML(htm);
-                                        dicHTML.AddOrUpdate(url, htm);
+                                        dicHTML.Add(url, htm);
 
                                         string[] us = get_UrlHtml(url, htm);
                                         if (us.Length > 0)
@@ -237,27 +237,27 @@ namespace appie
                                 }
 
                                 Interlocked.Decrement(ref responseCounter);
-                                if (Interlocked.CompareExchange(ref responseCounter, 0, 0) == 0) 
+                                if (Interlocked.CompareExchange(ref responseCounter, 0, 0) == 0)
                                     lock (finishedLock)
-                                        Monitor.Pulse(finishedLock); 
-                            }, w); 
+                                        Monitor.Pulse(finishedLock);
+                            }, w);
                         }
                         catch (Exception ex)
                         {
                             Console.WriteLine(string.Format("----> FAIL: {0}| {1}", requestCounter, urls[i]));
 
                             Interlocked.Decrement(ref responseCounter);
-                            if (Interlocked.CompareExchange(ref responseCounter, 0, 0) == 0) 
+                            if (Interlocked.CompareExchange(ref responseCounter, 0, 0) == 0)
                                 lock (finishedLock)
-                                    Monitor.Pulse(finishedLock); 
+                                    Monitor.Pulse(finishedLock);
                         }
                     } // end for
                 }
             }
         }
 
-        static ConcurrentList<string> listURL = new ConcurrentList<string>();
-        static SynchronizedCacheString  dicHTML = new SynchronizedCacheString();
+        static ListThreadSafe<string> listURL = new ListThreadSafe<string>();
+        static DictionaryThreadSafe<string, string> dicHTML = new DictionaryThreadSafe<string, string>();
         static readonly object finishedLock = new object();
         static int responseCounter = 0;
         static int requestCounter = 0;
@@ -415,8 +415,8 @@ namespace appie
                 .Replace(@"src=""//", @"src=""http://");
 
             var mts = Regex.Matches(s, "<img.+?src=[\"'](.+?)[\"'].*?>", RegexOptions.IgnoreCase);
-            if (mts.Count > 0) 
-                foreach (Match mt in mts) 
+            if (mts.Count > 0)
+                foreach (Match mt in mts)
                     s = s.Replace(mt.ToString(), string.Format("{0}{1}{2}", "<p class=box_img___>", mt.ToString(), "</p>"));
             s = s.Replace("</body>", string.Empty).Replace("</html>", string.Empty).Trim();
 
