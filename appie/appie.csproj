@@ -125,8 +125,8 @@
     <Compile Include="LIB\ControlTransparent.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="LIB\ThreadSafe\ReaderWriterLockSlimExtensions.cs" />
-    <Compile Include="LIB\ThreadSafe\CrossThreadExtensions.cs" />
+    <Compile Include="LIB\System.Threading\ReaderWriterLockSlimExtensions.cs" />
+    <Compile Include="LIB\System.Threading\CrossThreadExtensions.cs" />
     <Compile Include="LIB\HtmlAgilityPack.CssSelectors\CssSelector.cs" />
     <Compile Include="LIB\HtmlAgilityPack.CssSelectors\ExtensionMethods.cs" />
     <Compile Include="LIB\HtmlAgilityPack.CssSelectors\NodeExtensionMethods.cs" />
@@ -320,7 +320,7 @@
     <Compile Include="LIB\System.Linq\DeepCopy.Assign.cs" />
     <Compile Include="LIB\System.Linq\IsNumber.cs" />
     <Compile Include="LIB\System.Linq\Lucene.Net.cs" />
-    <Compile Include="LIB\ThreadSafe\ReaderWriterLockSlim.cs" />
+    <Compile Include="LIB\System.Threading\ReaderWriterLockSlim.cs" />
     <Compile Include="LIB\System.Linq\System.Collections.Generic\HashSet.cs" />
     <Compile Include="LIB\System.Linq\System.Collections.Generic\ISet.cs" />
     <Compile Include="LIB\System.Linq\System.Data.Linq\MonoTODOAttribute.cs" />
@@ -405,11 +405,11 @@
     <Compile Include="LIB\TabStrip\Enums.cs" />
     <Compile Include="LIB\TabStrip\Helpers\CollectionWithEvents.cs" />
     <Compile Include="LIB\TabStrip\_CONST_TAB.cs" />
-    <Compile Include="LIB\ThreadSafe\ReadWriteLockSlimExtend.cs" />
-    <Compile Include="LIB\ThreadSafe\DictionaryThreadSafe.cs" />
-    <Compile Include="LIB\ThreadSafe\ListThreadSafe.cs" />
-    <Compile Include="LIB\ThreadSafe\QueueThreadSafe.cs" />
-    <Compile Include="LIB\ThreadSafe\StackThreadSafe.cs" />
+    <Compile Include="LIB\System.Threading\ReadWriteLockSlimExtend.cs" />
+    <Compile Include="LIB\System.Threading\DictionaryThreadSafe.cs" />
+    <Compile Include="LIB\System.Threading\ListThreadSafe.cs" />
+    <Compile Include="LIB\System.Threading\QueueThreadSafe.cs" />
+    <Compile Include="LIB\System.Threading\StackThreadSafe.cs" />
     <Compile Include="LIB\YYProject.RichTextBoxEx\InternalNativeMembers.cs" />
     <Compile Include="LIB\YYProject.RichTextBoxEx\RichTextBoxEx.cs">
       <SubType>Component</SubType>
