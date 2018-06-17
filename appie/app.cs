@@ -160,15 +160,15 @@ namespace appie
                 Trace.WriteLine(">>>>> STOP ALL JOBS: DONE ...");
             };
 
-            Console.WriteLine("Enter to exit...");
-            Console.ReadLine();
-            jobs.f_stopAll();
-            Console.WriteLine("done all...");
-            Console.ReadLine();
-            jobs.f_restartAllJob();
-            Console.WriteLine("restart all...");
-            Console.ReadLine();
-
+            while (true)
+            {
+                Console.WriteLine("Enter to stop all...");
+                Console.ReadLine();
+                jobs.f_stopAll(); 
+                Console.WriteLine("Enter to restart all...");
+                Console.ReadLine();
+                jobs.f_restartAllJob(); 
+            }
         }
     }
 }

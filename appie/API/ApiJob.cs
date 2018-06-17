@@ -10,6 +10,7 @@ namespace appie
         readonly DictionaryThreadSafe<int, JobInfo> storeJobs;
         readonly DictionaryThreadSafe<string, ListThreadSafe<int>> storeGroupJobs;
         readonly ListThreadSafe<int> listIdsStop;
+        bool event_JobsStoping = false;
 
         public event EventHandler OnStopAll; 
 
@@ -24,6 +25,7 @@ namespace appie
         public void event_stopAllJob()
         {
             OnStopAll?.Invoke(this, new EventArgs() { });
+            event_JobsStoping = false;
         }
 
         public void f_restartAllJob()
@@ -38,11 +40,14 @@ namespace appie
             }
         }
 
-        public void event_stopJob(int id)
+        public void eventAfter_stopJob(int id)
         {
             listIdsStop.Add(id);
-            if (listIdsStop.Count == storeJobs.Count)
+            if (listIdsStop.Count == storeJobs.Count && event_JobsStoping == false)
+            {
+                event_JobsStoping = true;
                 event_stopAllJob();
+            }
         }
 
 
@@ -148,11 +153,11 @@ namespace appie
                 false);
         }
 
-        public void Unregister()
+        public void StopJob()
         {
             if (this._handle != null)
                 this._handle.Unregister(null);
-            this._api.event_stopJob(this._id);
+            this._api.eventAfter_stopJob(this._id);
         }
 
         public int GetId() { return _id; }
@@ -198,6 +203,6 @@ namespace appie
 
     public interface IApiJob
     { 
-        void event_stopJob(int id);
+        void eventAfter_stopJob(int id);
     } 
 }

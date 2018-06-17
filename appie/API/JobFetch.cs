@@ -39,7 +39,7 @@ namespace appie
                 // If the callback method executes because the WaitHandle is
                 // signaled, stop future execution of the callback method
                 // by unregistering the WaitHandle.
-                ti.Unregister();
+                ti.StopJob();
                 return;
             }
             ////////////////////////////////////////////////////////////////
