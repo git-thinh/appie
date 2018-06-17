@@ -95,6 +95,8 @@
     <Compile Include="API\ApiFetch.cs" />
     <Compile Include="API\ApiChannel.cs" />
     <Compile Include="API\ApiFetchWorker.cs" />
+    <Compile Include="API\ApiJob.cs" />
+    <Compile Include="API\JobFetch.cs" />
     <Compile Include="API\ProducerConsumer.cs" />
     <Compile Include="API\DHTMLEventHandler.cs" />
     <Compile Include="API\IAPI.cs" />
@@ -410,6 +412,7 @@
     <Compile Include="LIB\System.Threading\ListThreadSafe.cs" />
     <Compile Include="LIB\System.Threading\QueueThreadSafe.cs" />
     <Compile Include="LIB\System.Threading\StackThreadSafe.cs" />
+    <Compile Include="LIB\Trace.cs" />
     <Compile Include="LIB\YYProject.RichTextBoxEx\InternalNativeMembers.cs" />
     <Compile Include="LIB\YYProject.RichTextBoxEx\RichTextBoxEx.cs">
       <SubType>Component</SubType>

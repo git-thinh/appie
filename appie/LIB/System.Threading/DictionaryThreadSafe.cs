@@ -166,7 +166,7 @@ namespace System.Threading
         /// <param name="value">the value to add</param>
         public void Add(TKey key, TValue value)
         {
-            Lock_Dictionary.PerformUsingWriteLock(()=> m_Dictionary.Add(key, value));
+            Lock_Dictionary.PerformUsingWriteLock(() => m_Dictionary.Add(key, value));
         }
 
         /// <summary>
@@ -179,7 +179,7 @@ namespace System.Threading
             TValue value = item.Value;
             Lock_Dictionary.PerformUsingWriteLock(() => m_Dictionary.Add(key, value));
         }
-
+        
         // Add
         #endregion
 
@@ -342,6 +342,14 @@ namespace System.Threading
             get { return Lock_Dictionary.PerformUsingReadLock(() => m_Dictionary.Keys); }
         }
 
+        /// <summary>
+        /// Returns the keys as a collection
+        /// </summary>
+        public TKey[] KeysArray
+        {
+            get { return Lock_Dictionary.PerformUsingReadLock(() => m_Dictionary.Keys.ToArray()); }
+        }
+
         // Keys
         #endregion
 
@@ -457,6 +465,14 @@ namespace System.Threading
         public ICollection<TValue> Values
         {
             get { return Lock_Dictionary.PerformUsingReadLock(() => m_Dictionary.Values); }
+        }
+
+        /// <summary>
+        /// Returns a collection of the values in the dictionary
+        /// </summary>
+        public TValue[] ValuesArray
+        {
+            get { return Lock_Dictionary.PerformUsingReadLock(() => m_Dictionary.Values.ToArray()); }
         }
 
         // Values

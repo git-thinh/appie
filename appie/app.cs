@@ -139,7 +139,7 @@ namespace appie
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 
                     | SecurityProtocolType.Tls; 
             }
-            app.RUN();
+            //app.RUN();
 
 
             //ApiChannel channel = new ApiChannel(new ApiFetchWorker()); 
@@ -150,6 +150,13 @@ namespace appie
             //});
 
             //Console.ReadLine();
+
+            var jobs = new ApiJob();
+            jobs.f_addJob(new JobFetch(), "a");
+            jobs.f_addJob(new JobFetch(), "a");
+            jobs.f_addJob(new JobFetch(), "a");
+
+
         }
     }
 }
