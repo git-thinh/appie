@@ -156,6 +156,18 @@ namespace appie
             jobs.f_addJob(new JobFetch(), "a");
             jobs.f_addJob(new JobFetch(), "a");
 
+            jobs.OnStopAll += (se,ev) => {
+                Trace.WriteLine(">>>>> STOP ALL JOBS: DONE ...");
+            };
+
+            Console.WriteLine("Enter to exit...");
+            Console.ReadLine();
+            jobs.f_stopAll();
+            Console.WriteLine("done all...");
+            Console.ReadLine();
+            jobs.f_restartAllJob();
+            Console.WriteLine("restart all...");
+            Console.ReadLine();
 
         }
     }

@@ -17,7 +17,6 @@ namespace appie
 
         public void PostDataToWorker(object data)
         {
-
         }
 
         public void Run(object state, bool timedOut)
@@ -25,30 +24,29 @@ namespace appie
             // The state object must be cast to the correct type, because the
             // signature of the WaitOrTimerCallback delegate specifies type Object.
             JobInfo ti = (JobInfo)state;
-             
+
             if (!timedOut)
             {
                 ////////////////////////////////////////////////////////////////
                 // do someting before exit Job....
 
-                // If the callback method executes because the WaitHandle is
-                // signaled, stop future execution of the callback method
-                // by unregistering the WaitHandle.
-                ti.Unregister();
-
                 Trace.WriteLine("{0} executes on thread {1}; cause = {2}. STOP ...",
-                    ti.Name,
+                    ti.GetId(),
                     Thread.CurrentThread.GetHashCode().ToString(),
                     "SIGNALED"
                 );
 
+                // If the callback method executes because the WaitHandle is
+                // signaled, stop future execution of the callback method
+                // by unregistering the WaitHandle.
+                ti.Unregister();
                 return;
             }
             ////////////////////////////////////////////////////////////////
             // Do something while wait signal to exit Job
 
             Trace.WriteLine("{0} executes on thread {1}; cause = {2}. do something ...",
-                ti.Name,
+                ti.GetId(),
                 Thread.CurrentThread.GetHashCode().ToString(),
                 "TIMED OUT"
             ); 
