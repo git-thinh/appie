@@ -18,7 +18,7 @@ namespace appie
         public void PostDataToWorker(object data)
         {
         }
-
+         
         public void Run(object state, bool timedOut)
         {
             // The state object must be cast to the correct type, because the
@@ -28,7 +28,7 @@ namespace appie
             if (!timedOut)
             {
                 ////////////////////////////////////////////////////////////////
-                // do someting before exit Job....
+                // do someting before exit Job.... 
 
                 Trace.WriteLine("{0} executes on thread {1}; cause = {2}. STOP ...",
                     ti.GetId(),
@@ -41,7 +41,8 @@ namespace appie
                 // by unregistering the WaitHandle.
                 ti.StopJob();
                 return;
-            }
+            } 
+
             ////////////////////////////////////////////////////////////////
             // Do something while wait signal to exit Job
 

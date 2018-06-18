@@ -4,30 +4,26 @@ using System.Threading;
 
 namespace appie
 {
-    public class ApiJob: IApiJob
+    public class JobStore : IJobStore
     {
         readonly DictionaryThreadSafe<int, AutoResetEvent> storeEvents;
         readonly DictionaryThreadSafe<int, JobInfo> storeJobs;
         readonly DictionaryThreadSafe<string, ListThreadSafe<int>> storeGroupJobs;
         readonly ListThreadSafe<int> listIdsStop;
-        bool event_JobsStoping = false;
 
-        public event EventHandler OnStopAll; 
+        // Volatile is used as hint to the compiler that this data
+        // member will be accessed by multiple threads.
+        private volatile bool event_JobsStoping = false;
+        public event EventHandler OnStopAll;
 
-        public ApiJob()
+        public JobStore()
         {
             storeEvents = new DictionaryThreadSafe<int, AutoResetEvent>();
             storeJobs = new DictionaryThreadSafe<int, JobInfo>();
             storeGroupJobs = new DictionaryThreadSafe<string, ListThreadSafe<int>>();
             listIdsStop = new ListThreadSafe<int>();
         }
-
-        public void event_stopAllJob()
-        {
-            OnStopAll?.Invoke(this, new EventArgs() { });
-            event_JobsStoping = false;
-        }
-
+         
         public void f_restartAllJob()
         {
             f_stopAll();
@@ -40,17 +36,18 @@ namespace appie
             }
         }
 
-        public void eventAfter_stopJob(int id)
+        public void f_eventAfter_stopJob(int id)
         {
             listIdsStop.Add(id);
             if (listIdsStop.Count == storeJobs.Count && event_JobsStoping == false)
             {
                 event_JobsStoping = true;
-                event_stopAllJob();
+                Thread.Sleep(JOB_CONST.JOB_TIMEOUT_STOP_ALL);
+                OnStopAll?.Invoke(this, new EventArgs() { });
+                event_JobsStoping = false;
             }
         }
-
-
+        
         public long f_addJob(IJob job, string groupName = null)
         {
             // The main thread uses AutoResetEvent to signal the
@@ -63,7 +60,6 @@ namespace appie
             //      – Reset: chuyển trạng thái của event thành non-signaled.
             //      – Set: chuyển trạng thái của event thành signaled.
             //      – WaitOne([parameters]): Chặn thread hiện tại cho đến khi trạng thái của event được chuyển sang signaled.
-
             AutoResetEvent ev = new AutoResetEvent(false);
             int _id = storeJobs.Count + 1;
             JobInfo jo = new JobInfo(_id, groupName, job, ev, this);
@@ -88,7 +84,8 @@ namespace appie
             return _id;
         }
 
-        public void f_stopAll() {
+        public void f_stopAll()
+        {
             listIdsStop.Clear();
             if (storeEvents.Count > 0)
             {
@@ -103,106 +100,9 @@ namespace appie
             }
         }
 
-
-        ~ApiJob()
+        ~JobStore()
         {
             f_stopAll();
         }
     }
-
-    // TaskInfo contains data that will be passed to the callback method.
-    public class JobInfo
-    {
-        readonly string _groupName;
-
-        readonly int _id;
-        readonly IApiJob _api;
-        readonly IJob _job;
-        readonly AutoResetEvent _even;
-        private RegisteredWaitHandle _handle = null;
-
-        private static readonly Random _random = new Random();
-        public JobInfo(int id, string groupName, IJob job, AutoResetEvent ev, IApiJob _api)
-        {
-            this._job = job;
-            this._groupName = groupName;
-            this._id = id;
-            this._api = _api;
-            this._even = ev;
-            
-            this._handle = ThreadPool.RegisterWaitForSingleObject(
-                ev,
-                new WaitOrTimerCallback(job.Run),
-                this,
-                30,//1000 , 15
-                false);
-        }
-
-        public void ReStart()
-        {
-            if (this._handle != null)
-                this._handle.Unregister(null);
-
-            this._even.Reset();
-
-            this._handle = ThreadPool.RegisterWaitForSingleObject(
-                this._even,
-                new WaitOrTimerCallback(_job.Run),
-                this,
-                30,//1000 , 15
-                false);
-        }
-
-        public void StopJob()
-        {
-            if (this._handle != null)
-                this._handle.Unregister(null);
-            this._api.eventAfter_stopJob(this._id);
-        }
-
-        public int GetId() { return _id; }
-
-        public string GetGroupName() { return _groupName; }
-
-        public override string ToString()
-        {
-            return this._id.ToString();
-        }
-    }
-
-    public interface IJob
-    {
-        int ThreadId { get; set; }
-        IApiChannel Channel { get; set; }
-
-        /// <summary>
-        /// Returns whether the worker thread has been asked to stop.
-        /// This continues to return true even after the thread has stopped.
-        /// </summary>
-        bool Stopping { get; }
-
-        /// <summary>
-        /// Returns whether the worker thread has stopped.
-        /// </summary>
-        bool Stopped { get; }
-
-        /// <summary>
-        /// Tells the worker thread to stop, typically after completing its 
-        /// current work item. (The thread is *not* guaranteed to have stopped
-        /// by the time this method returns.)
-        /// </summary>
-        void Stop();
-
-        /// <summary>
-        /// Main work loop of the class.
-        /// </summary>
-        void Run(object state, bool timedOut);
-
-        void PostDataToWorker(object data);
-    }
-
-    public interface IApiJob
-    { 
-        void eventAfter_stopJob(int id);
-    } 
 }

@@ -151,10 +151,11 @@ namespace appie
 
             //Console.ReadLine();
 
-            var jobs = new ApiJob();
-            jobs.f_addJob(new JobFetch(), "a");
-            jobs.f_addJob(new JobFetch(), "a");
-            jobs.f_addJob(new JobFetch(), "a");
+            var jobs = new JobStore();
+
+            jobs.f_addJob(new JobWebClient(), "a");
+            jobs.f_addJob(new JobWebClient(), "a");
+            jobs.f_addJob(new JobWebClient(), "a");
 
             jobs.OnStopAll += (se,ev) => {
                 Trace.WriteLine(">>>>> STOP ALL JOBS: DONE ...");
