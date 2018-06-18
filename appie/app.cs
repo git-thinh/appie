@@ -153,7 +153,7 @@ namespace appie
 
             var jobs = new JobStore();
 
-            jobs.f_addJob(new JobWebClient(), "a");
+            jobs.f_addJob(new JobWebClient(jobs), "a");
             //jobs.f_addJob(new JobWebClient(), "a");
             //jobs.f_addJob(new JobWebClient(), "a");
 
@@ -163,12 +163,16 @@ namespace appie
 
             while (true)
             {
-                Console.WriteLine("Enter to stop all...");
-                Console.ReadLine();
-                jobs.f_stopAll(); 
-                Console.WriteLine("Enter to restart all...");
-                Console.ReadLine();
-                jobs.f_restartAllJob(); 
+                Console.WriteLine("Input URL: ");
+                string url = Console.ReadLine();
+                jobs.f_url_AddRang(new string[] { "https://dictionary.cambridge.org/grammar/british-grammar/" });
+
+                //Console.WriteLine("Enter to stop all...");
+                //Console.ReadLine();
+                //jobs.f_stopAll(); 
+                //Console.WriteLine("Enter to restart all...");
+                //Console.ReadLine();
+                //jobs.f_restartAllJob(); 
             }
         }
     }

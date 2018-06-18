@@ -1,11 +1,70 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Linq;
 
 namespace appie
 {
     public class JobStore : IJobStore
     {
+        #region [ URL ]
+
+        readonly DictionaryThreadSafe<string, string> urlOk;
+        readonly DictionaryThreadSafe<string, string> urlFail;
+        readonly DictionaryThreadSafe<int, bool> urlState;
+        readonly QueueThreadSafe<string> urlRemain;
+        int counterJobStateDone = 0;
+
+        public void f_url_AddRang(string[] urls) {
+            string[] a1 = urlOk.KeysArray,
+                a2 = urlFail.KeysArray;
+
+            urls = urls.Where(x =>
+                        !a1.Any(p => p == x)
+                        && !a2.Any(p => p == x)
+                        && x.StartsWith("https://dictionary.cambridge.org/grammar/british-grammar/")).ToArray();
+
+            if (urls.Length > 0)
+            {
+                urlRemain.EnqueueAll(urls);
+                Interlocked.Add(ref counterJobStateDone, 0);
+            }
+        }
+
+        const string str_empty = "";
+        public string f_url_Dequeue() {
+            return urlRemain.Dequeue(str_empty);
+        }
+
+        public void f_url_updateFail(string url, string message) {
+            urlFail.Add(url, message);
+        }
+
+        public void f_url_updateSuccess(string url, string html) {
+            urlOk.Add(url, html);
+        }
+
+        public bool f_url_stateJobIsComplete()
+        {
+            if (Interlocked.CompareExchange(ref counterJobStateDone, storeJobs.Count, 0) == 0
+                && urlOk.Count > 0)
+            {
+                return true;
+            }
+            Interlocked.Increment(ref counterJobStateDone);
+            return false;
+        }
+
+        public void f_url_Complete()
+        {
+            Interlocked.Add(ref counterJobStateDone, 0);
+            Trace.WriteLine("CRAWLE COMPLETE ...");
+        }
+
+        #endregion
+
+        #region [ JOB ]
+
         readonly DictionaryThreadSafe<int, AutoResetEvent> storeEvents;
         readonly DictionaryThreadSafe<int, JobInfo> storeJobs;
         readonly DictionaryThreadSafe<string, ListThreadSafe<int>> storeGroupJobs;
@@ -15,15 +74,7 @@ namespace appie
         // member will be accessed by multiple threads.
         private volatile bool event_JobsStoping = false;
         public event EventHandler OnStopAll;
-
-        public JobStore()
-        {
-            storeEvents = new DictionaryThreadSafe<int, AutoResetEvent>();
-            storeJobs = new DictionaryThreadSafe<int, JobInfo>();
-            storeGroupJobs = new DictionaryThreadSafe<string, ListThreadSafe<int>>();
-            listIdsStop = new ListThreadSafe<int>();
-        }
-         
+                 
         public void f_restartAllJob()
         {
             f_stopAll();
@@ -36,7 +87,7 @@ namespace appie
             }
         }
 
-        public void f_eventAfter_stopJob(int id)
+        public void f_job_eventAfterStop(int id)
         {
             listIdsStop.Add(id);
             if (listIdsStop.Count == storeJobs.Count && event_JobsStoping == false)
@@ -98,6 +149,21 @@ namespace appie
                 Trace.WriteLine("All {0} jobs received signal to exit ...", evs.Length);
                 //WaitHandle.WaitAll(evs);
             }
+        }
+
+        #endregion
+
+        public JobStore()
+        {
+            storeEvents = new DictionaryThreadSafe<int, AutoResetEvent>();
+            storeJobs = new DictionaryThreadSafe<int, JobInfo>();
+            storeGroupJobs = new DictionaryThreadSafe<string, ListThreadSafe<int>>();
+            listIdsStop = new ListThreadSafe<int>();
+
+            urlFail = new DictionaryThreadSafe<string, string>();
+            urlOk = new DictionaryThreadSafe<string, string>();
+            urlState = new DictionaryThreadSafe<int, bool>();
+            urlRemain = new QueueThreadSafe<string>();
         }
 
         ~JobStore()

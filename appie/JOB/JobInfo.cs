@@ -51,7 +51,7 @@ namespace appie
         {
             if (this._handle != null)
                 this._handle.Unregister(null);
-            this._api.f_eventAfter_stopJob(this._id);
+            this._api.f_job_eventAfterStop(this._id);
         }
 
         public AutoResetEvent GetEvent() { return _even; }

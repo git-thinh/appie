@@ -293,18 +293,19 @@ namespace System.Threading
         /// <summary>
         /// Removes and returns the item in the beginning of the queue
         /// </summary>
-        public T Dequeue()
+        public T Dequeue(T _defaultIfEmpty)
         {
             LockQ.EnterWriteLock();
             try
             {
-                return m_Queue.Dequeue();
+                if (m_Queue.Count > 0)
+                   return m_Queue.Dequeue();
             }
-
             finally
             {
                 LockQ.ExitWriteLock();
             }
+            return _defaultIfEmpty;
         }
 
         // Dequeue
