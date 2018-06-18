@@ -95,6 +95,7 @@
     <Compile Include="API\ApiFetch.cs" />
     <Compile Include="API\ApiChannel.cs" />
     <Compile Include="API\ApiFetchWorker.cs" />
+    <Compile Include="JOB\JobSpeechEN.cs" />
     <Compile Include="JOB\JobWebClient.cs" />
     <Compile Include="JOB\IJob.cs" />
     <Compile Include="JOB\IJobStore.cs" />
@@ -126,6 +127,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="JOB\JOB_CONST.cs" />
+    <Compile Include="JOB\JOB_STATE.cs" />
     <Compile Include="LIB\CTextBox.cs">
       <SubType>Component</SubType>
     </Compile>

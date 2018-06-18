@@ -7,22 +7,19 @@ namespace appie
     public interface IJobStore
     {
         /// <summary>
-        /// Call this event after stop job executing
+        /// Call this event after stop executing job
         /// </summary>
         /// <param name="id"></param>
         void f_job_eventAfterStop(int id);
+        void f_job_postData(int idJobReceiver, object data);
 
-        /// <summary>
-        /// Add range news array urls
-        /// </summary>
-        /// <param name="urls"></param>
-        int f_url_AddRange(string[] urls);
+        ///////////////////////////////////////////////////////////////////
 
-        /// <summary>
-        /// Dequeue url from queue contain urls remain(be not crawled)
-        /// </summary>
-        /// <returns></returns>
-        
+
+
+        ///////////////////////////////////////////////////////////////////
+
+        int f_url_AddRange(string[] urls);        
         string f_url_getUrlPending();
         bool f_url_stateJobIsComplete(int id);
         void f_url_Complete();        

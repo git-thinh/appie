@@ -1,12 +1,35 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace appie
 {
     public static class test
     {
-        public static void job_JobWebClient() {
+        public static void f_jobTest()
+        {
+            var jobs = new JobStore();
+
+            jobs.f_addJob(new JobTest(jobs), "a");
+            jobs.f_addJob(new JobTest(jobs), "a");
+            jobs.f_addJob(new JobTest(jobs), "a");
+            jobs.f_addJob(new JobTest(jobs), "a");
+            jobs.f_addJob(new JobTest(jobs), "a");
+
+            jobs.OnStopAll += (se, ev) => {
+                Trace.WriteLine(">>>>> STOP ALL JOBS: DONE ...");
+            };
+
+            while (true)
+            {
+                Console.WriteLine("Enter to stop all...");
+                Console.ReadLine();
+                jobs.f_stopAll();
+                Console.WriteLine("Enter to restart all...");
+                Console.ReadLine();
+                jobs.f_restartAllJob();
+            }
+        }
+
+        public static void f_jobWebClient() {
             var jobs = new JobStore();
 
             jobs.f_addJob(new JobWebClient(jobs), "a");
@@ -34,15 +57,11 @@ namespace appie
             }
         }
 
-        public static void job_Test()
+        public static void f_jobSpeechEN()
         {
             var jobs = new JobStore();
 
-            jobs.f_addJob(new JobTest(jobs), "a");
-            jobs.f_addJob(new JobTest(jobs), "a");
-            jobs.f_addJob(new JobTest(jobs), "a");
-            jobs.f_addJob(new JobTest(jobs), "a");
-            jobs.f_addJob(new JobTest(jobs), "a");
+            int id = jobs.f_addJob(new JobSpeechEN(jobs), "a"); 
 
             jobs.OnStopAll += (se, ev) => {
                 Trace.WriteLine(">>>>> STOP ALL JOBS: DONE ...");
@@ -50,12 +69,16 @@ namespace appie
 
             while (true)
             {
-                Console.WriteLine("Enter to stop all...");
-                Console.ReadLine();
-                jobs.f_stopAll();
-                Console.WriteLine("Enter to restart all...");
-                Console.ReadLine();
-                jobs.f_restartAllJob();
+                //Console.WriteLine("Enter to stop all...");
+                //Console.ReadLine();
+                //jobs.f_stopAll();
+                //Console.WriteLine("Enter to restart all...");
+                //Console.ReadLine();
+                //jobs.f_restartAllJob();
+                Console.Write("Enter to speech: ");
+                string input = Console.ReadLine();
+                jobs.f_job_postData(id, input);
+                
             }
         }
 

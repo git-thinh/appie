@@ -6,23 +6,25 @@ namespace appie
     public class JobTest : IJob
     {
         public IJobStore store { get; }
+        public void f_freeResource() { }
+        public void f_postData(object data) { }
 
         public JobTest(IJobStore _store)
         {
             this.store = _store;
         }
 
-        public void Run(object state, bool timedOut)
+        public void f_runLoop(object state, bool timedOut)
         {
             JobInfo ti = (JobInfo)state;
             if (!timedOut)
             {
-                Trace.WriteLine("J{0} executes on thread {1}: SIGNAL -> STOP", ti.GetId(), Thread.CurrentThread.GetHashCode().ToString());
-                ti.StopJob();
+                Trace.WriteLine("J{0} executes on thread {1}: SIGNAL -> STOP", ti.f_getId(), Thread.CurrentThread.GetHashCode().ToString());
+                ti.f_stopJob();
                 return;
             }
 
-            Trace.WriteLine("J{0} executes on thread {1}: Do something ...", ti.GetId(), Thread.CurrentThread.GetHashCode().ToString());
+            Trace.WriteLine("J{0} executes on thread {1}: Do something ...", ti.f_getId(), Thread.CurrentThread.GetHashCode().ToString());
         } 
     }
 }

@@ -141,8 +141,9 @@ namespace appie
             }
             //app.RUN();
 
-            test.job_Test();
-            //test.job_JobWebClient();
+            //test.f_jobTest();
+            //test.f_jobWebClient();
+            test.f_jobSpeechEN();
 
             Console.ReadLine();
         }

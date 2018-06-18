@@ -8,9 +8,12 @@ namespace appie
     {
         IJobStore store { get; }
 
+        void f_postData(object data);
+        void f_freeResource();
+
         /// <summary>
         /// Main work loop of the class.
         /// </summary>
-        void Run(object state, bool timedOut);
+        void f_runLoop(object state, bool timedOut);
     }
 }

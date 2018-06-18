@@ -82,7 +82,7 @@ namespace appie
         {
             urlOk.WriteFile("demo.bin");
 
-            Trace.WriteLine("CRAWLE COMPLETE ..."); 
+            Trace.WriteLine("CRAWLE COMPLETE ...");
             OnUrlFetchComplete?.Invoke(this, new EventArgs() { });
         }
 
@@ -100,6 +100,16 @@ namespace appie
         private volatile bool event_JobsStoping = false;
         public event EventHandler OnStopAll;
 
+        public void f_job_postData(int idJobReceiver, object data)
+        {
+            if (idJobReceiver > 0 && data != null && storeJobs.ContainsKey(idJobReceiver))
+            {
+                JobInfo jo = null;
+                if (storeJobs.TryGetValue(idJobReceiver, out jo) && jo != null)
+                    jo.f_postData(data);
+            }
+        }
+
         public void f_restartAllJob()
         {
             f_stopAll();
@@ -108,7 +118,7 @@ namespace appie
             {
                 JobInfo[] jobs = storeJobs.ValuesArray;
                 for (int i = 0; i < jobs.Length; i++)
-                    jobs[i].ReStart();
+                    jobs[i].f_reStart();
             }
         }
 
@@ -124,7 +134,7 @@ namespace appie
             }
         }
 
-        public long f_addJob(IJob job, string groupName = null)
+        public int f_addJob(IJob job, string groupName = null)
         {
             // The main thread uses AutoResetEvent to signal the
             // registered wait handle, which executes the callback
@@ -176,6 +186,16 @@ namespace appie
             }
         }
 
+        public void f_freeResource()
+        { 
+            if (storeJobs.Count > 0)
+            {
+                JobInfo[] jobs = storeJobs.ValuesArray;
+                for (int i = 0; i < jobs.Length; i++) 
+                    jobs[i].f_freeResource(); 
+            }
+        }
+
         #endregion
 
         public JobStore()
@@ -197,6 +217,7 @@ namespace appie
         ~JobStore()
         {
             f_stopAll();
+            f_freeResource();
         }
     }
 }

@@ -16,18 +16,20 @@ namespace appie
         private int Id = 0;
          
         public IJobStore store { get; }
+        public void f_freeResource() { }
+        public void f_postData(object data) { }
 
         public JobWebClient(IJobStore _store)
         {
             this.store = _store;
         }
 
-        public void Run(object state, bool timedOut)
+        public void f_runLoop(object state, bool timedOut)
         {
             JobInfo ti = (JobInfo)state;
             if (!timedOut)
             {
-                ti.StopJob();
+                ti.f_stopJob();
                 return;
             }
             
@@ -38,7 +40,7 @@ namespace appie
             string _url = store.f_url_getUrlPending();
             if (_url.Length == 0) return;
 
-            Interlocked.CompareExchange(ref Id, ti.GetId(), 0);
+            Interlocked.CompareExchange(ref Id, ti.f_getId(), 0);
             Trace.WriteLine("J{0} -> {1}", Id, _url);
 
             HttpWebRequest w = (HttpWebRequest)WebRequest.Create(new Uri(_url));
