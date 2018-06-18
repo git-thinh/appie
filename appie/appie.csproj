@@ -100,7 +100,7 @@
     <Compile Include="JOB\IJobStore.cs" />
     <Compile Include="JOB\JobInfo.cs" />
     <Compile Include="JOB\JobStore.cs" />
-    <Compile Include="JOB\JobFetch.cs" />
+    <Compile Include="JOB\JobTest.cs" />
     <Compile Include="API\ProducerConsumer.cs" />
     <Compile Include="API\DHTMLEventHandler.cs" />
     <Compile Include="API\IAPI.cs" />

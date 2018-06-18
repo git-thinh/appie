@@ -53,7 +53,9 @@ namespace appie
                 this._handle.Unregister(null);
             this._api.f_eventAfter_stopJob(this._id);
         }
-        
+
+        public AutoResetEvent GetEvent() { return _even; }
+
         public int GetId() { return _id; }
 
         public string GetGroupName() { return _groupName; }
