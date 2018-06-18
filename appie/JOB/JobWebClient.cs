@@ -9,16 +9,17 @@ using System.Web;
 namespace appie
 {
     public class JobWebClient : IJob
-    {
-        readonly IJobStore _store;
+    { 
         readonly Object _lock = new object();
 
         private bool isDownloading = false;
         private int Id = 0;
+         
+        public IJobStore store { get; }
 
-        public JobWebClient(IJobStore store)
+        public JobWebClient(IJobStore _store)
         {
-            _store = store;
+            this.store = _store;
         }
 
         public void Run(object state, bool timedOut)
@@ -34,7 +35,7 @@ namespace appie
                 if (isDownloading)
                     return;
 
-            string _url = _store.f_url_getUrlPending();
+            string _url = store.f_url_getUrlPending();
             if (_url.Length == 0) return;
 
             Interlocked.CompareExchange(ref Id, ti.GetId(), 0);
@@ -63,7 +64,7 @@ namespace appie
 
                         string[] urls = get_UrlHtml(url, data);
                         if (urls.Length > 0)
-                            _store.f_url_AddRange(urls);
+                            store.f_url_AddRange(urls);
                     }
                     else
                     {
@@ -79,13 +80,13 @@ namespace appie
                                 
                 Trace.WriteLine("J{0} <- {1}", Id, _url);
 
-                _store.f_url_countResult(_url, data, isSuccess);
+                store.f_url_countResult(_url, data, isSuccess);
 
-                int urlCounter = _store.f_url_countPending();
+                int urlCounter = store.f_url_countPending();
                 if (urlCounter == 0)
                 {
-                    bool end = _store.f_url_stateJobIsComplete(Id);
-                    if (end) _store.f_url_Complete();
+                    bool end = store.f_url_stateJobIsComplete(Id);
+                    if (end) store.f_url_Complete();
                     return;
                 }
 

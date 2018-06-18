@@ -6,6 +6,8 @@ namespace appie
 {
     public interface IJob
     {
+        IJobStore store { get; }
+
         /// <summary>
         /// Main work loop of the class.
         /// </summary>
