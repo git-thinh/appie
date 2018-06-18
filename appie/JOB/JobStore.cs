@@ -66,7 +66,7 @@ namespace appie
             if (Interlocked.CompareExchange(ref urlCounter_Runtime, urlCounter_Runtime, urlCounter_Result) == urlCounter_Result
                 && urlCounter_Result != 0)
             {
-                Trace.WriteLine("CHECKING STATE CONPLETE: {0} === {1} ? RETURN TRUE", urlStateJob.Count, storeJobs.Count);
+                Trace.WriteLine("CHECKING STATE CONPLETED: OK = {0}| ALL_URL = {1}", urlOk.Count, urlCounter_Runtime);
                 return true;
             }
             return false;
