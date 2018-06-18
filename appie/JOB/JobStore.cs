@@ -11,53 +11,70 @@ namespace appie
 
         readonly DictionaryThreadSafe<string, string> urlOk;
         readonly DictionaryThreadSafe<string, string> urlFail;
-        readonly DictionaryThreadSafe<int, bool> urlState;
-        readonly QueueThreadSafe<string> urlRemain;
-        int counterJobStateDone = 0;
+        readonly DictionaryThreadSafe<int, bool> urlStateJob;
 
-        public void f_url_AddRang(string[] urls) {
-            string[] a1 = urlOk.KeysArray,
-                a2 = urlFail.KeysArray;
+        readonly ListThreadSafe<string> urlAll;
+        readonly ListThreadSafe<string> urlPending;
 
-            urls = urls.Where(x =>
-                        !a1.Any(p => p == x)
-                        && !a2.Any(p => p == x)
-                        && x.StartsWith("https://dictionary.cambridge.org/grammar/british-grammar/")).ToArray();
+        int urlCounter_Runtime = 0;
+        int urlCounter_Result = 0;
+        const int urlMax = 100;
 
-            if (urls.Length > 0)
-            {
-                urlRemain.EnqueueAll(urls);
-                Interlocked.Add(ref counterJobStateDone, 0);
-            }
-        }
-
-        const string str_empty = "";
-        public string f_url_Dequeue() {
-            return urlRemain.Dequeue(str_empty);
-        }
-
-        public void f_url_updateFail(string url, string message) {
-            urlFail.Add(url, message);
-        }
-
-        public void f_url_updateSuccess(string url, string html) {
-            urlOk.Add(url, html);
-        }
-
-        public bool f_url_stateJobIsComplete()
+        public int f_url_AddRange(string[] urls)
         {
-            if (Interlocked.CompareExchange(ref counterJobStateDone, storeJobs.Count, 0) == 0
-                && urlOk.Count > 0)
+            if (urlAll.Count < 100)
             {
+                urls = urlAll.AddRangeIfNotExist(urls);
+                if (urls.Length > 0) urlPending.AddRange(urls);
+            }
+            urlStateJob.Clear();
+            return urls.Length;
+        }
+
+        public string f_url_getUrlPending()
+        {
+            if (Interlocked.CompareExchange(ref urlCounter_Runtime, urlMax, urlMax) == urlMax)
+                return string.Empty;
+            string url = urlPending.Dequeue(string.Empty);
+
+            if (url.Length > 0)
+                Interlocked.Increment(ref urlCounter_Runtime);
+
+            return url;
+        }
+
+        public int f_url_countPending()
+        {
+            if (Interlocked.CompareExchange(ref urlCounter_Runtime, urlMax, urlMax) == urlMax)
+                return 0;
+
+            return urlPending.Count;
+        }
+
+        public int f_url_countResult(string url, string message, bool isSuccess = true)
+        {
+            if (isSuccess)
+                urlOk.Add(url, message);
+            else
+                urlFail.Add(url, message);
+
+            return Interlocked.Increment(ref urlCounter_Result);
+        }
+
+        public bool f_url_stateJobIsComplete(int id)
+        {
+            if (Interlocked.CompareExchange(ref urlCounter_Runtime, urlCounter_Runtime, urlCounter_Result) == urlCounter_Result
+                && urlCounter_Result != 0)
+            {
+                Trace.WriteLine("CHECKING STATE CONPLETE: {0} === {1} ? RETURN TRUE", urlStateJob.Count, storeJobs.Count);
                 return true;
             }
-            Interlocked.Increment(ref counterJobStateDone);
             return false;
         }
 
         public void f_url_Complete()
         {
-            Interlocked.Add(ref counterJobStateDone, 0);
+            urlStateJob.Clear();
             Trace.WriteLine("CRAWLE COMPLETE ...");
         }
 
@@ -74,7 +91,7 @@ namespace appie
         // member will be accessed by multiple threads.
         private volatile bool event_JobsStoping = false;
         public event EventHandler OnStopAll;
-                 
+
         public void f_restartAllJob()
         {
             f_stopAll();
@@ -98,7 +115,7 @@ namespace appie
                 event_JobsStoping = false;
             }
         }
-        
+
         public long f_addJob(IJob job, string groupName = null)
         {
             // The main thread uses AutoResetEvent to signal the
@@ -162,8 +179,10 @@ namespace appie
 
             urlFail = new DictionaryThreadSafe<string, string>();
             urlOk = new DictionaryThreadSafe<string, string>();
-            urlState = new DictionaryThreadSafe<int, bool>();
-            urlRemain = new QueueThreadSafe<string>();
+            urlStateJob = new DictionaryThreadSafe<int, bool>();
+
+            urlPending = new ListThreadSafe<string>();
+            urlAll = new ListThreadSafe<string>();
         }
 
         ~JobStore()

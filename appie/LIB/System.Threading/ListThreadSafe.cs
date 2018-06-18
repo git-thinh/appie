@@ -297,6 +297,48 @@ namespace System.Threading
             }
         }
 
+        public T[] AddRangeIfNotExist(T[] items)
+        {
+            if (items.Length == 0) return items;
+
+            LockList.EnterWriteLock();
+            try
+            {
+                if (m_TList.Count == 0)
+                {
+                    m_TList.AddRange(items);
+                    return items;
+                }
+
+                items = items.Where(x => !m_TList.Any(p => p.Equals(x))).ToArray();
+                m_TList.AddRange(items);
+
+                return items;
+            }
+            finally
+            {
+                LockList.ExitWriteLock();
+            }
+        }
+
+        public T Dequeue(T valueDefault)
+        {
+            LockList.EnterWriteLock();
+            try
+            {
+                if (m_TList.Count > 0)
+                {
+                    T val = m_TList[0];
+                    m_TList.RemoveAt(0);
+                    return val;
+                }
+            }
+            finally
+            {
+                LockList.ExitWriteLock();
+            }
+            return valueDefault;
+        }
         // AddRange
         #endregion
 

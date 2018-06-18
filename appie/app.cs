@@ -154,8 +154,10 @@ namespace appie
             var jobs = new JobStore();
 
             jobs.f_addJob(new JobWebClient(jobs), "a");
-            //jobs.f_addJob(new JobWebClient(), "a");
-            //jobs.f_addJob(new JobWebClient(), "a");
+            jobs.f_addJob(new JobWebClient(jobs), "a");
+            jobs.f_addJob(new JobWebClient(jobs), "a");
+            jobs.f_addJob(new JobWebClient(jobs), "a");
+            jobs.f_addJob(new JobWebClient(jobs), "a");
 
             jobs.OnStopAll += (se,ev) => {
                 Trace.WriteLine(">>>>> STOP ALL JOBS: DONE ...");
@@ -165,7 +167,7 @@ namespace appie
             {
                 Console.WriteLine("Input URL: ");
                 string url = Console.ReadLine();
-                jobs.f_url_AddRang(new string[] { "https://dictionary.cambridge.org/grammar/british-grammar/" });
+                jobs.f_url_AddRange(new string[] { "https://dictionary.cambridge.org/grammar/british-grammar/" });
 
                 //Console.WriteLine("Enter to stop all...");
                 //Console.ReadLine();

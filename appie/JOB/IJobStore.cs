@@ -16,20 +16,17 @@ namespace appie
         /// Add range news array urls
         /// </summary>
         /// <param name="urls"></param>
-        void f_url_AddRang(string[] urls);
+        int f_url_AddRange(string[] urls);
 
         /// <summary>
         /// Dequeue url from queue contain urls remain(be not crawled)
         /// </summary>
         /// <returns></returns>
         
-        string f_url_Dequeue();
-
-        bool f_url_stateJobIsComplete();
-        void f_url_Complete();
-
-        void f_url_updateFail(string url, string message);
-
-        void f_url_updateSuccess(string url, string html);
+        string f_url_getUrlPending();
+        bool f_url_stateJobIsComplete(int id);
+        void f_url_Complete();        
+        int f_url_countPending();
+        int f_url_countResult(string url, string message, bool isSuccess = true);
     }
 }
