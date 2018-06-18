@@ -11,23 +11,29 @@ namespace appie
 
         readonly DictionaryThreadSafe<string, string> urlOk;
         readonly DictionaryThreadSafe<string, string> urlFail;
-        readonly DictionaryThreadSafe<int, bool> urlStateJob;
 
         readonly ListThreadSafe<string> urlAll;
         readonly ListThreadSafe<string> urlPending;
 
         int urlCounter_Runtime = 0;
         int urlCounter_Result = 0;
-        const int urlMax = 100;
+        const int urlMax = 9;
+
+        public event EventHandler OnUrlFetchComplete;
+
+        private void f_url_Init()
+        {
+            urlOk.ReadFile("demo.bin");
+            urlOk.Clear();
+        }
 
         public int f_url_AddRange(string[] urls)
         {
-            if (urlAll.Count < 100)
+            if (urlAll.Count < urlMax)
             {
                 urls = urlAll.AddRangeIfNotExist(urls);
                 if (urls.Length > 0) urlPending.AddRange(urls);
             }
-            urlStateJob.Clear();
             return urls.Length;
         }
 
@@ -74,8 +80,10 @@ namespace appie
 
         public void f_url_Complete()
         {
-            urlStateJob.Clear();
-            Trace.WriteLine("CRAWLE COMPLETE ...");
+            urlOk.WriteFile("demo.bin");
+
+            Trace.WriteLine("CRAWLE COMPLETE ..."); 
+            OnUrlFetchComplete?.Invoke(this, new EventArgs() { });
         }
 
         #endregion
@@ -179,10 +187,11 @@ namespace appie
 
             urlFail = new DictionaryThreadSafe<string, string>();
             urlOk = new DictionaryThreadSafe<string, string>();
-            urlStateJob = new DictionaryThreadSafe<int, bool>();
 
             urlPending = new ListThreadSafe<string>();
             urlAll = new ListThreadSafe<string>();
+
+            f_url_Init();
         }
 
         ~JobStore()

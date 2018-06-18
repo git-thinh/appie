@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.IO;
+using Salar.Bois;
 
 /*
 ThreadSafeCollections
@@ -49,7 +51,9 @@ namespace System.Threading
         /// <summary>
         /// The base dictionary
         /// </summary>
-        private readonly Dictionary<TKey, TValue> m_Dictionary;
+        //private readonly Dictionary<TKey, TValue> m_Dictionary;
+        private Dictionary<TKey, TValue> m_Dictionary;
+        private readonly BoisSerializer boisSerializer = new BoisSerializer();
 
         // Variables
         #endregion
@@ -130,7 +134,7 @@ namespace System.Threading
             // enter a write lock, to make absolutely sure that the key
             // is added/deleted from the time we check if it exists
             // to the time we add it if it doesn't exist
-            return Lock_Dictionary.PerformUsingUpgradeableReadLock(()=>
+            return Lock_Dictionary.PerformUsingUpgradeableReadLock(() =>
             {
                 TValue rVal;
 
@@ -139,7 +143,7 @@ namespace System.Threading
                     return rVal;
 
                 // not found, so do the function to get the value
-                Lock_Dictionary.PerformUsingWriteLock(()=>
+                Lock_Dictionary.PerformUsingWriteLock(() =>
                 {
                     rVal = func.Invoke();
 
@@ -168,6 +172,53 @@ namespace System.Threading
         {
             Lock_Dictionary.PerformUsingWriteLock(() => m_Dictionary.Add(key, value));
         }
+        public void ReadFile(string file_path)
+        {
+            Lock_Dictionary.PerformUsingWriteLock(() =>
+            {
+                if (File.Exists(file_path))
+                {
+                    using (var file = File.OpenRead(file_path))
+                    {
+                        //ProtoBuf.Serializer.Serialize<Dictionary<string, string>>(file, cacheData); 
+                        file.Position = 0;
+                        m_Dictionary = boisSerializer.Deserialize<Dictionary<TKey, TValue>>(file); 
+                        file.Close();
+                    }
+                }
+            });
+        }
+
+        public void WriteFile(string file_path)
+        {
+            Lock_Dictionary.PerformUsingWriteLock(() =>
+            {
+                if (File.Exists(file_path))
+                {
+                    // Using Protobuf-net, I suddenly got an exception about an unknown wire-type
+                    // https://stackoverflow.com/questions/2152978/using-protobuf-net-i-suddenly-got-an-exception-about-an-unknown-wire-type
+                    using (var file = new FileStream(file_path, FileMode.Truncate))
+                    {
+                        //ProtoBuf.Serializer.Serialize<Dictionary<string, string>>(file, cacheData);
+                        //file.SetLength(file.Position);
+                        //file.Close();
+
+                        boisSerializer.Serialize<Dictionary<TKey, TValue>>(m_Dictionary, file);
+                        file.SetLength(file.Position);
+                        file.Close();
+                    }
+                }
+                else
+                {
+                    using (var file = new FileStream(file_path, FileMode.OpenOrCreate))
+                    {
+                        //ProtoBuf.Serializer.Serialize<Dictionary<string, string>>(file, cacheData); 
+                        boisSerializer.Serialize<Dictionary<TKey, TValue>>(m_Dictionary, file);
+                        file.Close();
+                    }
+                }
+            });
+        }
 
         /// <summary>
         /// Adds an item to the dictionary
@@ -179,7 +230,7 @@ namespace System.Threading
             TValue value = item.Value;
             Lock_Dictionary.PerformUsingWriteLock(() => m_Dictionary.Add(key, value));
         }
-        
+
         // Add
         #endregion
 
@@ -371,7 +422,7 @@ namespace System.Threading
         /// <param name="item">the key to remove</param>
         public bool Remove(KeyValuePair<TKey, TValue> item)
         {
-            return Lock_Dictionary.PerformUsingWriteLock(()=>
+            return Lock_Dictionary.PerformUsingWriteLock(() =>
             {
                 // skip if the key doesn't exist
                 TValue tempVal;
@@ -394,7 +445,7 @@ namespace System.Threading
         /// <param name="predValue">Option expression based on the values</param>
         public bool Remove(Predicate<TKey> predKey, Predicate<TValue> predValue)
         {
-            return Lock_Dictionary.PerformUsingWriteLock(()=>
+            return Lock_Dictionary.PerformUsingWriteLock(() =>
             {
                 // exit if no keys
                 if (m_Dictionary.Keys.Count == 0)
@@ -451,7 +502,7 @@ namespace System.Threading
             {
                 Lock_Dictionary.ExitReadLock();
             }
-            
+
         }
 
         // TryGetValue
@@ -564,7 +615,7 @@ namespace System.Threading
             Lock_Dictionary.PerformUsingReadLock(() => localDict = new Dictionary<TKey, TValue>(m_Dictionary));
 
             // get the enumerator
-            return ((IEnumerable<KeyValuePair<TKey, TValue>>) localDict).GetEnumerator();
+            return ((IEnumerable<KeyValuePair<TKey, TValue>>)localDict).GetEnumerator();
         }
 
         #endregion
