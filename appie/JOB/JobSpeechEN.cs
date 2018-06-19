@@ -13,8 +13,9 @@ namespace appie
 {
     public class JobSpeechEN : IJob
     {
-        readonly QueueThreadSafe<string> queue;
         readonly static SpeechSynthesizer _speaker = new SpeechSynthesizer();
+
+        readonly QueueThreadSafe<string> queue;
         readonly DictionaryThreadSafe<string, string> storeUrl;
         readonly DictionaryThreadSafe<string, string> storePath;
 
