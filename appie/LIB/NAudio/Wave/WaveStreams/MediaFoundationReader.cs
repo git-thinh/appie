@@ -83,6 +83,146 @@ namespace NAudio.Wave
             Init(settings);
         }
 
+        public MediaFoundationReader(byte[] buffer)
+        {
+            this.file = string.Empty;
+            Init2(buffer, null);
+        }
+
+        protected void Init2(byte[] buffer, MediaFoundationReaderSettings initialSettings)
+        {
+            MediaFoundationApi.Startup();
+            settings = initialSettings ?? new MediaFoundationReaderSettings();
+            var reader = CreateReader2(buffer, settings);
+
+            waveFormat = GetCurrentWaveFormat(reader);
+
+            reader.SetStreamSelection(MediaFoundationInterop.MF_SOURCE_READER_FIRST_AUDIO_STREAM, true);
+            length = GetLength(reader);
+
+            if (settings.SingleReaderObject)
+            {
+                pReader = reader;
+            }
+            else
+            {
+                Marshal.ReleaseComObject(reader);
+            }
+        }
+
+
+        public static WaveFormat GetCurrentWaveFormat(byte[] buffer)
+        {
+            MediaFoundationApi.Startup();
+            var settings = new MediaFoundationReaderSettings();
+            
+            IMFSourceReader reader = null;
+            //MediaFoundationInterop.MFCreateSourceReaderFromURL(file, null, out reader);
+            reader = MediaFoundationApi.CreateSourceReaderFromByteStream(MediaFoundationApi.CreateByteStream(new ComStream(new MemoryStream(buffer))));
+
+            reader.SetStreamSelection(MediaFoundationInterop.MF_SOURCE_READER_ALL_STREAMS, false);
+            reader.SetStreamSelection(MediaFoundationInterop.MF_SOURCE_READER_FIRST_AUDIO_STREAM, true);
+
+            // Create a partial media type indicating that we want uncompressed PCM audio
+
+            var partialMediaType = new MediaType();
+            partialMediaType.MajorType = MediaTypes.MFMediaType_Audio;
+            partialMediaType.SubType = settings.RequestFloatOutput ? AudioSubtypes.MFAudioFormat_Float : AudioSubtypes.MFAudioFormat_PCM;
+
+            var currentMediaType = GetCurrentMediaType(reader);
+
+            // mono, low sample rate files can go wrong on Windows 10 unless we specify here
+            partialMediaType.ChannelCount = currentMediaType.ChannelCount;
+            partialMediaType.SampleRate = currentMediaType.SampleRate;
+
+            try
+            {
+                // set the media type
+                // can return MF_E_INVALIDMEDIATYPE if not supported
+                reader.SetCurrentMediaType(MediaFoundationInterop.MF_SOURCE_READER_FIRST_AUDIO_STREAM, IntPtr.Zero, partialMediaType.MediaFoundationObject);
+            }
+            catch (COMException ex) when (ex.GetHResult() == MediaFoundationErrors.MF_E_INVALIDMEDIATYPE)
+            {
+                // HE-AAC (and v2) seems to halve the samplerate
+                if (currentMediaType.SubType == AudioSubtypes.MFAudioFormat_AAC && currentMediaType.ChannelCount == 1)
+                {
+                    partialMediaType.SampleRate = currentMediaType.SampleRate *= 2;
+                    partialMediaType.ChannelCount = currentMediaType.ChannelCount *= 2;
+                    reader.SetCurrentMediaType(MediaFoundationInterop.MF_SOURCE_READER_FIRST_AUDIO_STREAM, IntPtr.Zero, partialMediaType.MediaFoundationObject);
+                }
+                else { throw; }
+            }
+
+            IMFMediaType uncompressedMediaType;
+            reader.GetCurrentMediaType(MediaFoundationInterop.MF_SOURCE_READER_FIRST_AUDIO_STREAM, out uncompressedMediaType);
+
+            // Two ways to query it, first is to ask for properties (second is to convert into WaveFormatEx using MFCreateWaveFormatExFromMFMediaType)
+            var outputMediaType = new MediaType(uncompressedMediaType);
+            Guid actualMajorType = outputMediaType.MajorType;
+            Debug.Assert(actualMajorType == MediaTypes.MFMediaType_Audio);
+            Guid audioSubType = outputMediaType.SubType;
+            int channels = outputMediaType.ChannelCount;
+            int bits = outputMediaType.BitsPerSample;
+            int sampleRate = outputMediaType.SampleRate;
+
+            Marshal.ReleaseComObject(currentMediaType.MediaFoundationObject); 
+            //Marshal.ReleaseComObject(reader);
+
+            if (audioSubType == AudioSubtypes.MFAudioFormat_PCM)
+                return new WaveFormat(sampleRate, bits, channels);
+            if (audioSubType == AudioSubtypes.MFAudioFormat_Float)
+                return WaveFormat.CreateIeeeFloatWaveFormat(sampleRate, channels);
+            var subTypeDescription = FieldDescriptionHelper.Describe(typeof(AudioSubtypes), audioSubType);
+            throw new InvalidDataException(String.Format("Unsupported audio sub Type {0}", subTypeDescription));
+        }
+
+
+        /// <summary>
+        /// Creates the reader (overridable by )
+        /// </summary>
+        protected virtual IMFSourceReader CreateReader2(byte[] buffer, MediaFoundationReaderSettings settings)
+        {
+            IMFSourceReader reader = null;
+            //MediaFoundationInterop.MFCreateSourceReaderFromURL(file, null, out reader);
+            reader = MediaFoundationApi.CreateSourceReaderFromByteStream(MediaFoundationApi.CreateByteStream(new ComStream(new MemoryStream(buffer))));
+
+            reader.SetStreamSelection(MediaFoundationInterop.MF_SOURCE_READER_ALL_STREAMS, false);
+            reader.SetStreamSelection(MediaFoundationInterop.MF_SOURCE_READER_FIRST_AUDIO_STREAM, true);
+
+            // Create a partial media type indicating that we want uncompressed PCM audio
+
+            var partialMediaType = new MediaType();
+            partialMediaType.MajorType = MediaTypes.MFMediaType_Audio;
+            partialMediaType.SubType = settings.RequestFloatOutput ? AudioSubtypes.MFAudioFormat_Float : AudioSubtypes.MFAudioFormat_PCM;
+
+            var currentMediaType = GetCurrentMediaType(reader);
+
+            // mono, low sample rate files can go wrong on Windows 10 unless we specify here
+            partialMediaType.ChannelCount = currentMediaType.ChannelCount;
+            partialMediaType.SampleRate = currentMediaType.SampleRate;
+
+            try
+            {
+                // set the media type
+                // can return MF_E_INVALIDMEDIATYPE if not supported
+                reader.SetCurrentMediaType(MediaFoundationInterop.MF_SOURCE_READER_FIRST_AUDIO_STREAM, IntPtr.Zero, partialMediaType.MediaFoundationObject);
+            }
+            catch (COMException ex) when (ex.GetHResult() == MediaFoundationErrors.MF_E_INVALIDMEDIATYPE)
+            {
+                // HE-AAC (and v2) seems to halve the samplerate
+                if (currentMediaType.SubType == AudioSubtypes.MFAudioFormat_AAC && currentMediaType.ChannelCount == 1)
+                {
+                    partialMediaType.SampleRate = currentMediaType.SampleRate *= 2;
+                    partialMediaType.ChannelCount = currentMediaType.ChannelCount *= 2;
+                    reader.SetCurrentMediaType(MediaFoundationInterop.MF_SOURCE_READER_FIRST_AUDIO_STREAM, IntPtr.Zero, partialMediaType.MediaFoundationObject);
+                }
+                else { throw; }
+            }
+
+            Marshal.ReleaseComObject(currentMediaType.MediaFoundationObject);
+            return reader;
+        }
+
         /// <summary>
         /// Initializes 
         /// </summary>
