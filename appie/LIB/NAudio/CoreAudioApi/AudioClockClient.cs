@@ -27,7 +27,8 @@ namespace NAudio.CoreAudioApi
         {
             get
             {
-                Marshal.ThrowExceptionForHR(audioClockClientInterface.GetCharacteristics(out var characteristics));
+                uint characteristics;
+                Marshal.ThrowExceptionForHR(audioClockClientInterface.GetCharacteristics(out characteristics));
                 return (int)characteristics;
             }
         }
@@ -39,7 +40,8 @@ namespace NAudio.CoreAudioApi
         {
             get
             {
-                Marshal.ThrowExceptionForHR(audioClockClientInterface.GetFrequency(out var freq));
+                ulong freq;
+                Marshal.ThrowExceptionForHR(audioClockClientInterface.GetFrequency(out freq));
                 return freq;
             }
         }

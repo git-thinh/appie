@@ -40,8 +40,8 @@ namespace NAudio.CoreAudioApi
         /// GUID to pass to AudioEndpointVolumeCallback
         /// </summary>
         public Guid NotificationGuid {
-            get => notificationGuid;
-            set => notificationGuid = value;
+            get { return notificationGuid; }
+            set { notificationGuid = value; }
         }
 
         /// <summary>

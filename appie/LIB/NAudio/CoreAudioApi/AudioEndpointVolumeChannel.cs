@@ -41,8 +41,8 @@ namespace NAudio.CoreAudioApi
         /// </summary>
         public Guid NotificationGuid
         {
-            get => notificationGuid;
-            set => notificationGuid = value;
+            get { return notificationGuid; }
+            set { notificationGuid = value; }
         }
 
         internal AudioEndpointVolumeChannel(IAudioEndpointVolume parent, int channel)
@@ -58,7 +58,8 @@ namespace NAudio.CoreAudioApi
         {
             get
             {
-                Marshal.ThrowExceptionForHR(audioEndpointVolume.GetChannelVolumeLevel(channel,out var result));
+                float result;
+                Marshal.ThrowExceptionForHR(audioEndpointVolume.GetChannelVolumeLevel(channel,out result));
                 return result;
             }
             set
@@ -74,7 +75,8 @@ namespace NAudio.CoreAudioApi
         {
             get
             {
-                Marshal.ThrowExceptionForHR(audioEndpointVolume.GetChannelVolumeLevelScalar(channel, out var result));
+                float result;
+                Marshal.ThrowExceptionForHR(audioEndpointVolume.GetChannelVolumeLevelScalar(channel, out result));
                 return result;
             }
             set

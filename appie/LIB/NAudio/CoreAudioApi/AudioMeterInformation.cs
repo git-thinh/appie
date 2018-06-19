@@ -35,7 +35,8 @@ namespace NAudio.CoreAudioApi
         internal AudioMeterInformation(IAudioMeterInformation realInterface)
         {
             audioMeterInformation = realInterface;
-            Marshal.ThrowExceptionForHR(audioMeterInformation.QueryHardwareSupport(out var hardwareSupp));
+            int hardwareSupp;
+            Marshal.ThrowExceptionForHR(audioMeterInformation.QueryHardwareSupport(out hardwareSupp));
             HardwareSupport = (EEndpointHardwareSupport)hardwareSupp;
             PeakValues = new AudioMeterInformationChannels(audioMeterInformation);
 

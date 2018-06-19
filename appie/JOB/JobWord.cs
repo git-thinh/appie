@@ -134,7 +134,7 @@ namespace appie
             //url = "https://en.oxforddictionaries.com/definition/forget";
             UrlService.GetAsync(url, (stream) =>
             {
-                oWordDefine wo = new oWordDefine(text);
+                oWordDefine wo = new oWordDefine(word);
                 object rs = null;
                 string s = string.Empty;
                 using (var reader = new StreamReader(stream, Encoding.UTF8))

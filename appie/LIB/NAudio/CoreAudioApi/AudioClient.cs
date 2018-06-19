@@ -34,7 +34,8 @@ namespace NAudio.CoreAudioApi
             {
                 if (mixFormat == null)
                 {
-                    Marshal.ThrowExceptionForHR(audioClientInterface.GetMixFormat(out var waveFormatPointer));
+                    IntPtr waveFormatPointer;
+                    Marshal.ThrowExceptionForHR(audioClientInterface.GetMixFormat(out waveFormatPointer));
                     var waveFormat = WaveFormat.MarshalFromPtr(waveFormatPointer);
                     Marshal.FreeCoTaskMem(waveFormatPointer);
                     mixFormat = waveFormat;

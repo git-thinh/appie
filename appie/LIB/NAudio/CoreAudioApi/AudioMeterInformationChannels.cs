@@ -39,7 +39,8 @@ namespace NAudio.CoreAudioApi
         {
             get
             {
-                Marshal.ThrowExceptionForHR(audioMeterInformation.GetMeteringChannelCount(out var result));
+                int result;
+                Marshal.ThrowExceptionForHR(audioMeterInformation.GetMeteringChannelCount(out result));
                 return result;
             }
         }

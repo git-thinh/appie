@@ -26,7 +26,8 @@ namespace NAudio.CoreAudioApi
             out long devicePosition,
             out long qpcPosition)
         {
-            Marshal.ThrowExceptionForHR(audioCaptureClientInterface.GetBuffer(out var bufferPointer, out numFramesToRead, out bufferFlags, out devicePosition, out qpcPosition));
+            IntPtr bufferPointer;
+            Marshal.ThrowExceptionForHR(audioCaptureClientInterface.GetBuffer(out bufferPointer, out numFramesToRead, out bufferFlags, out devicePosition, out qpcPosition));
             return bufferPointer;
         }
 
@@ -40,7 +41,8 @@ namespace NAudio.CoreAudioApi
             out int numFramesToRead,
             out AudioClientBufferFlags bufferFlags)
         {
-            Marshal.ThrowExceptionForHR(audioCaptureClientInterface.GetBuffer(out var bufferPointer, out numFramesToRead, out bufferFlags, out _, out _));
+            IntPtr bufferPointer;
+            Marshal.ThrowExceptionForHR(audioCaptureClientInterface.GetBuffer(out bufferPointer, out numFramesToRead, out bufferFlags, out _, out _));
             return bufferPointer;
         }
 
@@ -49,7 +51,8 @@ namespace NAudio.CoreAudioApi
         /// </summary>
         public int GetNextPacketSize()
         {
-            Marshal.ThrowExceptionForHR(audioCaptureClientInterface.GetNextPacketSize(out var numFramesInNextPacket));
+            int numFramesInNextPacket;
+            Marshal.ThrowExceptionForHR(audioCaptureClientInterface.GetNextPacketSize(out numFramesInNextPacket));
             return numFramesInNextPacket;
         }
 
