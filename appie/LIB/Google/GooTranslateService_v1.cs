@@ -94,6 +94,9 @@ namespace appie
         {
             text = HttpUtility.UrlEncode(text);
 
+            ////string temp = HttpUtility.UrlEncode(input.Replace(" ", "---"));
+            //string temp = HttpUtility.UrlEncode(input);
+            ////temp = temp.Replace("-----", "%20");
             var url = string.Format(RequestGoogleTranslatorUrl, lngSourceCode, lngDestinationCode, text);
             //string url = String.Format("http://www.google.com/translate_t?hl=en&ie=UTF8&text={0}&langpair={1}", temp, "en|vi");
 

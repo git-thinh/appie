@@ -163,31 +163,6 @@ namespace appie
                     if (it.dict[0].terms != null && it.dict[0].terms.Length > 0)
                         result += "; " + string.Join("; ", it.dict[0].terms);
                 }
-
-                ////dynamic obj = SimpleJson.DeserializeObject(text);
-
-                //JObject obj = Newtonsoft.Json.JsonConvert.DeserializeObject<JObject>(text);
-
-                //var final = "";
-                //// the number of lines
-                //int lines = obj[0].Count;
-                //for (int i = 0; i < lines; i++)
-                //{
-                //    // the translated text.
-                //    final += (obj[0][i][0]).ToString();
-                //}
-                //result = final;
-
-                //type = string.Empty;
-                //if (obj.Count > 1)
-                //{
-                //    type = (obj[1][0][0]).ToString();
-                //    try
-                //    {
-                //        result = result + "; " + string.Join("; ", ((JObject[])(obj[1][0][1])).Select(x => x.ToString()).ToArray());
-                //    }
-                //    catch { }
-                //}
                 return true;
             }
             catch (Exception ex)
@@ -217,55 +192,5 @@ namespace appie
         public string pos { set; get; }
         public string[] terms { set; get; }
     }
-
-    //	public class MYCLASSNAME 
-    //	{
-    //		string Sj(string a)
-    //		{
-    //			return a;
-    //		}
-    //		void Tj(string a,string b) {
-    //			for (FIXME_VAR_TYPE c = 0; c < b.length - 2; c += 3)
-    //			{
-    //				FIXME_VAR_TYPE d = b.charAt(c + 2), d = "a" <= d ? d.charCodeAt(0) - 87 : Number(d), d = "+" == b.charAt(c + 1) ? a >>> d : a << d; a = "+" == b.charAt(c) ? a + d & 4294967295 : a ^ d
-    //			}
-    //			return a;
-    //		}
-
-    //		void Vj( string a)
-    //		{
-    //			FIXME_VAR_TYPE b;
-    //			if (null !== Uj) b = Uj;
-    //			else
-    //			{
-    //				b = Sj(String.fromCharCode(84));
-    //				FIXME_VAR_TYPE c = Sj(String.fromCharCode(75));
-    //				b = [b(), b()];
-    //				b[1] = c();
-    //				b = (Uj = window[b.join(c())] || "") || ""
-
-    //	}
-    //			FIXME_VAR_TYPE d = Sj(String.fromCharCode(116)),
-    //				c = Sj(String.fromCharCode(107)),
-    //				d = [d(), d()];
-    //			d[1] = c();
-    //			c = "&" + d.join("") +
-    //				"=";
-    //			d = b.split(".");
-    //			b = Number(d[0]) || 0;
-    //			for (FIXME_VAR_TYPE e = [], f = 0, g = 0; g < a.Length; g++)
-    //			{
-    //				FIXME_VAR_TYPE l = a.charCodeAt(g);
-    //				128 > l ? e[f++] = l : (2048 > l ? e[f++] = l >> 6 | 192 : (55296 == (l & 64512) && g + 1 < a.length && 56320 == (a.charCodeAt(g + 1) & 64512) ? (l = 65536 + ((l & 1023) << 10) + (a.charCodeAt(++g) & 1023), e[f++] = l >> 18 | 240, e[f++] = l >> 12 & 63 | 128) : e[f++] = l >> 12 | 224, e[f++] = l >> 6 & 63 | 128), e[f++] = l & 63 | 128)
-    //    }
-    //		a = b;
-    //    for (f = 0; f<e.length; f++) a += e[f], a = Tj(a, "+-a^+6");
-    //		a = Tj(a, "+-3^+b+-f");
-    //		a ^= Number(d[1]) || 0;
-    //    0 > a && (a = (a & 2147483647) + 2147483648);
-    //    a %= 1E6;
-    //    return c + (a.toString() + "." +
-    //        (a ^ b))
-    //}
-    //}
+    
 }
