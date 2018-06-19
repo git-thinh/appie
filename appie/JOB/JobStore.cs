@@ -218,6 +218,9 @@ namespace appie
         {
             f_stopAll();
             f_freeResource();
+
+            GC.Collect(); // Start .NET CLR Garbage Collection
+            GC.WaitForPendingFinalizers(); // Wait for Garbage Collection to finish
         }
     }
 }

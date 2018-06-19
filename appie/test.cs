@@ -1,9 +1,16 @@
-﻿using System;
+﻿using appie.FORM;
+using System;
+using System.Windows.Forms;
 
 namespace appie
 {
     public static class test
     {
+        public static void f_MediaMP3Stream_Demo() { 
+            Application.EnableVisualStyles();
+            Application.Run(new fMediaMP3Stream_Demo());
+        }
+
         public static void f_jobTest()
         {
             var jobs = new JobStore();
