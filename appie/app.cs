@@ -144,7 +144,9 @@ namespace appie
             //test.f_MediaMP3Stream_Demo();
             //test.f_jobTest();
             //test.f_jobWebClient();
-            test.f_jobSpeechEN();
+            //test.f_jobSpeechEN();
+
+            test.f_JobGooTranslate();
 
             Console.ReadLine();
         }

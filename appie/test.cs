@@ -89,6 +89,31 @@ namespace appie
             }
         }
 
+        public static void f_JobGooTranslate()
+        {
+            var jobs = new JobStore();
+
+            int id = jobs.f_addJob(new JobGooTranslate(jobs), "a"); 
+
+            jobs.OnStopAll += (se, ev) => {
+                Trace.WriteLine(">>>>> STOP ALL JOBS: DONE ...");
+            };
+
+            while (true)
+            {
+                //Console.WriteLine("Enter to stop all...");
+                //Console.ReadLine();
+                //jobs.f_stopAll();
+                //Console.WriteLine("Enter to restart all...");
+                //Console.ReadLine();
+                //jobs.f_restartAllJob();
+                Console.Write("Enter to translate: ");
+                string input = Console.ReadLine();
+                jobs.f_job_postData(id, input);
+                
+            }
+        }
+
 
     }
 }

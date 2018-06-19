@@ -95,6 +95,8 @@
     <Compile Include="API\ApiFetch.cs" />
     <Compile Include="API\ApiChannel.cs" />
     <Compile Include="API\ApiFetchWorker.cs" />
+    <Compile Include="JOB\JobGooTranslate.cs" />
+    <Compile Include="LIB\GoogleTranslate\GTranslateService.cs" />
     <Compile Include="LIB\NAudio\CachedSound.cs" />
     <Compile Include="LIB\NAudio\LoopStream.cs" />
     <Compile Include="LIB\NAudio\_Demo\Mp3Streaming\fMediaMP3Stream_Demo.cs">
