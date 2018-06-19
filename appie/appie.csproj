@@ -896,6 +896,7 @@
     <Compile Include="LIB\_Demo\Nullable\NonNullable.cs" />
     <Compile Include="MODEL\oCrawler.cs" />
     <Compile Include="MODEL\oSetting.cs" />
+    <Compile Include="MODEL\oWordDefine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="test.cs" />
   </ItemGroup>
