@@ -84,7 +84,8 @@ namespace appie
                 string s = this.queue.Dequeue(string.Empty);
                 if (s.Length > 0)
                 {
-                    test_run(s);
+                    test_run_v1(s);
+                    //test_run_v2(s);
 
                     System.Trace.WriteLine("J{0} executes on thread {1}: Speech = {2}", ti.f_getId(), Thread.CurrentThread.GetHashCode().ToString(), s);
                 }
@@ -92,11 +93,25 @@ namespace appie
         }
 
         #region [ TEST ]
-         
-        void test_run(string text)
-        { 
+
+        void test_run_v1(string text)
+        {
             //IsBusy(true);
-            GTranslateService.TranslateAsync(
+            GTranslateService_v1.TranslateAsync(
+                text, "en", "vi", string.Empty,
+                (success, result, type) =>
+                {
+                    //SetResult(result, type);
+                    //IsBusy(false);
+                    Console.WriteLine("\r\n -> " + text + " (" + type + "): " + result);
+                    Trace.WriteLine(text + "(" + type + "): " + result);
+                });
+        }
+
+        void test_run_v2(string text)
+        {
+            //IsBusy(true);
+            GTranslateService_v2.TranslateAsync(
                 text, "en", "vi", string.Empty,
                 (success, result, type) =>
                 {

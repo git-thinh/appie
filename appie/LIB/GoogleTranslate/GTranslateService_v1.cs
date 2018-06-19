@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 
 /* 
@@ -28,10 +29,10 @@ GTranslateService.TranslateAsync(
  */
 namespace appie
 {
-    public class GTranslateService
+    public class GTranslateService_v1
     {
         private const string RequestUserAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0";
-        private const string RequestGoogleTranslatorUrl = "https://translate.googleapis.com/translate_a/single?client=gtx&sl={0}&tl={1}&hl=en&dt=t&dt=bd&dj=1&source=icon&tk=467103.467103&q={2}";
+        private const string RequestGoogleTranslatorUrl = "http://www.google.com/translate_t?hl=en&ie=UTF8&langpair={0}|{1}&text={2}";
 
 
         public delegate void TranslateCallBack(bool succeed, string result, string type);
@@ -94,7 +95,7 @@ namespace appie
             text = HttpUtility.UrlEncode(text);
 
             var url = string.Format(RequestGoogleTranslatorUrl, lngSourceCode, lngDestinationCode, text);
-
+            //string url = String.Format("http://www.google.com/translate_t?hl=en&ie=UTF8&text={0}&langpair={1}", temp, "en|vi");
 
             var create = (HttpWebRequest)WebRequest.Create(url);
             create.UserAgent = RequestUserAgent;
@@ -154,40 +155,23 @@ namespace appie
                 result = string.Empty;
                 type = string.Empty;
 
-                AutoResxTranslator it = Newtonsoft.Json.JsonConvert.DeserializeObject<AutoResxTranslator>(text);
-                if (it.sentences.Length > 0 && it.sentences[0].trans != null)
-                    result = it.sentences[0].trans;
-                if (it.dict.Length > 0)
+                string s = HttpUtility.HtmlDecode(text);
+                
+                int p = s.IndexOf("id=result_box");
+                if (p > 0)
+                    s = "<span " + s.Substring(p, s.Length - p);
+                p = s.IndexOf("</div>");
+                if (p > 0)
                 {
-                    type = it.dict[0].pos;
-                    if (it.dict[0].terms != null && it.dict[0].terms.Length > 0)
-                        result += "; " + string.Join("; ", it.dict[0].terms);
+                    s = s.Substring(0, p);
+                    s = s.Replace("<br>", "¦");
+                    s = HttpUtility.HtmlDecode(s);
+                    result = Regex.Replace(s, @"<[^>]*>", String.Empty);
                 }
-
-                ////dynamic obj = SimpleJson.DeserializeObject(text);
-
-                //JObject obj = Newtonsoft.Json.JsonConvert.DeserializeObject<JObject>(text);
-
-                //var final = "";
-                //// the number of lines
-                //int lines = obj[0].Count;
-                //for (int i = 0; i < lines; i++)
-                //{
-                //    // the translated text.
-                //    final += (obj[0][i][0]).ToString();
-                //}
-                //result = final;
-
-                //type = string.Empty;
-                //if (obj.Count > 1)
-                //{
-                //    type = (obj[1][0][0]).ToString();
-                //    try
-                //    {
-                //        result = result + "; " + string.Join("; ", ((JObject[])(obj[1][0][1])).Select(x => x.ToString()).ToArray());
-                //    }
-                //    catch { }
-                //}
+                if (result != string.Empty)
+                {
+                    string[] rs = result.Split('¦').Select(x => x.Trim()).ToArray(); 
+                } 
                 return true;
             }
             catch (Exception ex)
@@ -199,73 +183,5 @@ namespace appie
         }
 
     }
-
-    public class AutoResxTranslator
-    {
-        public sentences[] sentences { set; get; }
-        public dict[] dict { set; get; }
-    }
-
-    public class sentences
-    {
-        public string trans { set; get; }
-        public string orig { set; get; }
-    }
-
-    public class dict
-    {
-        public string pos { set; get; }
-        public string[] terms { set; get; }
-    }
-
-    //	public class MYCLASSNAME 
-    //	{
-    //		string Sj(string a)
-    //		{
-    //			return a;
-    //		}
-    //		void Tj(string a,string b) {
-    //			for (FIXME_VAR_TYPE c = 0; c < b.length - 2; c += 3)
-    //			{
-    //				FIXME_VAR_TYPE d = b.charAt(c + 2), d = "a" <= d ? d.charCodeAt(0) - 87 : Number(d), d = "+" == b.charAt(c + 1) ? a >>> d : a << d; a = "+" == b.charAt(c) ? a + d & 4294967295 : a ^ d
-    //			}
-    //			return a;
-    //		}
-
-    //		void Vj( string a)
-    //		{
-    //			FIXME_VAR_TYPE b;
-    //			if (null !== Uj) b = Uj;
-    //			else
-    //			{
-    //				b = Sj(String.fromCharCode(84));
-    //				FIXME_VAR_TYPE c = Sj(String.fromCharCode(75));
-    //				b = [b(), b()];
-    //				b[1] = c();
-    //				b = (Uj = window[b.join(c())] || "") || ""
-
-    //	}
-    //			FIXME_VAR_TYPE d = Sj(String.fromCharCode(116)),
-    //				c = Sj(String.fromCharCode(107)),
-    //				d = [d(), d()];
-    //			d[1] = c();
-    //			c = "&" + d.join("") +
-    //				"=";
-    //			d = b.split(".");
-    //			b = Number(d[0]) || 0;
-    //			for (FIXME_VAR_TYPE e = [], f = 0, g = 0; g < a.Length; g++)
-    //			{
-    //				FIXME_VAR_TYPE l = a.charCodeAt(g);
-    //				128 > l ? e[f++] = l : (2048 > l ? e[f++] = l >> 6 | 192 : (55296 == (l & 64512) && g + 1 < a.length && 56320 == (a.charCodeAt(g + 1) & 64512) ? (l = 65536 + ((l & 1023) << 10) + (a.charCodeAt(++g) & 1023), e[f++] = l >> 18 | 240, e[f++] = l >> 12 & 63 | 128) : e[f++] = l >> 12 | 224, e[f++] = l >> 6 & 63 | 128), e[f++] = l & 63 | 128)
-    //    }
-    //		a = b;
-    //    for (f = 0; f<e.length; f++) a += e[f], a = Tj(a, "+-a^+6");
-    //		a = Tj(a, "+-3^+b+-f");
-    //		a ^= Number(d[1]) || 0;
-    //    0 > a && (a = (a & 2147483647) + 2147483648);
-    //    a %= 1E6;
-    //    return c + (a.toString() + "." +
-    //        (a ^ b))
-    //}
-    //}
+    
 }
