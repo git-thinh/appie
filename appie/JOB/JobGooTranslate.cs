@@ -97,7 +97,7 @@ namespace appie
         void test_run_v1(string text)
         {
             //IsBusy(true);
-            GTranslateService_v1.TranslateAsync(
+            GooTranslateService_v1.TranslateAsync(
                 text, "en", "vi", string.Empty,
                 (success, result, type) =>
                 {
@@ -111,7 +111,7 @@ namespace appie
         void test_run_v2(string text)
         {
             //IsBusy(true);
-            GTranslateService_v2.TranslateAsync(
+            GooTranslateService_v2.TranslateAsync(
                 text, "en", "vi", string.Empty,
                 (success, result, type) =>
                 {
