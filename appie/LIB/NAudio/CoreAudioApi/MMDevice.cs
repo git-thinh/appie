@@ -58,31 +58,36 @@ namespace NAudio.CoreAudioApi
         /// <remarks>Administrative client is required for Write and ReadWrite modes.</remarks>
         public void GetPropertyInformation(StorageAccessMode stgmAccess = StorageAccessMode.Read)
         {
-            Marshal.ThrowExceptionForHR(deviceInterface.OpenPropertyStore(stgmAccess, out var propstore));
+            IPropertyStore propstore;
+            Marshal.ThrowExceptionForHR(deviceInterface.OpenPropertyStore(stgmAccess, out propstore));
             propertyStore = new PropertyStore(propstore);
         }
 
         private AudioClient GetAudioClient()
         {
-            Marshal.ThrowExceptionForHR(deviceInterface.Activate(ref IID_IAudioClient, ClsCtx.ALL, IntPtr.Zero, out var result));
+            object result;
+            Marshal.ThrowExceptionForHR(deviceInterface.Activate(ref IID_IAudioClient, ClsCtx.ALL, IntPtr.Zero, out result));
             return new AudioClient(result as IAudioClient);
         }
 
         private void GetAudioMeterInformation()
         {
-            Marshal.ThrowExceptionForHR(deviceInterface.Activate(ref IID_IAudioMeterInformation, ClsCtx.ALL, IntPtr.Zero, out var result));
+            object result;
+            Marshal.ThrowExceptionForHR(deviceInterface.Activate(ref IID_IAudioMeterInformation, ClsCtx.ALL, IntPtr.Zero, out result));
             audioMeterInformation = new AudioMeterInformation(result as IAudioMeterInformation);
         }
 
         private void GetAudioEndpointVolume()
         {
-            Marshal.ThrowExceptionForHR(deviceInterface.Activate(ref IID_IAudioEndpointVolume, ClsCtx.ALL, IntPtr.Zero, out var result));
+            object result;
+            Marshal.ThrowExceptionForHR(deviceInterface.Activate(ref IID_IAudioEndpointVolume, ClsCtx.ALL, IntPtr.Zero, out result));
             audioEndpointVolume = new AudioEndpointVolume(result as IAudioEndpointVolume);
         }
 
         private void GetAudioSessionManager()
         {
-            Marshal.ThrowExceptionForHR(deviceInterface.Activate(ref IDD_IAudioSessionManager, ClsCtx.ALL, IntPtr.Zero, out var result));
+            object result;
+            Marshal.ThrowExceptionForHR(deviceInterface.Activate(ref IDD_IAudioSessionManager, ClsCtx.ALL, IntPtr.Zero, out result));
             audioSessionManager = new AudioSessionManager(result as IAudioSessionManager);
         }
         #endregion
@@ -221,7 +226,8 @@ namespace NAudio.CoreAudioApi
         {
             get
             {
-                Marshal.ThrowExceptionForHR(deviceInterface.GetId(out var result));
+                string result;
+                Marshal.ThrowExceptionForHR(deviceInterface.GetId(out result));
                 return result;
             }
         }
@@ -234,7 +240,8 @@ namespace NAudio.CoreAudioApi
             get
             {
                 var ep = deviceInterface as IMMEndpoint;
-                ep.GetDataFlow(out var result);
+                DataFlow result;
+                ep.GetDataFlow(out result);
                 return result;
             }
         }
@@ -246,7 +253,8 @@ namespace NAudio.CoreAudioApi
         {
             get
             {
-                Marshal.ThrowExceptionForHR(deviceInterface.GetState(out var result));
+                DeviceState result;
+                Marshal.ThrowExceptionForHR(deviceInterface.GetState(out result));
                 return result;
             }
         }

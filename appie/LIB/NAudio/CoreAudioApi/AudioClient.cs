@@ -92,7 +92,8 @@ namespace NAudio.CoreAudioApi
         {
             get
             {
-                Marshal.ThrowExceptionForHR(audioClientInterface.GetCurrentPadding(out var currentPadding));
+                int currentPadding;
+                Marshal.ThrowExceptionForHR(audioClientInterface.GetCurrentPadding(out currentPadding));
                 return currentPadding;
             }
         }
@@ -105,7 +106,8 @@ namespace NAudio.CoreAudioApi
         {
             get
             {
-                Marshal.ThrowExceptionForHR(audioClientInterface.GetDevicePeriod(out var defaultDevicePeriod, out _));
+                long defaultDevicePeriod, _;
+                Marshal.ThrowExceptionForHR(audioClientInterface.GetDevicePeriod(out defaultDevicePeriod, out _));
                 return defaultDevicePeriod;
             }
         }
@@ -118,7 +120,8 @@ namespace NAudio.CoreAudioApi
         {
             get
             {
-                Marshal.ThrowExceptionForHR(audioClientInterface.GetDevicePeriod(out _, out var minimumDevicePeriod));
+                long minimumDevicePeriod, _;
+                Marshal.ThrowExceptionForHR(audioClientInterface.GetDevicePeriod(out _, out minimumDevicePeriod));
                 return minimumDevicePeriod;
             }
         }
@@ -148,7 +151,8 @@ namespace NAudio.CoreAudioApi
                 if (audioStreamVolume == null)
                 {
                     var audioStreamVolumeGuid = new Guid("93014887-242D-4068-8A15-CF5E93B90FE3");
-                    Marshal.ThrowExceptionForHR(audioClientInterface.GetService(audioStreamVolumeGuid, out var audioStreamVolumeInterface));
+                    object audioStreamVolumeInterface;
+                    Marshal.ThrowExceptionForHR(audioClientInterface.GetService(audioStreamVolumeGuid, out audioStreamVolumeInterface));
                     audioStreamVolume = new AudioStreamVolume((IAudioStreamVolume)audioStreamVolumeInterface);
                 }
                 return audioStreamVolume;
@@ -165,7 +169,8 @@ namespace NAudio.CoreAudioApi
                 if (audioClockClient == null)
                 {
                     var audioClockClientGuid = new Guid("CD63314F-3FBA-4a1b-812C-EF96358728E7");
-                    Marshal.ThrowExceptionForHR(audioClientInterface.GetService(audioClockClientGuid, out var audioClockClientInterface));
+                    object audioClockClientInterface;
+                    Marshal.ThrowExceptionForHR(audioClientInterface.GetService(audioClockClientGuid, out audioClockClientInterface));
                     audioClockClient = new AudioClockClient((IAudioClock)audioClockClientInterface);
                 }
                 return audioClockClient;
@@ -182,7 +187,8 @@ namespace NAudio.CoreAudioApi
                 if (audioRenderClient == null)
                 {
                     var audioRenderClientGuid = new Guid("F294ACFC-3146-4483-A7BF-ADDCA7C260E2");
-                    Marshal.ThrowExceptionForHR(audioClientInterface.GetService(audioRenderClientGuid, out var audioRenderClientInterface));
+                    object audioRenderClientInterface;
+                    Marshal.ThrowExceptionForHR(audioClientInterface.GetService(audioRenderClientGuid, out audioRenderClientInterface));
                     audioRenderClient = new AudioRenderClient((IAudioRenderClient)audioRenderClientInterface);
                 }
                 return audioRenderClient;
@@ -199,7 +205,8 @@ namespace NAudio.CoreAudioApi
                 if (audioCaptureClient == null)
                 {
                     var audioCaptureClientGuid = new Guid("c8adbd64-e71e-48a0-a4de-185c395cd317");
-                    Marshal.ThrowExceptionForHR(audioClientInterface.GetService(audioCaptureClientGuid, out var audioCaptureClientInterface));
+                    object audioCaptureClientInterface;
+                    Marshal.ThrowExceptionForHR(audioClientInterface.GetService(audioCaptureClientGuid, out audioCaptureClientInterface));
                     audioCaptureClient = new AudioCaptureClient((IAudioCaptureClient)audioCaptureClientInterface);
                 }
                 return audioCaptureClient;
@@ -215,6 +222,7 @@ namespace NAudio.CoreAudioApi
         public bool IsFormatSupported(AudioClientShareMode shareMode,
             WaveFormat desiredFormat)
         {
+            WaveFormatExtensible _;
             return IsFormatSupported(shareMode, desiredFormat, out _);
         }
 

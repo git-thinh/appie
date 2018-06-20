@@ -40,7 +40,8 @@ namespace NAudio.CoreAudioApi
         {
             get
             {
-                Marshal.ThrowExceptionForHR(storeInterface.GetCount(out var result));
+                int result;
+                Marshal.ThrowExceptionForHR(storeInterface.GetCount(out result));
                 return result;
             }
         }
@@ -55,7 +56,8 @@ namespace NAudio.CoreAudioApi
             get
             {
                 PropertyKey key = Get(index);
-                Marshal.ThrowExceptionForHR(storeInterface.GetValue(ref key, out var result));
+                PropVariant result;
+                Marshal.ThrowExceptionForHR(storeInterface.GetValue(ref key, out result));
                 return new PropertyStoreProperty(key, result);
             }
         }
@@ -92,7 +94,8 @@ namespace NAudio.CoreAudioApi
                     PropertyKey ikey = Get(i);
                     if ((ikey.formatId == key.formatId) && (ikey.propertyId == key.propertyId))
                     {
-                        Marshal.ThrowExceptionForHR(storeInterface.GetValue(ref ikey, out var result));
+                        PropVariant result;
+                        Marshal.ThrowExceptionForHR(storeInterface.GetValue(ref ikey, out result));
                         return new PropertyStoreProperty(ikey, result);
                     }
                 }
@@ -107,7 +110,8 @@ namespace NAudio.CoreAudioApi
         /// <returns>Property key</returns>
         public PropertyKey Get(int index)
         {
-            Marshal.ThrowExceptionForHR(storeInterface.GetAt(index, out var key));
+            PropertyKey key;
+            Marshal.ThrowExceptionForHR(storeInterface.GetAt(index, out key));
             return key;
         }
 
@@ -119,7 +123,8 @@ namespace NAudio.CoreAudioApi
         public PropVariant GetValue(int index)
         {
             PropertyKey key = Get(index);
-            Marshal.ThrowExceptionForHR(storeInterface.GetValue(ref key, out var result));
+            PropVariant result;
+            Marshal.ThrowExceptionForHR(storeInterface.GetValue(ref key, out result));
             return result;
         }
 

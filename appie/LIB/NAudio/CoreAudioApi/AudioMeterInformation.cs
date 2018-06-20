@@ -59,7 +59,8 @@ namespace NAudio.CoreAudioApi
         {
             get
             {
-                Marshal.ThrowExceptionForHR(audioMeterInformation.GetPeakValue(out var result));
+                float result;
+                Marshal.ThrowExceptionForHR(audioMeterInformation.GetPeakValue(out result));
                 return result;
             }
         }

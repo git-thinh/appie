@@ -37,7 +37,8 @@ namespace NAudio.CoreAudioApi
         /// <returns>An array of volume levels between 0.0 and 1.0 for each channel in the audio stream.</returns>
         public float[] GetAllVolumes()
         {
-            Marshal.ThrowExceptionForHR(audioStreamVolumeInterface.GetChannelCount(out var channels));
+            uint channels;
+            Marshal.ThrowExceptionForHR(audioStreamVolumeInterface.GetChannelCount(out channels));
             var levels = new float[channels];
             Marshal.ThrowExceptionForHR(audioStreamVolumeInterface.GetAllVolumes(channels, levels));
             return levels;
@@ -50,7 +51,8 @@ namespace NAudio.CoreAudioApi
         {
             get
             {
-                Marshal.ThrowExceptionForHR(audioStreamVolumeInterface.GetChannelCount(out var channels));
+                uint channels;
+                Marshal.ThrowExceptionForHR(audioStreamVolumeInterface.GetChannelCount(out channels));
                 unchecked
                 {
                     return (int)channels;
@@ -72,7 +74,8 @@ namespace NAudio.CoreAudioApi
             {
                 index = (uint)channelIndex;
             }
-            Marshal.ThrowExceptionForHR(audioStreamVolumeInterface.GetChannelVolume(index, out var level));
+            float level;
+            Marshal.ThrowExceptionForHR(audioStreamVolumeInterface.GetChannelVolume(index, out level));
             return level;
         }
 

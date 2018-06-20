@@ -41,7 +41,8 @@ namespace NAudio.CoreAudioApi
         {
             get
             {
-                Marshal.ThrowExceptionForHR(mmDeviceCollection.GetCount(out var result));
+                int result;
+                Marshal.ThrowExceptionForHR(mmDeviceCollection.GetCount(out result));
                 return result;
             }
         }
@@ -55,7 +56,8 @@ namespace NAudio.CoreAudioApi
         {
             get
             {
-                mmDeviceCollection.Item(index, out var result);
+                IMMDevice result;
+                mmDeviceCollection.Item(index, out result);
                 return new MMDevice(result);
             }
         }

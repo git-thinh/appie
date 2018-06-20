@@ -42,7 +42,8 @@ namespace NAudio.CoreAudioApi
             out AudioClientBufferFlags bufferFlags)
         {
             IntPtr bufferPointer;
-            Marshal.ThrowExceptionForHR(audioCaptureClientInterface.GetBuffer(out bufferPointer, out numFramesToRead, out bufferFlags, out _, out _));
+            long _1, _2;
+            Marshal.ThrowExceptionForHR(audioCaptureClientInterface.GetBuffer(out bufferPointer, out numFramesToRead, out bufferFlags, out _1, out _2));
             return bufferPointer;
         }
 

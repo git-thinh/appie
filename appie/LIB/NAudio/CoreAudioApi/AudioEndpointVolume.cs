@@ -76,7 +76,8 @@ namespace NAudio.CoreAudioApi
         {
             get
             {
-                Marshal.ThrowExceptionForHR(audioEndPointVolume.GetMasterVolumeLevel(out var result));
+                float result;
+                Marshal.ThrowExceptionForHR(audioEndPointVolume.GetMasterVolumeLevel(out result));
                 return result;
             }
             set
@@ -92,7 +93,8 @@ namespace NAudio.CoreAudioApi
         {
             get
             {
-                Marshal.ThrowExceptionForHR(audioEndPointVolume.GetMasterVolumeLevelScalar(out var result));
+                float result;
+                Marshal.ThrowExceptionForHR(audioEndPointVolume.GetMasterVolumeLevelScalar(out result));
                 return result;
             }
             set
@@ -108,7 +110,8 @@ namespace NAudio.CoreAudioApi
         {
             get
             {
-                Marshal.ThrowExceptionForHR(audioEndPointVolume.GetMute(out var result));
+                bool result;
+                Marshal.ThrowExceptionForHR(audioEndPointVolume.GetMute(out result));
                 return result;
             }
             set
@@ -142,7 +145,8 @@ namespace NAudio.CoreAudioApi
             audioEndPointVolume = realEndpointVolume;
             Channels = new AudioEndpointVolumeChannels(audioEndPointVolume);
             StepInformation = new AudioEndpointVolumeStepInformation(audioEndPointVolume);
-            Marshal.ThrowExceptionForHR(audioEndPointVolume.QueryHardwareSupport(out var hardwareSupp));
+            uint hardwareSupp;
+            Marshal.ThrowExceptionForHR(audioEndPointVolume.QueryHardwareSupport(out hardwareSupp));
             HardwareSupport = (EEndpointHardwareSupport)hardwareSupp;
             VolumeRange = new AudioEndpointVolumeVolumeRange(audioEndPointVolume);
             callBack = new AudioEndpointVolumeCallback(this);

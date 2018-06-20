@@ -53,7 +53,8 @@ namespace NAudio.CoreAudioApi
         {
             get
             {
-                Marshal.ThrowExceptionForHR(simpleAudioVolume.GetMasterVolume(out var result));
+                float result;
+                Marshal.ThrowExceptionForHR(simpleAudioVolume.GetMasterVolume(out result));
                 return result;
             }
             set
@@ -73,7 +74,8 @@ namespace NAudio.CoreAudioApi
         {
             get
             {
-                Marshal.ThrowExceptionForHR(simpleAudioVolume.GetMute(out var result));
+                bool result;
+                Marshal.ThrowExceptionForHR(simpleAudioVolume.GetMute(out result));
                 return result;
             }
             set

@@ -106,7 +106,7 @@ namespace NAudio.Midi
         /// </summary>
         public int MidiFileType
         {
-            get => midiFileType;
+            get { return midiFileType; }
             set
             {
                 if (midiFileType != value)

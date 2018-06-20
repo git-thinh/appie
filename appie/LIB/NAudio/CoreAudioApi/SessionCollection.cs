@@ -26,7 +26,8 @@ namespace NAudio.CoreAudioApi
         {
             get
             {
-                Marshal.ThrowExceptionForHR(audioSessionEnumerator.GetSession(index, out var result));
+                IAudioSessionControl result;
+                Marshal.ThrowExceptionForHR(audioSessionEnumerator.GetSession(index, out result));
                 return new AudioSessionControl(result);
             }
         }
@@ -38,7 +39,8 @@ namespace NAudio.CoreAudioApi
         {
             get
             {
-                Marshal.ThrowExceptionForHR(audioSessionEnumerator.GetCount(out var result));
+                int result;
+                Marshal.ThrowExceptionForHR(audioSessionEnumerator.GetCount(out result));
                 return result;
             }
         }

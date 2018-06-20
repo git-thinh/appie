@@ -56,7 +56,8 @@ namespace NAudio.CoreAudioApi
         /// <returns>Device Collection</returns>
         public MMDeviceCollection EnumerateAudioEndPoints(DataFlow dataFlow, DeviceState dwStateMask)
         {
-            Marshal.ThrowExceptionForHR(realEnumerator.EnumAudioEndpoints(dataFlow, dwStateMask, out var result));
+            IMMDeviceCollection result;
+            Marshal.ThrowExceptionForHR(realEnumerator.EnumAudioEndpoints(dataFlow, dwStateMask, out result));
             return new MMDeviceCollection(result);
         }
 
@@ -68,7 +69,8 @@ namespace NAudio.CoreAudioApi
         /// <returns>Device</returns>
         public MMDevice GetDefaultAudioEndpoint(DataFlow dataFlow, Role role)
         {
-            Marshal.ThrowExceptionForHR(((IMMDeviceEnumerator)realEnumerator).GetDefaultAudioEndpoint(dataFlow, role, out var device));
+            IMMDevice device;
+            Marshal.ThrowExceptionForHR(((IMMDeviceEnumerator)realEnumerator).GetDefaultAudioEndpoint(dataFlow, role, out device));
             return new MMDevice(device);
         }
 
@@ -81,7 +83,8 @@ namespace NAudio.CoreAudioApi
         public bool HasDefaultAudioEndpoint(DataFlow dataFlow, Role role)
         {
             const int E_NOTFOUND = unchecked((int)0x80070490);
-            int hresult = ((IMMDeviceEnumerator)realEnumerator).GetDefaultAudioEndpoint(dataFlow, role, out var device);
+            IMMDevice device;
+            int hresult = ((IMMDeviceEnumerator)realEnumerator).GetDefaultAudioEndpoint(dataFlow, role, out device);
             if (hresult == 0x0)
             {
                 Marshal.ReleaseComObject(device);
@@ -102,7 +105,8 @@ namespace NAudio.CoreAudioApi
         /// <returns>Device</returns>
         public MMDevice GetDevice(string id)
         {
-            Marshal.ThrowExceptionForHR(((IMMDeviceEnumerator)realEnumerator).GetDevice(id, out var device));
+            IMMDevice device;
+            Marshal.ThrowExceptionForHR(((IMMDeviceEnumerator)realEnumerator).GetDevice(id, out device));
             return new MMDevice(device);
         }
 

@@ -204,8 +204,8 @@ namespace NAudio.Wave
         /// </summary>
         public override long Position
         {
-            get => dataChunkSize;
-            set => throw new InvalidOperationException("Repositioning a WaveFileWriter is not supported");
+            get { return dataChunkSize; }
+            set { throw new InvalidOperationException("Repositioning a WaveFileWriter is not supported"); }
         }
 
         /// <summary>
