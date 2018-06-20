@@ -43,8 +43,7 @@ namespace appie
         public void f_responseMessageFromJob_clearAll() {
             cacheJobResponseData.Clear();
         }
-
-        
+                
         #endregion
 
         #region [ URL ]
@@ -131,7 +130,7 @@ namespace appie
         #region [ JOB ]
 
         readonly DictionaryThreadSafe<int, AutoResetEvent> storeEvents;
-        readonly DictionaryThreadSafe<int, JobInfo> storeJobs = new DictionaryThreadSafe<int, JobInfo>();
+        readonly DictionaryThreadSafe<int, JobInfo> storeJobs;
         readonly DictionaryThreadSafe<string, ListThreadSafe<int>> storeGroupJobs;
         readonly ListThreadSafe<int> listIdsStop;
 
@@ -254,16 +253,17 @@ namespace appie
 
         public JobStore()
         {
+            storeEvents = new DictionaryThreadSafe<int, AutoResetEvent>();
+            storeJobs = new DictionaryThreadSafe<int, JobInfo>();
+            storeGroupJobs = new DictionaryThreadSafe<string, ListThreadSafe<int>>();
+            listIdsStop = new ListThreadSafe<int>();
+
             cacheJobResponseData = new DictionaryThreadSafe<Guid, object>();
             job_Message = new JobInfo(new JobMessage(this), new AutoResetEvent(false));
             job_Link = new JobInfo(new JobLink(this), new AutoResetEvent(false));
             f_addGroupJobName(job_Message.f_getJob());
             f_addGroupJobName(job_Link.f_getJob());
 
-            storeEvents = new DictionaryThreadSafe<int, AutoResetEvent>();
-            //storeJobs = new DictionaryThreadSafe<int, JobInfo>();
-            storeGroupJobs = new DictionaryThreadSafe<string, ListThreadSafe<int>>();
-            listIdsStop = new ListThreadSafe<int>();
 
             urlFail = new DictionaryThreadSafe<string, string>();
             urlOk = new DictionaryThreadSafe<string, string>();

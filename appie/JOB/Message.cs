@@ -8,6 +8,14 @@ using System.Threading;
 
 namespace appie
 {
+    public enum MLOG_TYPE {
+        NONE        = 0,
+        LOG_ALL     = 1,
+        LOG_UI      = 2,
+        LOG_CONSOLE = 3,
+        LOG_TRACE   = 4
+    }
+
     public class MessageResult
     {
         public int PageNumber { set; get; }
@@ -28,7 +36,6 @@ namespace appie
         }
 
         private object data;
-
         public object GetData() { return data; }
         public void SetData(object _data) { data = _data; }
     }
