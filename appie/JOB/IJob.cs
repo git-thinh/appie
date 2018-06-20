@@ -6,10 +6,15 @@ namespace appie
 {
     public interface IJob
     {
-        IJobStore store { get; }
-        void f_receiveMessage(Message m);
+        IJobStore StoreJob { get; } 
 
-        void f_postData(object data);
+        int f_getId();
+        void f_setId(int id);
+        string f_getGroupName();
+
+        void f_receiveMessage(Message m);
+        void f_sendMessage(Message m);
+
         void f_freeResource();
         
         void f_runLoop(object state, bool timedOut);

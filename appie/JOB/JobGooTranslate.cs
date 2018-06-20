@@ -50,31 +50,31 @@ namespace appie
             };
         }
 
-        public IJobStore store { get; }
+        public IJobStore StoreJob { get; }
         public void f_freeResource()
-        { 
+        {
         }
+        private volatile int Id = 0;
+        public int f_getId() { return Id; }
+        public void f_setId(int id) { Interlocked.CompareExchange(ref Id, Id, id); }
+        readonly string _groupName = string.Empty;
+        public string f_getGroupName() { return _groupName; }
         public JobGooTranslate(IJobStore _store)
         {
-            this.store = _store;
+            this.StoreJob = _store;
             this.queue = new QueueThreadSafe<string>();
             this.storeUrl = new DictionaryThreadSafe<string, string>();
             this.storePath = new DictionaryThreadSafe<string, string>(); 
         }
         public void f_receiveMessage(Message m) { }
-
-        public void f_postData(object data)
-        {
-            if (data != null && data is string)
-                this.queue.Enqueue(data as string);
-        }
+        public void f_sendMessage(Message m) { if (this.StoreJob != null) this.StoreJob.f_job_sendMessage(m); }
 
         public void f_runLoop(object state, bool timedOut)
         {
             JobInfo ti = (JobInfo)state;
             if (!timedOut)
             {
-                System.Tracer.WriteLine("J{0} executes on thread {1}: SIGNAL -> STOP", ti.f_getId(), Thread.CurrentThread.GetHashCode().ToString());
+                System.Tracer.WriteLine("J{0} executes on thread {1}: SIGNAL -> STOP", Id, Thread.CurrentThread.GetHashCode().ToString());
                 ti.f_stopJob();
                 return;
             }
@@ -88,7 +88,7 @@ namespace appie
                     test_run_v1(s);
                     //test_run_v2(s);
 
-                    System.Tracer.WriteLine("J{0} executes on thread {1}: Speech = {2}", ti.f_getId(), Thread.CurrentThread.GetHashCode().ToString(), s);
+                    System.Tracer.WriteLine("J{0} executes on thread {1}: Speech = {2}", Id, Thread.CurrentThread.GetHashCode().ToString(), s);
                 }
             }
         }

@@ -11,11 +11,15 @@ namespace appie
         /// </summary>
         /// <param name="id"></param>
         void f_job_eventAfterStop(int id);
-        void f_job_postData(int idJobReceiver, object data);
+        void f_job_sendMessage(Message m);
+        int f_job_countAll();
 
         ///////////////////////////////////////////////////////////////////
 
         void f_responseMessageFromJob(Message m);
+        object f_responseMessageFromJob_getDataByID(Guid id);
+        void f_responseMessageFromJob_removeData(Guid id);
+        void f_responseMessageFromJob_clearAll();
 
         ///////////////////////////////////////////////////////////////////
 

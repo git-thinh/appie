@@ -58,23 +58,24 @@ namespace appie
             };
         }
 
-        public IJobStore store { get; }
         public void f_freeResource()
         {
         }
+        public IJobStore StoreJob { get; }
+        private volatile int Id = 0;
+        public int f_getId() { return Id; }
+        public void f_setId(int id) { Interlocked.CompareExchange(ref Id, Id, id); }
+        readonly string _groupName = string.Empty;
+        public string f_getGroupName() { return _groupName; }
         public JobWord(IJobStore _store)
         {
-            this.store = _store;
+            this.StoreJob = _store;
             this.queue = new QueueThreadSafe<string>();
             this.storeUrl = new DictionaryThreadSafe<string, string>();
             this.storePath = new DictionaryThreadSafe<string, string>();
         }
         public void f_receiveMessage(Message m) { }
-        public void f_postData(object data)
-        {
-            if (data != null && data is string)
-                this.queue.Enqueue(data as string);
-        }
+        public void f_sendMessage(Message m) { if (this.StoreJob != null) this.StoreJob.f_job_sendMessage(m); }
 
         public void f_runLoop(object state, bool timedOut)
         {

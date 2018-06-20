@@ -7,7 +7,9 @@ namespace appie
 {
     public class JobStore : IJobStore
     {
-        #region [ LINK ]
+        const int job_exist_default = 2;
+
+        #region [ LINK - MESSAGE ]
 
         readonly JobInfo job_Link;
         readonly JobInfo job_Message;
@@ -25,6 +27,21 @@ namespace appie
                 }
             }
             job_Message.f_sendMessage(m);
+        }
+
+        public object f_responseMessageFromJob_getDataByID(Guid id) {
+            if (cacheJobResponseData.ContainsKey(id))
+                return cacheJobResponseData[id];
+            return null;
+        }
+
+        public void f_responseMessageFromJob_removeData(Guid id) {
+            if (cacheJobResponseData.ContainsKey(id))
+                cacheJobResponseData.Remove(id);
+        }
+
+        public void f_responseMessageFromJob_clearAll() {
+            cacheJobResponseData.Clear();
         }
 
         #endregion
@@ -113,7 +130,7 @@ namespace appie
         #region [ JOB ]
 
         readonly DictionaryThreadSafe<int, AutoResetEvent> storeEvents;
-        readonly DictionaryThreadSafe<int, JobInfo> storeJobs;
+        readonly DictionaryThreadSafe<int, JobInfo> storeJobs = new DictionaryThreadSafe<int, JobInfo>();
         readonly DictionaryThreadSafe<string, ListThreadSafe<int>> storeGroupJobs;
         readonly ListThreadSafe<int> listIdsStop;
 
@@ -122,14 +139,16 @@ namespace appie
         private volatile bool event_JobsStoping = false;
         public event EventHandler OnStopAll;
 
-        public void f_job_postData(int idJobReceiver, object data)
+        public int f_job_countAll() { return storeJobs.Count + job_exist_default; }
+
+        public void f_job_sendMessage(Message m)
         {
-            if (idJobReceiver > 0 && data != null && storeJobs.ContainsKey(idJobReceiver))
-            {
-                JobInfo jo = null;
-                if (storeJobs.TryGetValue(idJobReceiver, out jo) && jo != null)
-                    jo.f_postData(data);
-            }
+            //if (idJobReceiver > 0 && data != null && storeJobs.ContainsKey(idJobReceiver))
+            //{
+            //    JobInfo jo = null;
+            //    if (storeJobs.TryGetValue(idJobReceiver, out jo) && jo != null)
+            //        jo.f_postData(data);
+            //}
         }
 
         public void f_restartAllJob()
@@ -156,7 +175,7 @@ namespace appie
             }
         }
 
-        public int f_addJob(IJob job, string groupName = null)
+        public int f_addJob(IJob job)
         {
             // The main thread uses AutoResetEvent to signal the
             // registered wait handle, which executes the callback
@@ -169,12 +188,13 @@ namespace appie
             //      – Set: chuyển trạng thái của event thành signaled.
             //      – WaitOne([parameters]): Chặn thread hiện tại cho đến khi trạng thái của event được chuyển sang signaled.
             AutoResetEvent ev = new AutoResetEvent(false);
+            JobInfo jo = new JobInfo(job, ev);
             int _id = storeJobs.Count + 1;
-            JobInfo jo = new JobInfo(_id, groupName, job, ev, this);
 
             storeJobs.Add(_id, jo);
             storeEvents.Add(_id, ev);
 
+            string groupName = job.f_getGroupName();
             if (!string.IsNullOrEmpty(groupName))
             {
                 if (storeGroupJobs.ContainsKey(groupName))
@@ -223,11 +243,11 @@ namespace appie
         public JobStore()
         {
             cacheJobResponseData = new DictionaryThreadSafe<Guid, object>();
-            job_Message = new JobInfo(0, string.Empty, new JobMessage(this), new AutoResetEvent(false), this);
-            job_Link = new JobInfo(0, string.Empty, new JobLink(this), new AutoResetEvent(false), this); 
+            job_Message = new JobInfo(new JobMessage(this), new AutoResetEvent(false));
+            job_Link = new JobInfo(new JobLink(this), new AutoResetEvent(false)); 
 
             storeEvents = new DictionaryThreadSafe<int, AutoResetEvent>();
-            storeJobs = new DictionaryThreadSafe<int, JobInfo>();
+            //storeJobs = new DictionaryThreadSafe<int, JobInfo>();
             storeGroupJobs = new DictionaryThreadSafe<string, ListThreadSafe<int>>();
             listIdsStop = new ListThreadSafe<int>();
 
@@ -238,8 +258,6 @@ namespace appie
             urlAll = new ListThreadSafe<string>();
 
             f_url_Init();
-
-            f_responseMessageFromJob(new Message(true, new int[] { 1, 2, 3, 4 }));
         }
 
         ~JobStore()
@@ -252,7 +270,9 @@ namespace appie
 
             job_Message.f_stopJob();
             job_Message.f_freeResource();
-            
+
+            f_responseMessageFromJob_clearAll();
+
             GC.Collect(); // Start .NET CLR Garbage Collection
             GC.WaitForPendingFinalizers(); // Wait for Garbage Collection to finish
         }

@@ -12,16 +12,21 @@ namespace appie
     { 
         readonly Object _lock = new object();
 
-        private bool isDownloading = false;
-        private int Id = 0;
+        private bool isDownloading = false; 
          
-        public IJobStore store { get; }
+        public IJobStore StoreJob { get; }
         public void f_freeResource() { }
-        public void f_postData(object data) { }
+        public void f_sendMessage(Message m) { if (this.StoreJob != null) this.StoreJob.f_job_sendMessage(m); }
         public void f_receiveMessage(Message m) { }
+
+        private volatile int Id = 0;
+        public int f_getId() { return Id; }
+        public void f_setId(int id) { Interlocked.CompareExchange(ref Id, Id, id); }
+        readonly string _groupName = string.Empty;
+        public string f_getGroupName() { return _groupName; }
         public JobWebClient(IJobStore _store)
         {
-            this.store = _store;
+            this.StoreJob = _store;
         }
 
         public void f_runLoop(object state, bool timedOut)
@@ -37,10 +42,10 @@ namespace appie
                 if (isDownloading)
                     return;
 
-            string _url = store.f_url_getUrlPending();
+            string _url = StoreJob.f_url_getUrlPending();
             if (_url.Length == 0) return;
 
-            Interlocked.CompareExchange(ref Id, ti.f_getId(), 0);
+            //Interlocked.CompareExchange(ref Id, Id, 0);
             Tracer.WriteLine("J{0} -> {1}", Id, _url);
 
             HttpWebRequest w = (HttpWebRequest)WebRequest.Create(new Uri(_url));
@@ -66,7 +71,7 @@ namespace appie
 
                         string[] urls = get_UrlHtml(url, data);
                         if (urls.Length > 0)
-                            store.f_url_AddRange(urls);
+                            StoreJob.f_url_AddRange(urls);
                     }
                     else
                     {
@@ -82,13 +87,13 @@ namespace appie
                                 
                 Tracer.WriteLine("J{0} <- {1}", Id, _url);
 
-                store.f_url_countResult(_url, data, isSuccess);
+                StoreJob.f_url_countResult(_url, data, isSuccess);
 
-                int urlCounter = store.f_url_countPending();
+                int urlCounter = StoreJob.f_url_countPending();
                 if (urlCounter == 0)
                 {
-                    bool end = store.f_url_stateJobIsComplete(Id);
-                    if (end) store.f_url_Complete();
+                    bool end = StoreJob.f_url_stateJobIsComplete(Id);
+                    if (end) StoreJob.f_url_Complete();
                     return;
                 }
 

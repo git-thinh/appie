@@ -49,11 +49,11 @@ namespace appie
         {
             var jobs = new JobStore();
 
-            jobs.f_addJob(new JobTest(jobs), "a");
-            jobs.f_addJob(new JobTest(jobs), "a");
-            jobs.f_addJob(new JobTest(jobs), "a");
-            jobs.f_addJob(new JobTest(jobs), "a");
-            jobs.f_addJob(new JobTest(jobs), "a");
+            jobs.f_addJob(new JobTest(jobs));
+            jobs.f_addJob(new JobTest(jobs));
+            jobs.f_addJob(new JobTest(jobs));
+            jobs.f_addJob(new JobTest(jobs));
+            jobs.f_addJob(new JobTest(jobs));
 
             jobs.OnStopAll += (se, ev) => {
                 Tracer.WriteLine(">>>>> STOP ALL JOBS: DONE ...");
@@ -73,11 +73,11 @@ namespace appie
         public static void f_jobWebClient() {
             var jobs = new JobStore();
 
-            jobs.f_addJob(new JobWebClient(jobs), "a");
-            jobs.f_addJob(new JobWebClient(jobs), "a");
-            jobs.f_addJob(new JobWebClient(jobs), "a");
-            jobs.f_addJob(new JobWebClient(jobs), "a");
-            jobs.f_addJob(new JobWebClient(jobs), "a");
+            jobs.f_addJob(new JobWebClient(jobs));
+            jobs.f_addJob(new JobWebClient(jobs));
+            jobs.f_addJob(new JobWebClient(jobs));
+            jobs.f_addJob(new JobWebClient(jobs));
+            jobs.f_addJob(new JobWebClient(jobs));
 
             jobs.OnStopAll += (se, ev) => {
                 Tracer.WriteLine(">>>>> STOP ALL JOBS: DONE ...");
@@ -102,7 +102,7 @@ namespace appie
         {
             var jobs = new JobStore();
 
-            int id = jobs.f_addJob(new JobSpeechEN(jobs), "a"); 
+            int id = jobs.f_addJob(new JobSpeechEN(jobs)); 
 
             jobs.OnStopAll += (se, ev) => {
                 Tracer.WriteLine(">>>>> STOP ALL JOBS: DONE ...");
@@ -118,7 +118,7 @@ namespace appie
                 //jobs.f_restartAllJob();
                 Console.Write("Enter to speech: ");
                 string input = Console.ReadLine();
-                jobs.f_job_postData(id, input);
+                //jobs.f_job_sendMessage(id, input);
                 
             }
         }
@@ -127,7 +127,7 @@ namespace appie
         {
             var jobs = new JobStore();
 
-            int id = jobs.f_addJob(new JobGooTranslate(jobs), "a"); 
+            int id = jobs.f_addJob(new JobGooTranslate(jobs)); 
 
             jobs.OnStopAll += (se, ev) => {
                 Tracer.WriteLine(">>>>> STOP ALL JOBS: DONE ...");
@@ -143,7 +143,7 @@ namespace appie
                 //jobs.f_restartAllJob();
                 Console.Write("Enter to translate: ");
                 string input = Console.ReadLine();
-                jobs.f_job_postData(id, input);
+                //jobs.f_job_sendMessage(id, input);
                 
             }
         }
@@ -152,7 +152,7 @@ namespace appie
         {
             var jobs = new JobStore();
 
-            int id = jobs.f_addJob(new JobWord(jobs), "a"); 
+            int id = jobs.f_addJob(new JobWord(jobs)); 
 
             jobs.OnStopAll += (se, ev) => {
                 Tracer.WriteLine(">>>>> STOP ALL JOBS: DONE ...");
@@ -168,7 +168,7 @@ namespace appie
                 //jobs.f_restartAllJob();
                 Console.Write("Enter word to dictionary: ");
                 string input = Console.ReadLine();
-                jobs.f_job_postData(id, input);
+                //jobs.f_job_sendMessage(id, input);
                 
             }
         }

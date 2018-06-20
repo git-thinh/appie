@@ -7,22 +7,18 @@ namespace appie
 {
     public class JobInfo
     {
-        readonly string _groupName;
-        readonly int _id;
-        readonly IJobStore _api;
-        readonly IJob _job;
+        readonly IJob Job;
         readonly AutoResetEvent _even;
         readonly static Random _random = new Random();
 
         private JOB_STATE state;
         private RegisteredWaitHandle handle;
 
-        public JobInfo(int id, string groupName, IJob job, AutoResetEvent ev, IJobStore _api)
+        public JobInfo(IJob job, AutoResetEvent ev)
         {
-            this._job = job;
-            this._groupName = groupName;
-            this._id = id;
-            this._api = _api;
+            job.f_setId(job.StoreJob.f_job_countAll() + 1);
+
+            this.Job = job;
             this._even = ev;
 
             this.state = JOB_STATE.RUNNING;
@@ -34,10 +30,10 @@ namespace appie
                 false);
         }
 
-        public void f_sendMessage(Message m)
+        public void f_receiveMessage(Message m)
         {
-            if (_job != null)
-                _job.f_receiveMessage(m);
+            if (Job != null)
+                Job.f_receiveMessage(m);
         }
 
         public void f_reStart()
@@ -49,7 +45,7 @@ namespace appie
 
             this.handle = ThreadPool.RegisterWaitForSingleObject(
                 this._even,
-                new WaitOrTimerCallback(_job.f_runLoop),
+                new WaitOrTimerCallback(Job.f_runLoop),
                 this,
                 JOB_CONST.JOB_TIMEOUT_RUN,
                 false);
@@ -57,16 +53,12 @@ namespace appie
             this.state = JOB_STATE.RUNNING;
         }
 
-        public void f_postData(object data)
-        {
-            if (this._job != null)
-                this._job.f_postData(data);
-        }
-        
+        public void f_sendMessage(Message m) { if (this.Job.StoreJob != null) this.Job.StoreJob.f_job_sendMessage(m); }
+
         public void f_freeResource()
         {
-            if (this._job != null)
-                this._job.f_freeResource();
+            if (this.Job != null)
+                this.Job.f_freeResource();
         }
 
         public void f_stopJob()
@@ -74,7 +66,7 @@ namespace appie
             if (this.handle != null)
                 this.handle.Unregister(null);
             this.state = JOB_STATE.STOPED;
-            this._api.f_job_eventAfterStop(this._id);
+            this.Job.StoreJob.f_job_eventAfterStop(this.Job.f_getId());
         }
 
         public JOB_STATE f_getState()
@@ -83,11 +75,9 @@ namespace appie
         }
 
         public AutoResetEvent f_getEvent() { return _even; }
+        
+        public string f_getGroupName() { return this.Job.f_getGroupName(); }
 
-        public int f_getId() { return _id; }
-
-        public string f_getGroupName() { return _groupName; }
-
-        public override string ToString() { return this._id.ToString(); }
+        public override string ToString() { return this.Job.f_getId().ToString(); }
     }
 }
