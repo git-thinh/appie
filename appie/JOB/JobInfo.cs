@@ -34,6 +34,12 @@ namespace appie
                 false);
         }
 
+        public void f_sendMessage(Message m)
+        {
+            if (_job != null)
+                _job.f_receiveMessage(m);
+        }
+
         public void f_reStart()
         {
             if (this.handle != null)
@@ -56,7 +62,7 @@ namespace appie
             if (this._job != null)
                 this._job.f_postData(data);
         }
-
+        
         public void f_freeResource()
         {
             if (this._job != null)

@@ -69,7 +69,7 @@ namespace appie
             this.storeUrl = new DictionaryThreadSafe<string, string>();
             this.storePath = new DictionaryThreadSafe<string, string>();
         }
-
+        public void f_receiveMessage(Message m) { }
         public void f_postData(object data)
         {
             if (data != null && data is string)
@@ -148,7 +148,7 @@ namespace appie
                     const char heading_char = '#'; // ■ ≡ ¶ ■
                     const string heading_text = "\r\n# ";
 
-                    string htm = s, pro = string.Empty, type = string.Empty, mean_en = text.ToUpper();
+                    string htm = s, pro = string.Empty, type = string.Empty, mean_en = word.ToUpper();
 
                     HtmlNode nodes = f_word_speak_getPronunciationFromOxford_Nodes(htm);
                     pro = nodes.QuerySelectorAll("span[class=\"phon\"]").Select(x => x.InnerText).Where(x => !string.IsNullOrEmpty(x)).Take(1).SingleOrDefault();

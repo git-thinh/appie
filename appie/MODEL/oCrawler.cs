@@ -7,11 +7,6 @@ using System.Text;
 
 namespace appie
 { 
-    public class oLinkLen
-    {
-        public string Url { set; get; }
-        public int Len { set; get; }
-    }
 
     [ProtoContract]
     public class oLink

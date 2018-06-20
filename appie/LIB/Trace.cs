@@ -2,7 +2,7 @@
 
 namespace System
 {
-    public class Trace
+    public class Tracer
     {
         const string _fix = "[TRACE] - ";
         

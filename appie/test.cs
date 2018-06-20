@@ -1,11 +1,45 @@
 ﻿using appie.FORM;
+using Salar.Bois;
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace appie
 {
     public static class test
     {
+        public static void f_bookmark_import() {
+            string s = File.ReadAllText("bookmarks.html");
+            HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
+            doc.LoadHtml(s);
+
+            List<oLink> list = new List<oLink>();
+            string tag = string.Empty;
+            var nodes = doc.DocumentNode.QuerySelectorAll("h3"); 
+            foreach (var node in nodes) {
+                if (node.ParentNode.QuerySelectorAll("h3").Count == 1) {
+                    tag = node.ParentNode.QuerySelector("h3").InnerText; 
+                    var a = node.ParentNode.QuerySelectorAll("a").Select(x => new oLink () { Tags = tag, Title = x.InnerText, Link = x.getAttribute("href") }).ToArray();
+                    list.AddRange(a);
+                }
+            }
+
+            var remains = doc.DocumentNode.QuerySelectorAll("a").Select(x => new oLink() { Tags = tag, Title = x.InnerText, Link = x.getAttribute("href") }).ToArray();
+            list.AddRange(remains);
+            list = list.GroupBy(x => x.Link).Select(x => x.First()).ToList();
+
+            oLinkTag[] tags = list.GroupBy(x => x.Tags).Select(x => new oLinkTag() { Count = x.Count(), Tag = x.Key }).ToArray();
+
+            using (var file = new FileStream("lin.dat", FileMode.OpenOrCreate))
+            { 
+                new BoisSerializer().Serialize<oLink[]>(list.ToArray(), file);
+                file.Close();
+            }
+
+        }
+
         public static void f_MediaMP3Stream_Demo() { 
             Application.EnableVisualStyles();
             Application.Run(new fMediaMP3Stream_Demo());
@@ -22,7 +56,7 @@ namespace appie
             jobs.f_addJob(new JobTest(jobs), "a");
 
             jobs.OnStopAll += (se, ev) => {
-                Trace.WriteLine(">>>>> STOP ALL JOBS: DONE ...");
+                Tracer.WriteLine(">>>>> STOP ALL JOBS: DONE ...");
             };
 
             while (true)
@@ -46,7 +80,7 @@ namespace appie
             jobs.f_addJob(new JobWebClient(jobs), "a");
 
             jobs.OnStopAll += (se, ev) => {
-                Trace.WriteLine(">>>>> STOP ALL JOBS: DONE ...");
+                Tracer.WriteLine(">>>>> STOP ALL JOBS: DONE ...");
             };
 
             while (true)
@@ -71,7 +105,7 @@ namespace appie
             int id = jobs.f_addJob(new JobSpeechEN(jobs), "a"); 
 
             jobs.OnStopAll += (se, ev) => {
-                Trace.WriteLine(">>>>> STOP ALL JOBS: DONE ...");
+                Tracer.WriteLine(">>>>> STOP ALL JOBS: DONE ...");
             };
 
             while (true)
@@ -96,7 +130,7 @@ namespace appie
             int id = jobs.f_addJob(new JobGooTranslate(jobs), "a"); 
 
             jobs.OnStopAll += (se, ev) => {
-                Trace.WriteLine(">>>>> STOP ALL JOBS: DONE ...");
+                Tracer.WriteLine(">>>>> STOP ALL JOBS: DONE ...");
             };
 
             while (true)
@@ -121,7 +155,7 @@ namespace appie
             int id = jobs.f_addJob(new JobWord(jobs), "a"); 
 
             jobs.OnStopAll += (se, ev) => {
-                Trace.WriteLine(">>>>> STOP ALL JOBS: DONE ...");
+                Tracer.WriteLine(">>>>> STOP ALL JOBS: DONE ...");
             };
 
             while (true)

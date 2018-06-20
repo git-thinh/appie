@@ -18,7 +18,7 @@ namespace appie
         public IJobStore store { get; }
         public void f_freeResource() { }
         public void f_postData(object data) { }
-
+        public void f_receiveMessage(Message m) { }
         public JobWebClient(IJobStore _store)
         {
             this.store = _store;
@@ -41,7 +41,7 @@ namespace appie
             if (_url.Length == 0) return;
 
             Interlocked.CompareExchange(ref Id, ti.f_getId(), 0);
-            Trace.WriteLine("J{0} -> {1}", Id, _url);
+            Tracer.WriteLine("J{0} -> {1}", Id, _url);
 
             HttpWebRequest w = (HttpWebRequest)WebRequest.Create(new Uri(_url));
             w.BeginGetResponse(asyncResult =>
@@ -80,7 +80,7 @@ namespace appie
                     isSuccess = false;
                 }
                                 
-                Trace.WriteLine("J{0} <- {1}", Id, _url);
+                Tracer.WriteLine("J{0} <- {1}", Id, _url);
 
                 store.f_url_countResult(_url, data, isSuccess);
 

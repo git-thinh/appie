@@ -8,6 +8,7 @@ namespace appie
         public IJobStore store { get; }
         public void f_freeResource() { }
         public void f_postData(object data) { }
+        public void f_receiveMessage(Message m) { }
 
         public JobTest(IJobStore _store)
         {
@@ -19,12 +20,14 @@ namespace appie
             JobInfo ti = (JobInfo)state;
             if (!timedOut)
             {
-                Trace.WriteLine("J{0} executes on thread {1}: SIGNAL -> STOP", ti.f_getId(), Thread.CurrentThread.GetHashCode().ToString());
+                Tracer.WriteLine("J{0} executes on thread {1}: SIGNAL -> STOP", ti.f_getId(), Thread.CurrentThread.GetHashCode().ToString());
                 ti.f_stopJob();
                 return;
             }
 
-            Trace.WriteLine("J{0} executes on thread {1}: Do something ...", ti.f_getId(), Thread.CurrentThread.GetHashCode().ToString());
-        } 
+            Tracer.WriteLine("J{0} executes on thread {1}: Do something ...", ti.f_getId(), Thread.CurrentThread.GetHashCode().ToString());
+        }
+
+        
     }
 }

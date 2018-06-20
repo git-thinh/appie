@@ -44,26 +44,26 @@ namespace appie
         }
 
         static fCrawler fom;
+        static IJobStore jobs;
 
-        static QueueThreadSafe<msg> api_msg_queue = null;
+        //static QueueThreadSafe<msg> api_msg_queue = null;
         //static System.Threading.Timer api_msg_timer = null;
         //static ConcurrentDictionary<string, IthreadMsg> dicService = null;
         //static ConcurrentDictionary<string, msg> dicResponses = null;
 
 
-        public static void postToAPI(msg m)
-        {
-            api_msg_queue.Enqueue(m);
-        }
+        //public static void postToAPI(msg m)
+        //{
+        //    api_msg_queue.Enqueue(m);
+        //}
 
-        public static void postToAPI(string api, string key, object input)
-        {
-            postToAPI(new msg() { API = api, KEY = key, Input = input });
-        }
+        //public static void postToAPI(string api, string key, object input)
+        //{
+        //    postToAPI(new msg() { API = api, KEY = key, Input = input });
+        //}
 
         public static void RUN() {
-
-
+            jobs = new JobStore();
 
 
             //api_msg_queue = new ConcurrentQueue<msg>();
@@ -147,7 +147,8 @@ namespace appie
             //test.f_jobSpeechEN();
             //test.f_JobGooTranslate();
             //test.f_JobWord();
-            //Console.ReadLine();
+
+            Console.ReadLine();
         }
     }
 }

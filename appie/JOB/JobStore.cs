@@ -7,6 +7,28 @@ namespace appie
 {
     public class JobStore : IJobStore
     {
+        #region [ LINK ]
+
+        readonly JobInfo job_Link;
+        readonly JobInfo job_Message;
+        readonly DictionaryThreadSafe<Guid, object> cacheJobResponseData;
+
+        public void f_responseMessageFromJob(Message m)
+        {
+            if (m == null) return;
+            if (m.Output.Ok) {
+                var data = m.Output.GetData();
+                if (data != null)
+                {
+                    cacheJobResponseData.Add(m.GetId(), data);
+                    m.Output.SetData(null);
+                }
+            }
+            job_Message.f_sendMessage(m);
+        }
+
+        #endregion
+
         #region [ URL ]
 
         readonly DictionaryThreadSafe<string, string> urlOk;
@@ -72,7 +94,7 @@ namespace appie
             if (Interlocked.CompareExchange(ref urlCounter_Runtime, urlCounter_Runtime, urlCounter_Result) == urlCounter_Result
                 && urlCounter_Result != 0)
             {
-                Trace.WriteLine("CHECKING STATE CONPLETED: OK = {0}| ALL_URL = {1}", urlOk.Count, urlCounter_Runtime);
+                Tracer.WriteLine("CHECKING STATE CONPLETED: OK = {0}| ALL_URL = {1}", urlOk.Count, urlCounter_Runtime);
                 return true;
             }
             return false;
@@ -82,7 +104,7 @@ namespace appie
         {
             urlOk.WriteFile("demo.bin");
 
-            Trace.WriteLine("CRAWLE COMPLETE ...");
+            Tracer.WriteLine("CRAWLE COMPLETE ...");
             OnUrlFetchComplete?.Invoke(this, new EventArgs() { });
         }
 
@@ -178,10 +200,10 @@ namespace appie
                 AutoResetEvent[] evs = storeEvents.ValuesArray;
                 for (int i = 0; i < evs.Length; i++)
                 {
-                    Trace.WriteLine("Sended to job[{0}] a signal to exit ...", i);
+                    Tracer.WriteLine("Sended to job[{0}] a signal to exit ...", i);
                     evs[i].Set();
                 }
-                Trace.WriteLine("All {0} jobs received signal to exit ...", evs.Length);
+                Tracer.WriteLine("All {0} jobs received signal to exit ...", evs.Length);
                 //WaitHandle.WaitAll(evs);
             }
         }
@@ -200,6 +222,10 @@ namespace appie
 
         public JobStore()
         {
+            cacheJobResponseData = new DictionaryThreadSafe<Guid, object>();
+            job_Message = new JobInfo(0, string.Empty, new JobMessage(this), new AutoResetEvent(false), this);
+            job_Link = new JobInfo(0, string.Empty, new JobLink(this), new AutoResetEvent(false), this); 
+
             storeEvents = new DictionaryThreadSafe<int, AutoResetEvent>();
             storeJobs = new DictionaryThreadSafe<int, JobInfo>();
             storeGroupJobs = new DictionaryThreadSafe<string, ListThreadSafe<int>>();
@@ -212,6 +238,8 @@ namespace appie
             urlAll = new ListThreadSafe<string>();
 
             f_url_Init();
+
+            f_responseMessageFromJob(new Message(true, new int[] { 1, 2, 3, 4 }));
         }
 
         ~JobStore()
@@ -219,6 +247,12 @@ namespace appie
             f_stopAll();
             f_freeResource();
 
+            job_Link.f_stopJob();
+            job_Link.f_freeResource();
+
+            job_Message.f_stopJob();
+            job_Message.f_freeResource();
+            
             GC.Collect(); // Start .NET CLR Garbage Collection
             GC.WaitForPendingFinalizers(); // Wait for Garbage Collection to finish
         }

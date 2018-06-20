@@ -92,11 +92,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="API\ApiFetch.cs" />
-    <Compile Include="API\ApiChannel.cs" />
-    <Compile Include="API\ApiFetchWorker.cs" />
+    <Compile Include="API\DHTMLEventHandler.cs" />
+    <Compile Include="API\IFORM.cs" />
+    <Compile Include="JOB\JobMessage.cs" />
+    <Compile Include="JOB\JobLink.cs" />
     <Compile Include="JOB\JobWord.cs" />
     <Compile Include="JOB\JobGooTranslate.cs" />
+    <Compile Include="JOB\Message.cs" />
     <Compile Include="LIB\Google\GooTranslateService_v1.cs" />
     <Compile Include="LIB\Google\GooTranslateService_v2.cs" />
     <Compile Include="LIB\UrlService.cs" />
@@ -115,15 +117,6 @@
     <Compile Include="JOB\JobInfo.cs" />
     <Compile Include="JOB\JobStore.cs" />
     <Compile Include="JOB\JobTest.cs" />
-    <Compile Include="API\ProducerConsumer.cs" />
-    <Compile Include="API\DHTMLEventHandler.cs" />
-    <Compile Include="API\IAPI.cs" />
-    <Compile Include="API\IApiWorker.cs" />
-    <Compile Include="API\IFORM.cs" />
-    <Compile Include="API\msg.cs" />
-    <Compile Include="API\ApiWorker.cs" />
-    <Compile Include="API\RequestResponseState.cs" />
-    <Compile Include="API\_API.cs" />
     <Compile Include="FORM\fBrowser.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -894,8 +887,7 @@
     <Compile Include="LIB\YYProject.RichTextBoxEx\RTBParaSpacing.cs" />
     <Compile Include="LIB\YYProject.RichTextBoxEx\RTBReadOnlyMode.cs" />
     <Compile Include="LIB\_Demo\Nullable\NonNullable.cs" />
-    <Compile Include="MODEL\oCrawler.cs" />
-    <Compile Include="MODEL\oSetting.cs" />
+    <Compile Include="MODEL\oLink.cs" />
     <Compile Include="MODEL\oWordDefine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="test.cs" />

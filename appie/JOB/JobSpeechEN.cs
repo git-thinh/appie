@@ -34,7 +34,7 @@ namespace appie
             this.storePath = new DictionaryThreadSafe<string, string>();
 
         }
-
+        public void f_receiveMessage(Message m) { }
         public void f_postData(object data)
         {
             if (data != null && data is string)
@@ -46,7 +46,7 @@ namespace appie
             JobInfo ti = (JobInfo)state;
             if (!timedOut)
             {
-                System.Trace.WriteLine("J{0} executes on thread {1}: SIGNAL -> STOP", ti.f_getId(), Thread.CurrentThread.GetHashCode().ToString());
+                System.Tracer.WriteLine("J{0} executes on thread {1}: SIGNAL -> STOP", ti.f_getId(), Thread.CurrentThread.GetHashCode().ToString());
                 ti.f_stopJob();
                 return;
             }
@@ -59,7 +59,7 @@ namespace appie
                 {
                     test_run();
 
-                    System.Trace.WriteLine("J{0} executes on thread {1}: Speech = {2}", ti.f_getId(), Thread.CurrentThread.GetHashCode().ToString(), s);
+                    System.Tracer.WriteLine("J{0} executes on thread {1}: Speech = {2}", ti.f_getId(), Thread.CurrentThread.GetHashCode().ToString(), s);
                 }
             }
         }

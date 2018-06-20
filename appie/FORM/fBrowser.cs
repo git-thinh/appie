@@ -372,13 +372,13 @@ namespace appie
 
         #region
 
-        oSetting f_setting_Get() {
-            return new oSetting()
-            {
-                AutoFetchHistory = setting_autoFetchHistory_checkBox.Checked,
-                MaxThread = int.Parse(setting_maxThread_textBox.Text.Trim()),
-            };
-        }
+        //oSetting f_setting_Get() {
+        //    return new oSetting()
+        //    {
+        //        AutoFetchHistory = setting_autoFetchHistory_checkBox.Checked,
+        //        MaxThread = int.Parse(setting_maxThread_textBox.Text.Trim()),
+        //    };
+        //}
 
         void f_history_items_selectIndexChange(object sender, EventArgs e)
         { 

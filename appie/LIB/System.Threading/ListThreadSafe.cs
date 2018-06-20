@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.IO;
+using Salar.Bois;
 
 /*
 ThreadSafeCollections
@@ -45,13 +47,15 @@ namespace System.Threading
         /// <summary>
         /// The container list that holds the actual data
         /// </summary>
-        private readonly List<T> m_TList;
+        //private readonly List<T> m_TList;
+        private List<T> m_TList;
 
         /// <summary>
         /// The lock used when accessing the list
         /// </summary>
         private readonly ReaderWriterLockSlim LockList = new ReaderWriterLockSlim();
-        
+        private readonly BoisSerializer boisSerializer = new BoisSerializer();
+
         // Variables
         #endregion
 
@@ -394,6 +398,55 @@ namespace System.Threading
 
         // AsReadOnly
         #endregion
+
+
+        public void ReadFile(string file_path)
+        {
+            LockList.PerformUsingWriteLock(() =>
+            {
+                if (File.Exists(file_path))
+                {
+                    using (var file = File.OpenRead(file_path))
+                    {
+                        //ProtoBuf.Serializer.Serialize<Dictionary<string, string>>(file, cacheData); 
+                        file.Position = 0;
+                        m_TList = boisSerializer.Deserialize<List<T>>(file);
+                        file.Close();
+                    }
+                }
+            });
+        }
+
+        public void WriteFile(string file_path)
+        {
+            LockList.PerformUsingWriteLock(() =>
+            {
+                if (File.Exists(file_path))
+                {
+                    // Using Protobuf-net, I suddenly got an exception about an unknown wire-type
+                    // https://stackoverflow.com/questions/2152978/using-protobuf-net-i-suddenly-got-an-exception-about-an-unknown-wire-type
+                    using (var file = new FileStream(file_path, FileMode.Truncate))
+                    {
+                        //ProtoBuf.Serializer.Serialize<Dictionary<string, string>>(file, cacheData);
+                        //file.SetLength(file.Position);
+                        //file.Close();
+
+                        boisSerializer.Serialize<List<T>>(m_TList, file);
+                        file.SetLength(file.Position);
+                        file.Close();
+                    }
+                }
+                else
+                {
+                    using (var file = new FileStream(file_path, FileMode.OpenOrCreate))
+                    {
+                        //ProtoBuf.Serializer.Serialize<Dictionary<string, string>>(file, cacheData); 
+                        boisSerializer.Serialize<List<T>>(m_TList, file);
+                        file.Close();
+                    }
+                }
+            });
+        }
 
         #region BinarySearch
 
