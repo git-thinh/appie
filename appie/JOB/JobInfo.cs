@@ -78,6 +78,8 @@ namespace appie
         
         public string f_getGroupName() { return this.Job.f_getGroupName(); }
 
+        public IJob f_getJob() { return Job; }
+
         public override string ToString() { return this.Job.f_getId().ToString(); }
     }
 }

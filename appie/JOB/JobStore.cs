@@ -22,7 +22,7 @@ namespace appie
                 var data = m.Output.GetData();
                 if (data != null)
                 {
-                    cacheJobResponseData.Add(m.GetId(), data);
+                    cacheJobResponseData.Add(m.GetMessageId(), data);
                     m.Output.SetData(null);
                 }
             }
@@ -44,6 +44,7 @@ namespace appie
             cacheJobResponseData.Clear();
         }
 
+        
         #endregion
 
         #region [ URL ]
@@ -139,6 +140,12 @@ namespace appie
         private volatile bool event_JobsStoping = false;
         public event EventHandler OnStopAll;
 
+        public int[] f_job_getIdsByName(string job_name) {
+            if (storeGroupJobs.ContainsKey(job_name)) 
+                return storeGroupJobs[job_name].ToArray(); 
+            return new int[] { };
+        }
+
         public int f_job_countAll() { return storeJobs.Count + job_exist_default; }
 
         public void f_job_sendMessage(Message m)
@@ -175,24 +182,8 @@ namespace appie
             }
         }
 
-        public int f_addJob(IJob job)
-        {
-            // The main thread uses AutoResetEvent to signal the
-            // registered wait handle, which executes the callback
-            // method: new AutoResetEvent(???)
-            //          + true = signaled -> thread continous run
-            //          + false = non-signaled -> thread must wait
-            //      EventWaitHandle có ba phương thức chính bạn cần quan tâm:
-            //      – Close: giải phóng các tài nguyên được sử dụng bởi WaitHandle.
-            //      – Reset: chuyển trạng thái của event thành non-signaled.
-            //      – Set: chuyển trạng thái của event thành signaled.
-            //      – WaitOne([parameters]): Chặn thread hiện tại cho đến khi trạng thái của event được chuyển sang signaled.
-            AutoResetEvent ev = new AutoResetEvent(false);
-            JobInfo jo = new JobInfo(job, ev);
-            int _id = storeJobs.Count + 1;
-
-            storeJobs.Add(_id, jo);
-            storeEvents.Add(_id, ev);
+        private void f_addGroupJobName(IJob job) {
+            int _id = job.f_getId();
 
             string groupName = job.f_getGroupName();
             if (!string.IsNullOrEmpty(groupName))
@@ -208,6 +199,27 @@ namespace appie
                     storeGroupJobs.Add(groupName, lsId);
                 }
             }
+        }
+
+        public int f_addJob(IJob job)
+        {
+            // The main thread uses AutoResetEvent to signal the
+            // registered wait handle, which executes the callback
+            // method: new AutoResetEvent(???)
+            //          + true = signaled -> thread continous run
+            //          + false = non-signaled -> thread must wait
+            //      EventWaitHandle có ba phương thức chính bạn cần quan tâm:
+            //      – Close: giải phóng các tài nguyên được sử dụng bởi WaitHandle.
+            //      – Reset: chuyển trạng thái của event thành non-signaled.
+            //      – Set: chuyển trạng thái của event thành signaled.
+            //      – WaitOne([parameters]): Chặn thread hiện tại cho đến khi trạng thái của event được chuyển sang signaled.
+            AutoResetEvent ev = new AutoResetEvent(false);
+            JobInfo jo = new JobInfo(job, ev);
+            int _id = job.f_getId();
+
+            storeJobs.Add(_id, jo);
+            storeEvents.Add(_id, ev);
+            f_addGroupJobName(job);
 
             return _id;
         }
@@ -244,7 +256,9 @@ namespace appie
         {
             cacheJobResponseData = new DictionaryThreadSafe<Guid, object>();
             job_Message = new JobInfo(new JobMessage(this), new AutoResetEvent(false));
-            job_Link = new JobInfo(new JobLink(this), new AutoResetEvent(false)); 
+            job_Link = new JobInfo(new JobLink(this), new AutoResetEvent(false));
+            f_addGroupJobName(job_Message.f_getJob());
+            f_addGroupJobName(job_Link.f_getJob());
 
             storeEvents = new DictionaryThreadSafe<int, AutoResetEvent>();
             //storeJobs = new DictionaryThreadSafe<int, JobInfo>();

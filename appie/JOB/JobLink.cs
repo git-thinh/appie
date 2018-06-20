@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Threading;
+using System.Linq;
 
 namespace appie
 {
     public class JobLink : IJob
     {
-
         readonly ListThreadSafe<oLink> list;
+
         public IJobStore StoreJob { get; }
         public void f_freeResource() { }
         public void f_sendMessage(Message m) { if (this.StoreJob != null) this.StoreJob.f_job_sendMessage(m); }
@@ -14,13 +15,12 @@ namespace appie
         private volatile int Id = 0;
         public int f_getId() { return Id; }
         public void f_setId(int id) { Interlocked.CompareExchange(ref Id, Id, id); }
-        readonly string _groupName = string.Empty;
+        readonly string _groupName = JOB_NAME.SYS_LINK;
         public string f_getGroupName() { return _groupName; }
-        public JobLink(IJobStore _store, string groupName = "")
+        public JobLink(IJobStore _store)
         {
             this.StoreJob = _store;
             list = new ListThreadSafe<oLink>();
-            this._groupName = groupName;
         }
 
         public void f_receiveMessage(Message m) { }

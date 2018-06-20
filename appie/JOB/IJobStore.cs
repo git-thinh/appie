@@ -13,6 +13,7 @@ namespace appie
         void f_job_eventAfterStop(int id);
         void f_job_sendMessage(Message m);
         int f_job_countAll();
+        int[] f_job_getIdsByName(string job_name);
 
         ///////////////////////////////////////////////////////////////////
 

@@ -98,6 +98,7 @@
     <Compile Include="JOB\JobLink.cs" />
     <Compile Include="JOB\JobWord.cs" />
     <Compile Include="JOB\JobGooTranslate.cs" />
+    <Compile Include="JOB\JOB_NAME.cs" />
     <Compile Include="JOB\Message.cs" />
     <Compile Include="LIB\Google\GooTranslateService_v1.cs" />
     <Compile Include="LIB\Google\GooTranslateService_v2.cs" />
