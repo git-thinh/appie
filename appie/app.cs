@@ -50,8 +50,7 @@ namespace appie
         //static System.Threading.Timer api_msg_timer = null;
         //static ConcurrentDictionary<string, IthreadMsg> dicService = null;
         //static ConcurrentDictionary<string, msg> dicResponses = null;
-
-
+        
         //public static void postToAPI(msg m)
         //{
         //    api_msg_queue.Enqueue(m);
