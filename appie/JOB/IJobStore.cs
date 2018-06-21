@@ -17,6 +17,11 @@ namespace appie
 
         ///////////////////////////////////////////////////////////////////
 
+        void f_form_Add(IFORM form);
+        void f_form_Remove(IFORM form);
+
+        ///////////////////////////////////////////////////////////////////
+
         void f_responseMessageFromJob(Message m);
         object f_responseMessageFromJob_getDataByID(Guid id);
         void f_responseMessageFromJob_removeData(Guid id);

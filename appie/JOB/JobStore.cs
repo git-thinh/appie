@@ -251,6 +251,18 @@ namespace appie
 
         #endregion
 
+        #region [ FORM ]
+
+        public void f_form_Add(IFORM form)
+        {
+        }
+
+        public void f_form_Remove(IFORM form)
+        {
+        }
+
+        #endregion
+
         public JobStore()
         {
             storeEvents = new DictionaryThreadSafe<int, AutoResetEvent>();

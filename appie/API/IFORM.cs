@@ -9,5 +9,8 @@ namespace appie
     {
         //void api_responseMsg(object sender, threadMsgEventArgs e);
         //void f_form_freeResource();
+
+        IntPtr HandleBase { get; }
+        IJobStore JobStore { get; }
     }
 }

@@ -43,72 +43,16 @@ namespace appie
             };
         }
 
-        static fCrawler fom;
         static IJobStore jobs;
-
-        //static QueueThreadSafe<msg> api_msg_queue = null;
-        //static System.Threading.Timer api_msg_timer = null;
-        //static ConcurrentDictionary<string, IthreadMsg> dicService = null;
-        //static ConcurrentDictionary<string, msg> dicResponses = null;
-        
-        //public static void postToAPI(msg m)
-        //{
-        //    api_msg_queue.Enqueue(m);
-        //}
-
-        //public static void postToAPI(string api, string key, object input)
-        //{
-        //    postToAPI(new msg() { API = api, KEY = key, Input = input });
-        //}
 
         public static void RUN() {
             jobs = new JobStore();
-
-
-            //api_msg_queue = new ConcurrentQueue<msg>();
-            //if (api_msg_timer == null)
-            //    api_msg_timer = new System.Threading.Timer(new System.Threading.TimerCallback((obj) =>
-            //    {
-            //        if (api_msg_queue.Count > 0)
-            //        {
-            //            msg m = api_msg_queue.Dequeue();
-            //            if(m != null)
-            //            {
-            //                if (!string.IsNullOrEmpty(m.API) && dicService.ContainsKey(m.API))
-            //                {
-            //                    IthreadMsg sv = dicService.Get(m.API);
-            //                    if(sv != null)
-            //                    {
-            //                        ////new Thread(new ParameterizedThreadStart((object _sv) =>
-            //                        ////{
-            //                        ////    IthreadMsg so = (IthreadMsg)_sv;
-            //                        ////    so.Execute(m);
-            //                        ////})).Start(sv);
-            //                        sv.Execute(m);
-            //                    }
-            //                }
-            //            }
-            //        }
-            //    }), null, 100, 100);
-
-            //dicResponses = new ConcurrentDictionary<string, msg>();
-            //dicService = new ConcurrentDictionary<string, IthreadMsg>();
-
-            //dicService.Add(_API.CRAWLER, new threadMsg(new api_crawler()));
-
-
-
-
-
-
-
-            fom = new fCrawler();
-
             Application.EnableVisualStyles();
             //Application.Run(new fMedia());
             //Application.Run(new fMain());
             //Application.Run(new fEdit());
-            Application.Run(new fBrowser());
+            //Application.Run(new fBrowser());
+            Application.Run(new fApp(jobs));
         }
 
         public static IFORM get_Main() {
