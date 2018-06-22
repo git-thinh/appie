@@ -27,7 +27,7 @@ namespace appie
             this.OnReceiveMessage += f_event_OnReceiveMessage;
         }
 
-        private void f_event_OnReceiveMessage(IFORM form, Guid id)
+        private void f_event_OnReceiveMessage(IFORM form, Guid[] ids)
         {
 
         }

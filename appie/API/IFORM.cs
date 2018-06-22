@@ -6,14 +6,11 @@ using System.Threading;
 
 namespace appie
 {
-    public delegate void EventReceiveMessage(IFORM form, Guid id);
+    public delegate void EventReceiveMessage(IFORM form, Guid[] ids);
     public interface IFORM
     {
-        //void api_responseMsg(object sender, threadMsgEventArgs e);
-        //void f_form_freeResource();
-         
         IJobStore JobStore { get; }
-        void f_receiveMessage(Guid id);
+        void f_receiveMessage(Guid[] ids);
         event EventReceiveMessage OnReceiveMessage;
     }
 }

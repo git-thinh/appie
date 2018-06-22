@@ -8,12 +8,13 @@ namespace appie
     public class JobStore : IJobStore
     {
         const int job_exist_default = 2;
-
-        #region [ LINK - MESSAGE ]
-
         readonly JobInfo job_Link;
+
+        #region [ MESSAGE ]
+
         readonly JobInfo job_Message;
-        readonly DictionaryThreadSafe<Guid, object> cacheJobResponseData;
+        readonly DictionaryThreadSafe<Guid, object> cacheJobMessageData;
+        readonly DictionaryThreadSafe<Guid,Message> cacheJobMessages;
 
         public void f_responseMessageFromJob(Message m)
         {
@@ -22,28 +23,44 @@ namespace appie
                 var data = m.Output.GetData();
                 if (data != null)
                 {
-                    cacheJobResponseData.Add(m.GetMessageId(), data);
+                    cacheJobMessageData.Add(m.GetMessageId(), data);
                     m.Output.SetData(null);
+                    cacheJobMessages.Add(m.GetMessageId(), m);
                 }
             }
             job_Message.f_sendMessage(m);
         }
 
         public object f_responseMessageFromJob_getDataByID(Guid id) {
-            if (cacheJobResponseData.ContainsKey(id))
-                return cacheJobResponseData[id];
+            if (cacheJobMessageData.ContainsKey(id))
+                return cacheJobMessageData[id];
             return null;
         }
 
         public void f_responseMessageFromJob_removeData(Guid id) {
-            if (cacheJobResponseData.ContainsKey(id))
-                cacheJobResponseData.Remove(id);
+            if (cacheJobMessageData.ContainsKey(id))
+                cacheJobMessageData.Remove(id);
         }
 
         public void f_responseMessageFromJob_clearAll() {
-            cacheJobResponseData.Clear();
+            cacheJobMessageData.Clear();
         }
-                
+
+        public List<Message> f_msg_getMessageDatas(Guid[] ids) {
+            List<Message> ls = new List<Message>() { };
+            for (int i = 0; i < ids.Length; i++)
+            {
+                Message m;
+                if (cacheJobMessages.TryGetValue(ids[i], out m) && m != null) {
+                    object data;
+                    if (cacheJobMessageData.TryGetValue(ids[i], out data))
+                        m.Output.SetData(data);
+                    ls.Add(m);
+                }
+            }
+            return ls;
+        }
+
         #endregion
 
         #region [ URL ]
@@ -270,7 +287,9 @@ namespace appie
             storeGroupJobs = new DictionaryThreadSafe<string, ListThreadSafe<int>>();
             listIdsStop = new ListThreadSafe<int>();
 
-            cacheJobResponseData = new DictionaryThreadSafe<Guid, object>();
+            cacheJobMessageData = new DictionaryThreadSafe<Guid, object>();
+            cacheJobMessages = new DictionaryThreadSafe<Guid, Message>();
+
             job_Message = new JobInfo(new JobMessage(this), new AutoResetEvent(false));
             job_Link = new JobInfo(new JobLink(this), new AutoResetEvent(false));
             f_addGroupJobName(job_Message.f_getJob());

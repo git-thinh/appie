@@ -74,7 +74,7 @@ namespace System.Threading
             get { return Thread.VolatileRead(ref m_Disposed) == 1; }
             set { Thread.VolatileWrite(ref m_Disposed, value ? 1 : 0); }
         }
-        
+
         // Properties
         #endregion
 
@@ -271,7 +271,7 @@ namespace System.Threading
                 LockList.ExitWriteLock();
             }
         }
-                
+
         // Add
         #endregion
 
@@ -893,7 +893,7 @@ namespace System.Threading
         #endregion
 
         #region
-                   
+
         public void Truncate(Func<T, bool> predicate = null, bool distinct = false)
         {
             LockList.EnterWriteLock();
@@ -1356,16 +1356,24 @@ namespace System.Threading
         /// <summary>
         /// Copies the elements of the list to an array
         /// </summary>
-        public T[] ToArray()
+        public T[] ToArray(bool clearAfterThat = false)
         {
-            LockList.EnterReadLock();
+            if (clearAfterThat)
+                LockList.EnterWriteLock();
+            else
+                LockList.EnterReadLock();
             try
             {
-                return m_TList.ToArray();
+                T[] a = m_TList.ToArray();
+                if (clearAfterThat) m_TList.Clear();
+                return a;
             }
             finally
             {
-                LockList.ExitReadLock();
+                if (clearAfterThat)
+                    LockList.ExitWriteLock();
+                else
+                    LockList.ExitReadLock();
             }
         }
 
