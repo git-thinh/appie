@@ -6,6 +6,7 @@ namespace appie
 {
     public interface IJob
     {
+        JOB_STATE State { get; }
         IJobStore StoreJob { get; } 
 
         int f_getId();
@@ -15,7 +16,7 @@ namespace appie
         void f_receiveMessage(Message m);
         void f_sendMessage(Message m);
 
-        void f_freeResource();
+        void f_stopAndFreeResource();
         
         void f_runLoop(object state, bool timedOut);
     }

@@ -6,8 +6,10 @@ namespace appie
 {
     public enum JOB_STATE
     {
-        RUNNING,
-        STOPED,
-        PENDING,
+        NONE = 0,
+        INIT = 1,
+        RUNNING = 2,
+        PENDING = 3,
+        STOPED = 4,
     }
 }

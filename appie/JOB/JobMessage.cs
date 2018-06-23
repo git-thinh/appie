@@ -8,9 +8,11 @@ namespace appie
         readonly QueueThreadSafe<Message> msg;
         readonly ListThreadSafe<oLink> list;
         public IJobStore StoreJob { get; }
-        public void f_freeResource() { }
         public void f_sendMessage(Message m) { if (this.StoreJob != null) this.StoreJob.f_job_sendMessage(m); }
 
+        private JobInfo jobInfo;
+        private volatile JOB_STATE _state = JOB_STATE.NONE;
+        public JOB_STATE State { get { return _state; } }
         private volatile int Id = 0;
         public int f_getId() { return Id; }
         public void f_setId(int id) { Interlocked.CompareExchange(ref Id, Id, id); }
@@ -23,28 +25,45 @@ namespace appie
             msg = new QueueThreadSafe<Message>();
         }
 
+        public void f_stopAndFreeResource()
+        {
+            if (_state != JOB_STATE.STOPED)
+                lock (jobInfo)
+                    jobInfo.f_stopJob();
+            list.Clear();
+            msg.Clear();
+        }
+
         public void f_receiveMessage(Message m) { }
 
         private volatile bool _inited = false;
-        private void f_Init() {
+        private void f_Init()
+        {
             //Tracer.WriteLine("J{0} executes on thread {1}: INIT ...");
         }
 
         public void f_runLoop(object state, bool timedOut)
         {
-            if (!_inited) {
+            if (!_inited)
+            {
                 _inited = true;
                 f_Init();
+                _state = JOB_STATE.INIT;
+                lock(jobInfo)
+                    jobInfo = (JobInfo)state;
                 return;
             }
 
-            JobInfo ti = (JobInfo)state;
             if (!timedOut)
             {
                 //Tracer.WriteLine("J{0} executes on thread {1}: SIGNAL -> STOP ...", Id, Thread.CurrentThread.GetHashCode().ToString());
+                JobInfo ti = (JobInfo)state;
                 ti.f_stopJob();
+                _state = JOB_STATE.STOPED;
                 return;
             }
+
+            if(_state != JOB_STATE.RUNNING) _state = JOB_STATE.RUNNING;
 
             //Tracer.WriteLine("J{0} executes on thread {1}:DO SOMETHING ...", Id, Thread.CurrentThread.GetHashCode().ToString());
             // Do something ...

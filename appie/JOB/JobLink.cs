@@ -8,8 +8,10 @@ namespace appie
     {
         readonly ListThreadSafe<oLink> list;
 
+        private volatile JOB_STATE _state = JOB_STATE.NONE;
+        public JOB_STATE State { get { return _state; } }
         public IJobStore StoreJob { get; }
-        public void f_freeResource() { }
+        public void f_stopAndFreeResource() { }
         public void f_sendMessage(Message m) { if (this.StoreJob != null) this.StoreJob.f_job_sendMessage(m); }
 
         private volatile int Id = 0;

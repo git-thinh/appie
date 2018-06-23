@@ -50,8 +50,10 @@ namespace appie
             };
         }
 
+        private volatile JOB_STATE _state = JOB_STATE.NONE;
+        public JOB_STATE State { get { return _state; } }
         public IJobStore StoreJob { get; }
-        public void f_freeResource()
+        public void f_stopAndFreeResource()
         {
         }
         private volatile int Id = 0;
