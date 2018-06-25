@@ -7,19 +7,13 @@ namespace appie
 {
     public class JobStore : IJobStore
     {
-        const int job_exist_default = 2;
-        readonly JobInfo job_Link;
-
         #region [ MESSAGE ]
-
-        readonly JobInfo msgInfo;
-        readonly DictionaryThreadSafe<Guid, object> msgCacheData;
-        readonly DictionaryThreadSafe<Guid,Message> msgCache;
 
         public void f_responseMessageFromJob(Message m)
         {
             if (m == null) return;
-            if (m.Output.Ok) {
+            if (m.Output.Ok)
+            {
                 var data = m.Output.GetData();
                 if (data != null)
                 {
@@ -31,27 +25,32 @@ namespace appie
             msgInfo.f_sendMessage(m);
         }
 
-        public object f_responseMessageFromJob_getDataByID(Guid id) {
+        public object f_responseMessageFromJob_getDataByID(Guid id)
+        {
             if (msgCacheData.ContainsKey(id))
                 return msgCacheData[id];
             return null;
         }
 
-        public void f_responseMessageFromJob_removeData(Guid id) {
+        public void f_responseMessageFromJob_removeData(Guid id)
+        {
             if (msgCacheData.ContainsKey(id))
                 msgCacheData.Remove(id);
         }
 
-        public void f_responseMessageFromJob_clearAll() {
+        public void f_responseMessageFromJob_clearAll()
+        {
             msgCacheData.Clear();
         }
 
-        public List<Message> f_msg_getMessageDatas(Guid[] ids) {
+        public List<Message> f_msg_getMessageDatas(Guid[] ids)
+        {
             List<Message> ls = new List<Message>() { };
             for (int i = 0; i < ids.Length; i++)
             {
                 Message m;
-                if (msgCache.TryGetValue(ids[i], out m) && m != null) {
+                if (msgCache.TryGetValue(ids[i], out m) && m != null)
+                {
                     object data;
                     if (msgCacheData.TryGetValue(ids[i], out data))
                         m.Output.SetData(data);
@@ -61,7 +60,8 @@ namespace appie
             return ls;
         }
 
-        private void f_msg_Clear() {
+        private void f_msg_Clear()
+        {
             if (msgInfo.f_getState() != JOB_STATE.RUNNING)
                 msgInfo.f_stopJob();
             msgInfo.f_stopAndFreeResource();
@@ -73,18 +73,6 @@ namespace appie
         #endregion
 
         #region [ URL ]
-
-        readonly DictionaryThreadSafe<string, string> urlOk;
-        readonly DictionaryThreadSafe<string, string> urlFail;
-
-        readonly ListThreadSafe<string> urlAll;
-        readonly ListThreadSafe<string> urlPending;
-
-        int urlCounter_Runtime = 0;
-        int urlCounter_Result = 0;
-        const int urlMax = 9;
-
-        public event EventHandler OnUrlFetchComplete;
 
         private void f_url_Init()
         {
@@ -155,19 +143,10 @@ namespace appie
 
         #region [ JOB ]
 
-        readonly DictionaryThreadSafe<int, AutoResetEvent> jobEvents;
-        readonly DictionaryThreadSafe<int, JobInfo> jobInfos;
-        readonly DictionaryThreadSafe<string, ListThreadSafe<int>> jobGroups;
-
-        // Volatile is used as hint to the compiler that this data member will be accessed by multiple threads.
-        private volatile bool event_JobsStoping = false;
-        readonly ListThreadSafe<int> listIdsStop;
-
-        public event EventHandler OnStopAll;
-
-        public int[] f_job_getIdsByName(string job_name) {
-            if (jobGroups.ContainsKey(job_name)) 
-                return jobGroups[job_name].ToArray(); 
+        public int[] f_job_getIdsByName(string job_name)
+        {
+            if (jobGroups.ContainsKey(job_name))
+                return jobGroups[job_name].ToArray();
             return new int[] { };
         }
 
@@ -207,7 +186,8 @@ namespace appie
             }
         }
 
-        private void f_addGroupJobName(IJob job) {
+        private void f_addGroupJobName(IJob job)
+        {
             int _id = job.f_getId();
 
             string groupName = job.f_getGroupName();
@@ -266,12 +246,12 @@ namespace appie
         }
 
         public void f_freeResource()
-        { 
+        {
             if (jobInfos.Count > 0)
             {
                 JobInfo[] jobs = jobInfos.ValuesArray;
-                for (int i = 0; i < jobs.Length; i++) 
-                    jobs[i].f_stopAndFreeResource(); 
+                for (int i = 0; i < jobs.Length; i++)
+                    jobs[i].f_stopAndFreeResource();
             }
         }
 
@@ -280,7 +260,7 @@ namespace appie
         #region [ FORM ]
 
         public void f_form_Add(IFORM form)
-        { 
+        {
         }
 
         public void f_form_Remove(IFORM form)
@@ -294,44 +274,110 @@ namespace appie
 
         #endregion
 
+        #region [ === VARIABLE === ]
+
+        #region [ VAR: JOB ]
+        const int job_exist_default = 2;
+        readonly DictionaryThreadSafe<int, AutoResetEvent> jobEvents;
+        readonly DictionaryThreadSafe<int, JobInfo> jobInfos;
+        readonly DictionaryThreadSafe<string, ListThreadSafe<int>> jobGroups;
+
+        // Volatile is used as hint to the compiler that this data member will be accessed by multiple threads.
+        private volatile bool event_JobsStoping = false;
+        readonly ListThreadSafe<int> listIdsStop;
+
+        public event EventHandler OnStopAll;
+        #endregion
+
+        #region [ VAR: MESSAGE ]
+        readonly JobInfo msgInfo;
+        readonly DictionaryThreadSafe<Guid, object> msgCacheData;
+        readonly DictionaryThreadSafe<Guid, Message> msgCache;
+        #endregion
+
+        #region [ VAR: FORM ]
+
+        #endregion
+
+        #region [ VAR: URL ]
+        readonly DictionaryThreadSafe<string, string> urlOk;
+        readonly DictionaryThreadSafe<string, string> urlFail;
+
+        readonly ListThreadSafe<string> urlAll;
+        readonly ListThreadSafe<string> urlPending;
+
+        int urlCounter_Runtime = 0;
+        int urlCounter_Result = 0;
+        const int urlMax = 9;
+
+        public event EventHandler OnUrlFetchComplete;
+        #endregion
+
+        #region [ VAR: LINK ]
+        readonly JobInfo job_Link;
+        #endregion
+
+        #endregion
+
         public JobStore()
         {
+            #region [ JOB ]
             jobEvents = new DictionaryThreadSafe<int, AutoResetEvent>();
             jobInfos = new DictionaryThreadSafe<int, JobInfo>();
             jobGroups = new DictionaryThreadSafe<string, ListThreadSafe<int>>();
             listIdsStop = new ListThreadSafe<int>();
+            #endregion
 
+            #region [ MESSAGE ]
             msgCacheData = new DictionaryThreadSafe<Guid, object>();
             msgCache = new DictionaryThreadSafe<Guid, Message>();
-
             msgInfo = new JobInfo(new JobMessage(this), new AutoResetEvent(false));
-            job_Link = new JobInfo(new JobLink(this), new AutoResetEvent(false));
             f_addGroupJobName(msgInfo.f_getJob());
-            f_addGroupJobName(job_Link.f_getJob());
+            #endregion
+            
+            #region [ FORM ]
 
+            #endregion
 
+            #region [ URL ]
             urlFail = new DictionaryThreadSafe<string, string>();
             urlOk = new DictionaryThreadSafe<string, string>();
-
             urlPending = new ListThreadSafe<string>();
             urlAll = new ListThreadSafe<string>();
-
             f_url_Init();
+            #endregion
+
+            #region [ LINK ]
+            job_Link = new JobInfo(new JobLink(this), new AutoResetEvent(false));
+            f_addGroupJobName(job_Link.f_getJob());
+            #endregion
         }
 
         ~JobStore()
         {
+            #region [ JOB ]
             f_stopAll();
             f_freeResource();
+            #endregion
 
-            job_Link.f_stopJob();
-            job_Link.f_stopAndFreeResource();
-
+            #region [ MESSAGE ]
             msgInfo.f_stopJob();
             msgInfo.f_stopAndFreeResource();
-
             f_responseMessageFromJob_clearAll();
+            #endregion
 
+            #region [ FORM ]
+
+            #endregion
+
+            #region [ URL ]
+            #endregion
+
+            #region [ LINK ]
+            job_Link.f_stopJob();
+            job_Link.f_stopAndFreeResource();
+            #endregion
+            
             GC.Collect(); // Start .NET CLR Garbage Collection
             GC.WaitForPendingFinalizers(); // Wait for Garbage Collection to finish
         }
