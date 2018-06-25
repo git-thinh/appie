@@ -19,7 +19,28 @@ namespace appie
     {
         private void f_event_OnReceiveMessage(IFORM form, Message m)
         {
-
+            switch (m.JobName) {
+                case JOB_NAME.SYS_LINK:
+                    switch (m.getAction()) {
+                        case MESSAGE_ACTION.ITEM_SEARCH:
+                            m_history_items_listBox.crossThreadPerformSafely(() =>
+                            {
+                                m_history_items_listBox.Items.Clear();
+                            });
+                            if (m.Output.Ok) {
+                                if (m.Output.GetData() is oLink[]) {
+                                    oLink[] links = (oLink[])m.Output.GetData();
+                                    m_history_items_listBox.crossThreadPerformSafely(() =>
+                                    {
+                                        foreach (oLink li in links)
+                                            m_history_items_listBox.Items.Add(li.TitleDomain());
+                                    });
+                                }
+                            }
+                            break;
+                    }
+                    break;
+            }
         }
         
         #region [ VARIABLE ]

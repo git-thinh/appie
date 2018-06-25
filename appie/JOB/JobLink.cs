@@ -61,13 +61,26 @@ namespace appie
                 if (m != null) {
                     switch (m.getAction()) {
                         case MESSAGE_ACTION.ITEM_SEARCH:
+                            oLink[] a = new oLink[] { };
+                            if (m.Input != null)
+                            {
+                                string key = m.Input as string;
+                                a = list.Where(x => x.Link.Contains(key) || x.Title.Contains(key) || x.Tags.Contains(key), false, int.MaxValue);
+                                m.Output.Counter = a.Length;
+                            }
+                            else {
+                                a = list.Take(10).ToArray();
+                                m.Output.Counter = list.Count;
+                            }
+
                             m.Type = MESSAGE_TYPE.RESPONSE;
+                            m.JobName = this._groupName;
+
                             m.Output.Ok = true;
                             m.Output.PageSize = 10;
                             m.Output.PageNumber = 1;
                             m.Output.Total = list.Count;
-                            m.Output.Counter = list.Count;
-                            m.Output.SetData(list.Take(10).ToArray());
+                            m.Output.SetData(a);
 
                             this.StoreJob.f_responseMessageFromJob(m);
 

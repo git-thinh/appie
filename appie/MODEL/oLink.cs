@@ -18,7 +18,13 @@ namespace appie
 
         public override string ToString()
         {
-            return string.Format("{0}: {1}", this.Title, this.Link);
+            return string.Format("{0} {1}", this.Title, this.Link);
+        }
+
+        public string TitleDomain()
+        {
+            string[] a = Link.Split('/');
+            return string.Format("{0} | {1}", this.Title, a.Length > 2 ? a[2] : string.Empty);
         }
     }
 

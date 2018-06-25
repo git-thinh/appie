@@ -15,7 +15,8 @@ namespace appie
         public JOB_STATE State { get { return _state; } }
         private volatile int Id = 0;
         public int f_getId() { return Id; }
-        public void f_setId(int id) {
+        public void f_setId(int id)
+        {
             //Interlocked.Add(ref Id, id);
             Interlocked.Add(ref Id, id);
         }
@@ -37,7 +38,8 @@ namespace appie
             msg.Clear();
         }
 
-        public void f_receiveMessage(Message m) {
+        public void f_receiveMessage(Message m)
+        {
             msg.Enqueue(m);
         }
 
@@ -71,14 +73,17 @@ namespace appie
                 return;
             }
 
-            if(_state != JOB_STATE.RUNNING) _state = JOB_STATE.RUNNING;
+            if (_state != JOB_STATE.RUNNING) _state = JOB_STATE.RUNNING;
 
             //Tracer.WriteLine("J{0} executes on thread {1}:DO SOMETHING ...", Id, Thread.CurrentThread.GetHashCode().ToString());
             // Do something ...
 
-            if (msg.Count > 0) {
+            if (msg.Count > 0)
+            {
                 Message m = msg.Dequeue(null);
-                if (m != null) {
+                if (m != null)
+                {
+                    //[1] SEND REQUEST TO JOB FOR EXECUTE
                     if (m.Type == MESSAGE_TYPE.REQUEST)
                     {
                         IJob[] jobs = this.StoreJob.f_job_getByID(m.GetReceiverId());
@@ -88,11 +93,19 @@ namespace appie
                     }
                     else
                     {
-                        if (m.getSenderType() == SENDER_TYPE.IS_FORM)
+                        //[2] RESPONSE TO SENDER
+                        switch (m.getSenderType())
                         {
-                            IFORM fom = this.StoreJob.f_form_Get(m.GetSenderId());
-                            if (fom != null)
-                                fom.f_receiveMessage(m.GetMessageId());
+                            case SENDER_TYPE.IS_FORM:
+                                IFORM fom = this.StoreJob.f_form_Get(m.GetSenderId());
+                                if (fom != null)
+                                    fom.f_receiveMessage(m.GetMessageId());
+                                // write to LOG ...
+                                break;
+                            case SENDER_TYPE.HIDE_SENDER:
+                                // do not send response to sender
+                                // write to LOG ...
+                                break;
                         }
                     }
                 }
