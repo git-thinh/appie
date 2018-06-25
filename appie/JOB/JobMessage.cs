@@ -37,7 +37,9 @@ namespace appie
             msg.Clear();
         }
 
-        public void f_receiveMessage(Message m) { }
+        public void f_receiveMessage(Message m) {
+            msg.Enqueue(m);
+        }
 
         private volatile bool _inited = false;
         private void f_Init()
@@ -73,6 +75,28 @@ namespace appie
 
             //Tracer.WriteLine("J{0} executes on thread {1}:DO SOMETHING ...", Id, Thread.CurrentThread.GetHashCode().ToString());
             // Do something ...
+
+            if (msg.Count > 0) {
+                Message m = msg.Dequeue(null);
+                if (m != null) {
+                    if (m.Type == MESSAGE_TYPE.REQUEST)
+                    {
+                        IJob[] jobs = this.StoreJob.f_job_getByID(m.GetReceiverId());
+                        if (jobs.Length > 0)
+                            for (int i = 0; i < jobs.Length; i++)
+                                jobs[i].f_receiveMessage(m);
+                    }
+                    else
+                    {
+                        if (m.getSenderType() == SENDER_TYPE.IS_FORM)
+                        {
+                            IFORM fom = this.StoreJob.f_form_Get(m.GetSenderId());
+                            if (fom != null)
+                                fom.f_receiveMessage(m.GetMessageId());
+                        }
+                    }
+                }
+            }
         }
     }
 }

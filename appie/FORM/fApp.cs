@@ -17,7 +17,7 @@ namespace appie
 {
     public class fApp : fBase
     {
-        private void f_event_OnReceiveMessage(IFORM form, Guid[] ids)
+        private void f_event_OnReceiveMessage(IFORM form, Message m)
         {
 
         }
@@ -187,9 +187,7 @@ namespace appie
             });
 
             #endregion
-
-            ///////////////////////////////////
-
+            
             #region [ LINK ]
 
             m_link_search_textBox = new TextBox()
@@ -222,6 +220,14 @@ namespace appie
             {
                 Dock = DockStyle.Top,
                 BorderStyle = BorderStyle.FixedSingle,
+            };
+            m_history_search_textBox.KeyDown += (se, ev) => {
+                if (ev.KeyCode == Keys.Enter)
+                {
+                    int[] job_IDs = this.JobStore.f_job_getIdsByName(JOB_NAME.SYS_LINK);
+                    if (job_IDs.Length > 0)
+                        this.f_sendRequestMessage(new Message(this.f_getFormID(), job_IDs, MESSAGE_ACTION.ITEM_SEARCH, m_history_search_textBox.Text.Trim()));
+                }
             };
 
             m_history_items_listBox = new ListBox()
@@ -286,9 +292,7 @@ namespace appie
             });
 
             #endregion
-
-            ///////////////////////////////////
-
+            
             #region [ Add Control -> UI ]
 
             m_browser_Toolbar.Controls.AddRange(new Control[] {

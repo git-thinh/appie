@@ -6,6 +6,7 @@ namespace appie
 {
     public class JobLink : IJob
     {
+        readonly QueueThreadSafe<Message> msg;
         readonly ListThreadSafe<oLink> list;
 
         private volatile JOB_STATE _state = JOB_STATE.NONE;
@@ -23,14 +24,17 @@ namespace appie
         {
             this.StoreJob = _store;
             list = new ListThreadSafe<oLink>();
+            msg = new QueueThreadSafe<Message>();
         }
 
-        public void f_receiveMessage(Message m) { }
+        public void f_receiveMessage(Message m) {
+            msg.Enqueue(m);
+        }
 
         private volatile bool _inited = false;
         private void f_Init() {
             list.ReadFile("link.dat");
-            //Tracer.WriteLine("J{0} executes on thread {1}: INIT ...");
+            // Tracer.WriteLine("J{0} executes on thread {1}: INIT ...");
         }
 
         public void f_runLoop(object state, bool timedOut)
@@ -44,13 +48,33 @@ namespace appie
             JobInfo ti = (JobInfo)state;
             if (!timedOut)
             {
-                //Tracer.WriteLine("J{0} executes on thread {1}: SIGNAL -> STOP ...", Id, Thread.CurrentThread.GetHashCode().ToString());
+                // Tracer.WriteLine("J{0} executes on thread {1}: SIGNAL -> STOP ...", Id, Thread.CurrentThread.GetHashCode().ToString());
                 ti.f_stopJob();
                 return;
             }
 
-            //Tracer.WriteLine("J{0} executes on thread {1}:DO SOMETHING ...", Id, Thread.CurrentThread.GetHashCode().ToString());
+            // Tracer.WriteLine("J{0} executes on thread {1}:DO SOMETHING ...", Id, Thread.CurrentThread.GetHashCode().ToString());
             // Do something ...
+
+            if (msg.Count > 0) {
+                Message m = msg.Dequeue(null);
+                if (m != null) {
+                    switch (m.getAction()) {
+                        case MESSAGE_ACTION.ITEM_SEARCH:
+                            m.Type = MESSAGE_TYPE.RESPONSE;
+                            m.Output.Ok = true;
+                            m.Output.PageSize = 10;
+                            m.Output.PageNumber = 1;
+                            m.Output.Total = list.Count;
+                            m.Output.Counter = list.Count;
+                            m.Output.SetData(list.Take(10).ToArray());
+
+                            this.StoreJob.f_responseMessageFromJob(m);
+
+                            break;
+                    }
+                }
+            }
         }
          
     }

@@ -50,7 +50,15 @@ namespace appie
             
         }
 
-        public void f_sendMessage(Message m) { if (this.Job.StoreJob != null) this.Job.StoreJob.f_job_sendMessage(m); }
+        public void f_sendMessage(Message m) {
+            if (this.Job.f_getGroupName() == JOB_NAME.SYS_MESSAGE)
+                f_receiveMessage(m);
+            else
+            {
+                if (this.Job.StoreJob != null)
+                    this.Job.StoreJob.f_job_sendMessage(m);
+            }
+        }
 
         public void f_stopAndFreeResource()
         {

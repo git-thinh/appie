@@ -12,14 +12,16 @@ namespace appie
         public void f_responseMessageFromJob(Message m)
         {
             if (m == null) return;
-            if (m.Output.Ok)
+            if (m.Type == MESSAGE_TYPE.RESPONSE)
             {
                 var data = m.Output.GetData();
                 if (data != null)
                 {
-                    msgCacheData.Add(m.GetMessageId(), data);
+                    if (!msgCacheData.ContainsKey(m.GetMessageId()))
+                        msgCacheData.Add(m.GetMessageId(), data);
                     m.Output.SetData(null);
-                    msgCache.Add(m.GetMessageId(), m);
+                    if (!msgCache.ContainsKey(m.GetMessageId()))
+                        msgCache.Add(m.GetMessageId(), m);
                 }
             }
             msgInfo.f_sendMessage(m);
@@ -41,6 +43,18 @@ namespace appie
         public void f_responseMessageFromJob_clearAll()
         {
             msgCacheData.Clear();
+        }
+
+        public Message f_msg_getMessageData(Guid id)
+        {
+            Message m = null;
+            if (msgCache.TryGetValue(id, out m) && m != null)
+            {
+                object data;
+                if (msgCacheData.TryGetValue(id, out data))
+                    m.Output.SetData(data);
+            }
+            return m;
         }
 
         public List<Message> f_msg_getMessageDatas(Guid[] ids)
@@ -143,6 +157,13 @@ namespace appie
 
         #region [ JOB ]
 
+        public IJob[] f_job_getByID(int[] ids)
+        {
+            JobInfo[] jis = jobInfos.GetValues(ids);
+            IJob[] jobs = jis.Select(x => x.f_getJob()).ToArray();
+            return jobs;
+        }
+
         public int[] f_job_getIdsByName(string job_name)
         {
             if (jobGroups.ContainsKey(job_name))
@@ -154,12 +175,9 @@ namespace appie
 
         public void f_job_sendMessage(Message m)
         {
-            //if (idJobReceiver > 0 && data != null && storeJobs.ContainsKey(idJobReceiver))
-            //{
-            //    JobInfo jo = null;
-            //    if (storeJobs.TryGetValue(idJobReceiver, out jo) && jo != null)
-            //        jo.f_postData(data);
-            //}
+            if (!msgCache.ContainsKey(m.GetMessageId()))
+                msgCache.Add(m.GetMessageId(), m);
+            msgInfo.f_sendMessage(m);
         }
 
         public void f_restartAllJob()
@@ -259,17 +277,31 @@ namespace appie
 
         #region [ FORM ]
 
+        public IFORM f_form_Get(int id)
+        {
+            IFORM fom = null;
+            if (storeForms.TryGetValue(id, out fom) && fom != null)
+                return fom;
+            return null;
+        }
+
         public void f_form_Add(IFORM form)
         {
+            int key = form.f_getFormID();
+            if (!storeForms.ContainsKey(key))
+                storeForms.Add(key, form);
         }
 
         public void f_form_Remove(IFORM form)
         {
+            int key = form.f_getFormID();
+            if (storeForms.ContainsKey(key))
+                storeForms.Remove(key);
         }
 
         public void f_form_Clear()
         {
-
+            storeForms.Clear();
         }
 
         #endregion
@@ -296,7 +328,7 @@ namespace appie
         #endregion
 
         #region [ VAR: FORM ]
-
+        readonly DictionaryThreadSafe<int, IFORM> storeForms;
         #endregion
 
         #region [ VAR: URL ]
@@ -313,9 +345,9 @@ namespace appie
         public event EventHandler OnUrlFetchComplete;
         #endregion
 
-        #region [ VAR: LINK ]
-        readonly JobInfo job_Link;
-        #endregion
+        //#region [ VAR: LINK ]
+        //readonly JobInfo job_Link;
+        //#endregion
 
         #endregion
 
@@ -334,9 +366,9 @@ namespace appie
             msgInfo = new JobInfo(new JobMessage(this), new AutoResetEvent(false));
             f_addGroupJobName(msgInfo.f_getJob());
             #endregion
-            
-            #region [ FORM ]
 
+            #region [ FORM ]
+            storeForms = new DictionaryThreadSafe<int, IFORM>();
             #endregion
 
             #region [ URL ]
@@ -347,10 +379,12 @@ namespace appie
             f_url_Init();
             #endregion
 
-            #region [ LINK ]
-            job_Link = new JobInfo(new JobLink(this), new AutoResetEvent(false));
-            f_addGroupJobName(job_Link.f_getJob());
-            #endregion
+            f_addJob(new JobLink(this));
+
+            //#region [ LINK ]
+            //job_Link = new JobInfo(new JobLink(this), new AutoResetEvent(false));
+            //f_addGroupJobName(job_Link.f_getJob());
+            //#endregion
         }
 
         ~JobStore()
@@ -367,17 +401,17 @@ namespace appie
             #endregion
 
             #region [ FORM ]
-
+            f_form_Clear();
             #endregion
 
             #region [ URL ]
             #endregion
 
-            #region [ LINK ]
-            job_Link.f_stopJob();
-            job_Link.f_stopAndFreeResource();
-            #endregion
-            
+            //#region [ LINK ]
+            //job_Link.f_stopJob();
+            //job_Link.f_stopAndFreeResource();
+            //#endregion
+
             GC.Collect(); // Start .NET CLR Garbage Collection
             GC.WaitForPendingFinalizers(); // Wait for Garbage Collection to finish
         }

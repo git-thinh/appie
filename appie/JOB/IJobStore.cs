@@ -16,8 +16,10 @@ namespace appie
         void f_job_sendMessage(Message m);
         int f_job_countAll();
         int[] f_job_getIdsByName(string job_name);
+        IJob[] f_job_getByID(int[] ids);
 
         List<Message> f_msg_getMessageDatas(Guid[] ids);
+        Message f_msg_getMessageData(Guid id);
 
         #endregion
 
@@ -25,6 +27,7 @@ namespace appie
 
         void f_form_Add(IFORM form);
         void f_form_Remove(IFORM form);
+        IFORM f_form_Get(int id);
 
         #endregion
 

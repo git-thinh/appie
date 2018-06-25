@@ -13,12 +13,12 @@ namespace appie
         public IJobStore JobStore { get; }
         public event EventReceiveMessage OnReceiveMessage;
 
-        readonly ListThreadSafe<Guid> StoreMessages;
+        readonly QueueThreadSafe<Message> StoreMessages;
         readonly System.Threading.Timer timer_api = null;
 
         public fBase(IJobStore store)
         {
-            StoreMessages = new ListThreadSafe<Guid>();
+            StoreMessages = new QueueThreadSafe<Message>();
             JobStore = store;
             store.f_form_Add(this);
             this.FormClosing += (se, ev) => { store.f_form_Remove(this); };
@@ -28,16 +28,26 @@ namespace appie
                 IFORM form = (IFORM)obj;
                 if (StoreMessages.Count > 0)
                 {
-                    Guid[] ids = StoreMessages.ToArray(true);
-                    OnReceiveMessage?.Invoke(form, ids);
+                    Message m = StoreMessages.Dequeue(null);
+                    if (m != null)
+                        OnReceiveMessage?.Invoke(form, m);
                 }
             }), this, 100, 100);
         }
 
-        public void f_receiveMessage(Guid[] ids)
+        public void f_receiveMessage(Guid id)
         {
-            //StoreMessages.Enqueue(id);
+            Message m = this.JobStore.f_msg_getMessageData(id);
+            if (m != null) StoreMessages.Enqueue(m);
+        }
 
+        public void f_sendRequestMessage(Message m) {
+            this.JobStore.f_job_sendMessage(m);
+        }
+
+        public int f_getFormID()
+        {
+            return this.Handle.ToInt32();
         }
     }
 }

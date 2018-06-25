@@ -179,9 +179,7 @@ namespace appie
             });
 
             #endregion
-
-            ///////////////////////////////////
-
+            
             #region [ LINK ]
 
             m_link_search_textBox = new TextBox() {
@@ -272,9 +270,7 @@ namespace appie
             });
 
             #endregion
-
-            ///////////////////////////////////
-
+            
             #region [ Add Control -> UI ]
 
             m_browser_Toolbar.Controls.AddRange(new Control[] {

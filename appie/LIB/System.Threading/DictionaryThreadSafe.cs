@@ -505,6 +505,26 @@ namespace System.Threading
 
         }
 
+        public TValue[] GetValues(TKey[] keys)
+        {
+            Lock_Dictionary.EnterReadLock();
+            try
+            {
+                List<TValue> ls = new List<TValue>();
+                if (keys.Length > 0) {
+                    for (int i = 0; i < keys.Length; i++) {
+                        if (m_Dictionary.ContainsKey(keys[i]))
+                            ls.Add(m_Dictionary[keys[i]]);
+                    }
+                }
+                return ls.ToArray();
+            }
+            finally
+            {
+                Lock_Dictionary.ExitReadLock();
+            }
+        }
+
         // TryGetValue
         #endregion
 
