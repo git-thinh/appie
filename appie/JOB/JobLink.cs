@@ -16,7 +16,7 @@ namespace appie
 
         private volatile int Id = 0;
         public int f_getId() { return Id; }
-        public void f_setId(int id) { Interlocked.CompareExchange(ref Id, Id, id); }
+        public void f_setId(int id) { Interlocked.Add(ref Id, id); }
         readonly string _groupName = JOB_NAME.SYS_LINK;
         public string f_getGroupName() { return _groupName; }
         public JobLink(IJobStore _store)

@@ -15,7 +15,10 @@ namespace appie
         public JOB_STATE State { get { return _state; } }
         private volatile int Id = 0;
         public int f_getId() { return Id; }
-        public void f_setId(int id) { Interlocked.CompareExchange(ref Id, Id, id); }
+        public void f_setId(int id) {
+            //Interlocked.Add(ref Id, id);
+            Interlocked.Add(ref Id, id);
+        }
         readonly string _groupName = JOB_NAME.SYS_MESSAGE;
         public string f_getGroupName() { return _groupName; }
         public JobMessage(IJobStore _store)
@@ -49,7 +52,10 @@ namespace appie
                 _inited = true;
                 f_Init();
                 _state = JOB_STATE.INIT;
-                lock(jobInfo)
+                if (jobInfo != null)
+                    lock (jobInfo)
+                        jobInfo = (JobInfo)state;
+                else
                     jobInfo = (JobInfo)state;
                 return;
             }

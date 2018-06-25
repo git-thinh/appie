@@ -66,7 +66,7 @@ namespace appie
         public IJobStore StoreJob { get; }
         private volatile int Id = 0;
         public int f_getId() { return Id; }
-        public void f_setId(int id) { Interlocked.CompareExchange(ref Id, Id, id); }
+        public void f_setId(int id) { Interlocked.Add(ref Id, id); }
         readonly string _groupName = string.Empty;
         public string f_getGroupName() { return _groupName; }
         public JobWord(IJobStore _store)
