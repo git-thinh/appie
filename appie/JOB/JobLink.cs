@@ -29,19 +29,22 @@ namespace appie
             urlData = new DictionaryThreadSafe<string, string>();
         }
 
-        public void f_receiveMessage(Message m) {
+        public void f_receiveMessage(Message m)
+        {
             msg.Enqueue(m);
         }
 
         private volatile bool _inited = false;
-        private void f_Init() {
+        private void f_Init()
+        {
             list.ReadFile("link.dat");
             // Tracer.WriteLine("J{0} executes on thread {1}: INIT ...");
         }
 
         public void f_runLoop(object state, bool timedOut)
         {
-            if (!_inited) {
+            if (!_inited)
+            {
                 _inited = true;
                 f_Init();
                 return;
@@ -58,10 +61,13 @@ namespace appie
             // Tracer.WriteLine("J{0} executes on thread {1}:DO SOMETHING ...", Id, Thread.CurrentThread.GetHashCode().ToString());
             // Do something ...
 
-            if (msg.Count > 0) {
+            if (msg.Count > 0)
+            {
                 Message m = msg.Dequeue(null);
-                if (m != null) {
-                    switch (m.getAction()) {
+                if (m != null)
+                {
+                    switch (m.getAction())
+                    {
                         case MESSAGE_ACTION.ITEM_SEARCH:
                             #region
                             if (true)
@@ -96,9 +102,11 @@ namespace appie
                             #region
                             if (m.Input != null)
                             {
-                                string url = m.Input as string, htm = string.Empty;
+                                string url = m.Input as string;
                                 if (urlData.ContainsKey(url))
                                 {
+                                    string htm = urlData[url];
+
                                     m.Type = MESSAGE_TYPE.RESPONSE;
                                     m.JobName = this._groupName;
 
@@ -107,6 +115,25 @@ namespace appie
 
                                     this.StoreJob.f_responseMessageFromJob(m);
                                 }
+                                else
+                                {
+                                    UrlService.GetAsync(url, m, UrlService.Func_GetHTML_UTF8_FORMAT_BROWSER, (result) =>
+                                    {
+                                        if (result.Ok)
+                                        {
+                                            string htm = result.Html;
+                                            if (!urlData.ContainsKey(url)) urlData.Add(url, htm);
+
+                                            m.Type = MESSAGE_TYPE.RESPONSE;
+                                            m.JobName = this._groupName;
+
+                                            m.Output.Ok = true;
+                                            m.Output.SetData(htm);
+
+                                            this.StoreJob.f_responseMessageFromJob(m);
+                                        }
+                                    });
+                                }
                             }
                             #endregion
                             break;
@@ -114,6 +141,6 @@ namespace appie
                 }
             }
         }
-         
+
     }
 }

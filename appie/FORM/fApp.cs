@@ -29,6 +29,14 @@ namespace appie
                                 if (m.Output.GetData() is oLink[])
                                     f_history_drawNodes((oLink[])m.Output.GetData());
                             break;
+                        case MESSAGE_ACTION.URL_REQUEST_CACHE:
+                            if (m.Output.Ok)
+                                if (m.Output.GetData() is string)
+                                    m_brow_web.crossThreadPerformSafely(() =>
+                                    {
+                                        m_brow_web.DocumentText = m.Output.GetData().ToString();
+                                    });
+                            break;
                     }
                     break;
             }
@@ -240,11 +248,7 @@ namespace appie
             m_history_search_textBox.KeyDown += (se, ev) =>
             {
                 if (ev.KeyCode == Keys.Enter)
-                {
-                    int[] job_IDs = this.JobStore.f_job_getIdsByName(JOB_NAME.SYS_LINK);
-                    if (job_IDs.Length > 0)
-                        this.f_sendRequestMessage(new Message(this.f_getFormID(), job_IDs, MESSAGE_ACTION.ITEM_SEARCH, m_history_search_textBox.Text.Trim()));
-                }
+                    this.f_sendRequestToJob(JOB_NAME.SYS_LINK, MESSAGE_ACTION.ITEM_SEARCH, m_history_search_textBox.Text.Trim());
             };
 
             m_history_items_treeView = new TreeView()
@@ -446,16 +450,8 @@ namespace appie
                 {
                     m_tab_Browser.Text = link.TitleDomain();
                     m_brow_web.DocumentText = "<h1>LOADING: " + url + "</h1>";
-                    UrlService.GetAsync(url, UrlService.Func_GetHTML_UTF8_FORMAT_BROWSER, (result) =>
-                     {
-                         if (result.Ok)
-                         {
-                             m_brow_web.crossThreadPerformSafely(() =>
-                             {
-                                 m_brow_web.DocumentText = result.Html;
-                             });
-                         }
-                     });
+
+                    this.f_sendRequestToJob(JOB_NAME.SYS_LINK, MESSAGE_ACTION.URL_REQUEST_CACHE, url);
                 }
             }
         }

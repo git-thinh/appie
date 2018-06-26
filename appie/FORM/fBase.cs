@@ -41,8 +41,21 @@ namespace appie
             if (m != null) StoreMessages.Enqueue(m);
         }
 
-        public void f_sendRequestMessage(Message m) {
+        public void f_sendRequestMessage(Message m)
+        {
             this.JobStore.f_job_sendMessage(m);
+        }
+
+        public bool f_sendRequestToJob(string job_name, MESSAGE_ACTION action, object input)
+        {
+            int[] job_IDs = this.JobStore.f_job_getIdsByName(job_name);
+            if (job_IDs.Length > 0)
+            {
+                Message m = new Message(this.f_getFormID(), job_IDs, action, input);
+                this.JobStore.f_job_sendMessage(m);
+                return true;
+            }
+            return false;
         }
 
         public int f_getFormID()

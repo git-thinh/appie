@@ -14,6 +14,7 @@ namespace appie
 
     public class UrlServicePara
     {
+        public Message Message { set; get; }
         public WebRequest Request { set; get; }
         public UrlServiceCallBack Callback { set; get; }
         public Func<Stream, UrlAnanyticResult> FuncAnalytic { set; get; }
@@ -24,10 +25,18 @@ namespace appie
             this.FuncAnalytic = funcAnalytic;
             this.Callback = callback;
         }
+        public UrlServicePara(Message msg, WebRequest request, UrlServiceCallBack callback, Func<Stream, UrlAnanyticResult> funcAnalytic)
+        {
+            this.Message = msg;
+            this.Request = request;
+            this.FuncAnalytic = funcAnalytic;
+            this.Callback = callback;
+        }
     }
 
     public class UrlAnanyticResult
     {
+        public Message Msg { set; get; }
         public bool Ok { set; get; }
         public string Html { set; get; }
         public string Message { set; get; }
@@ -49,7 +58,10 @@ namespace appie
                 s = reader.ReadToEnd();
             if (s.Length > 0)
                 s = HttpUtility.HtmlDecode(s);
-            
+
+            var mbody = Regex.Match(s, @"(?<=<body[^>]*>)\s*[\s\S].*?(?=</body>)");
+            if (mbody.Success) s = mbody.Groups[1].Value;
+
             string si = string.Empty;
             s = Regex.Replace(s, @"<script[^>]*>[\s\S]*?</script>", string.Empty);
             //s = Regex.Replace(s, @"<style[^>]*>[\s\S]*?</style>", string.Empty);
@@ -61,20 +73,20 @@ namespace appie
             //s = Regex.Replace(s, @"</?(?i:embed|object|frameset|frame|iframe|meta|link)(.|\n|\s)*?>", string.Empty, RegexOptions.Singleline | RegexOptions.IgnoreCase);
             s = Regex.Replace(s, @"</?(?i:base|header|footer|nav|form|input|select|option|fieldset|button|iframe|link|symbol|path|canvas|use|ins|svg|embed|object|frameset|frame|meta)(.|\n|\s)*?>", string.Empty, RegexOptions.Singleline | RegexOptions.IgnoreCase);
 
-            // Remove attribute style="padding:10px;..."
-            s = Regex.Replace(s, @"<([^>]*)(\sstyle="".+?""(\s|))(.*?)>", string.Empty);
-            s = s.Replace(@">"">", ">");
+            //// Remove attribute style="padding:10px;..."
+            //s = Regex.Replace(s, @"<([^>]*)(\sstyle="".+?""(\s|))(.*?)>", string.Empty);
+            //s = s.Replace(@">"">", ">");
 
             string[] lines = s.Split(new char[] { '\r', '\n' }, StringSplitOptions.None).Select(x => x.Trim()).Where(x => x.Length > 0).ToArray();
             s = string.Join(Environment.NewLine, lines);
 
-            int pos = s.ToLower().IndexOf("<body");
-            if (pos > 0)
-            {
-                s = s.Substring(pos + 5);
-                pos = s.IndexOf('>') + 1;
-                s = s.Substring(pos, s.Length - pos).Trim();
-            }
+            //int pos = s.ToLower().IndexOf("<body");
+            //if (pos > 0)
+            //{
+            //    s = s.Substring(pos + 5);
+            //    pos = s.IndexOf('>') + 1;
+            //    s = s.Substring(pos, s.Length - pos).Trim();
+            //}
 
             //s = s
             //    .Replace(@" data-src=""", @" src=""")
@@ -306,7 +318,13 @@ namespace appie
             var request = f_CreateWebRequest(url);
             request.BeginGetResponse(f_UrlRequestCallBack, new UrlServicePara(request, callBack, func_analytic));
         }
-        
+
+        public static void GetAsync(string url, Message msg, Func<Stream, UrlAnanyticResult> func_analytic, UrlServiceCallBack callBack)
+        {
+            var request = f_CreateWebRequest(url);
+            request.BeginGetResponse(f_UrlRequestCallBack, new UrlServicePara(msg, request, callBack, func_analytic));
+        }
+
         static WebRequest f_CreateWebRequest(string url)
         {
             var create = (HttpWebRequest)WebRequest.Create(url);
@@ -321,6 +339,8 @@ namespace appie
             WebRequest request = pair.Request;
             UrlServiceCallBack callback = pair.Callback;
             Func<Stream, UrlAnanyticResult> funcAnalytic = pair.FuncAnalytic;
+            Message msg = pair.Message;
+
 
             HttpWebResponse response = null;
             try
@@ -328,7 +348,7 @@ namespace appie
                 response = (HttpWebResponse)request.EndGetResponse(ar);
                 if (response.StatusCode != HttpStatusCode.OK)
                 {
-                    callback(new UrlAnanyticResult() { Message = "Response is failed with code: " + response.StatusCode });
+                    callback(new UrlAnanyticResult() { Message = "Response is failed with code: " + response.StatusCode, Msg = msg });
                     return;
                 }
 
@@ -337,6 +357,7 @@ namespace appie
                     if (funcAnalytic != null)
                     {
                         UrlAnanyticResult rs = funcAnalytic(stream);
+                        rs.Msg = msg;
                         callback(rs);
                     }
                     else {
@@ -345,13 +366,13 @@ namespace appie
                             s = reader.ReadToEnd();
                         if (s.Length > 0)
                             s = HttpUtility.HtmlDecode(s);
-                        callback(new UrlAnanyticResult() { Ok = true, Html = s });
+                        callback(new UrlAnanyticResult() { Ok = true, Html = s, Msg = msg });
                     }
                 }
             }
             catch (Exception ex)
             {
-                callback(new UrlAnanyticResult(){ Message = "Request failed.\r\n" + ex.Message });
+                callback(new UrlAnanyticResult(){ Message = "Request failed.\r\n" + ex.Message, Msg = msg });
             }
             finally
             {
