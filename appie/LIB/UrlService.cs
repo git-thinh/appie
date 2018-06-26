@@ -80,14 +80,10 @@ namespace appie
             //    .Replace(@" data-src=""", @" src=""")
             //    .Replace(@"src=""//", @"src=""http://");
 
-            //var mts = Regex.Matches(s, "<img.+?src=[\"'](.+?)[\"'].*?>", RegexOptions.IgnoreCase);
-            //if (mts.Count > 0)
-            //{
-            //    foreach (Match mt in mts)
-            //    {
-            //        s = s.Replace(mt.ToString(), string.Format("{0}{1}{2}", "<p class=box_img___>", mt.ToString(), "</p>"));
-            //    }
-            //}
+            var mts = Regex.Matches(s, "<img.+?src=[\"'](.+?)[\"'].*?>", RegexOptions.IgnoreCase);
+            if (mts.Count > 0) 
+                foreach (Match mt in mts) 
+                    s = s.Replace(mt.ToString(), string.Format("{0}{1}{2}", "<p class=box_img___>", mt.ToString(), "</p>")); 
 
             //s = Regex.Replace(s, @"(?<=<li[^>]*>)\s*<a.*?(?=</li>)", "", RegexOptions.Singleline);
             //s = s.Replace("<li></li>", string.Empty).Replace("<ul></ul>", string.Empty);

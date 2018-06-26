@@ -6,6 +6,7 @@ namespace appie
 {
     public class JobLink : IJob
     {
+        readonly DictionaryThreadSafe<string, string> urlData;
         readonly QueueThreadSafe<Message> msg;
         readonly ListThreadSafe<oLink> list;
 
@@ -25,6 +26,7 @@ namespace appie
             this.StoreJob = _store;
             list = new ListThreadSafe<oLink>();
             msg = new QueueThreadSafe<Message>();
+            urlData = new DictionaryThreadSafe<string, string>();
         }
 
         public void f_receiveMessage(Message m) {
@@ -61,29 +63,52 @@ namespace appie
                 if (m != null) {
                     switch (m.getAction()) {
                         case MESSAGE_ACTION.ITEM_SEARCH:
-                            oLink[] a = new oLink[] { };
+                            #region
+                            if (true)
+                            {
+                                oLink[] a = new oLink[] { };
+                                if (m.Input != null)
+                                {
+                                    string key = m.Input as string;
+                                    a = list.Where(x => x.Link.Contains(key) || x.Title.Contains(key) || x.Tags.Contains(key), false, int.MaxValue);
+                                    m.Output.Counter = a.Length;
+                                }
+                                else
+                                {
+                                    a = list.Take(10).ToArray();
+                                    m.Output.Counter = list.Count;
+                                }
+
+                                m.Type = MESSAGE_TYPE.RESPONSE;
+                                m.JobName = this._groupName;
+
+                                m.Output.Ok = true;
+                                m.Output.PageSize = 10;
+                                m.Output.PageNumber = 1;
+                                m.Output.Total = list.Count;
+                                m.Output.SetData(a);
+
+                                this.StoreJob.f_responseMessageFromJob(m);
+                            }
+                            #endregion
+                            break;
+                        case MESSAGE_ACTION.URL_REQUEST_CACHE:
+                            #region
                             if (m.Input != null)
                             {
-                                string key = m.Input as string;
-                                a = list.Where(x => x.Link.Contains(key) || x.Title.Contains(key) || x.Tags.Contains(key), false, int.MaxValue);
-                                m.Output.Counter = a.Length;
+                                string url = m.Input as string, htm = string.Empty;
+                                if (urlData.ContainsKey(url))
+                                {
+                                    m.Type = MESSAGE_TYPE.RESPONSE;
+                                    m.JobName = this._groupName;
+
+                                    m.Output.Ok = true;
+                                    m.Output.SetData(htm);
+
+                                    this.StoreJob.f_responseMessageFromJob(m);
+                                }
                             }
-                            else {
-                                a = list.Take(10).ToArray();
-                                m.Output.Counter = list.Count;
-                            }
-
-                            m.Type = MESSAGE_TYPE.RESPONSE;
-                            m.JobName = this._groupName;
-
-                            m.Output.Ok = true;
-                            m.Output.PageSize = 10;
-                            m.Output.PageNumber = 1;
-                            m.Output.Total = list.Count;
-                            m.Output.SetData(a);
-
-                            this.StoreJob.f_responseMessageFromJob(m);
-
+                            #endregion
                             break;
                     }
                 }

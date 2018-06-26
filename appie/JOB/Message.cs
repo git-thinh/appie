@@ -57,6 +57,9 @@ namespace appie
         ITEM_EDIT,
         ITEM_REMOVE,
         ITEM_SEARCH,
+        URL_REQUEST_ONLINE,
+        URL_REQUEST_CACHE,
+        URL_RESPONSE,
     }
 
     public enum MESSAGE_TYPE
