@@ -97,7 +97,7 @@ namespace appie
             //foreach (Match m in Regex.Matches(s, @"<li[^>]*>[\s\S]*?</li>"))
             //    s = s.Replace(m.Value, string.Empty);
             //s = RemoveAllHtmlTag(s, new string[] { "ul", "li" });
-            //s = s.Substring(s.Split('>')[0].Length + 1);
+            s = s.Substring(s.Split('>')[0].Length + 1);
 
             //foreach (Match m in Regex.Matches(s, @"<div [^>]*class=\""\s*menu.*?\""([\s\S]*?)</div>", RegexOptions.IgnoreCase)) s = s.Replace(m.Value, string.Empty);
             //foreach (Match m in Regex.Matches(s, @"<div [^>]*class=\""\s*search.*?\""([\s\S]*?)</div>", RegexOptions.IgnoreCase)) s = s.Replace(m.Value, string.Empty);
@@ -143,19 +143,47 @@ namespace appie
 <body>" + s +
 @"
 <script type=""text/javascript"">
+    
     var htm;
-    cleanHtml(document.body.childNodes, 0);
-    //console.log('OK: ', htm);
-    if (htm != null) {
-        document.body.innerHTML = htm;
+    findMain(document.body.childNodes, 0);
+    //console.log('OK: ', htm == null ? 'NULL -> find H1' : htm.length);
+    if (htm == null) findH1();
+    if (htm == null) {
+        //console.log('FAILLL: ');
+        cleanHtml(document.getElementsByTagName('*'));
+    } else document.body.innerHTML = htm;
+
+    function findH1() {
+        var h1s = document.getElementsByTagName('h1');
+        if (h1s.length > 0) {
+            var it = h1s[h1s.length - 1].parentNode;
+            while (it.parentNode.tagName != 'BODY') {
+                it = it.parentNode;
+            }
+            var bs = document.getElementsByClassName(it.className);
+            if (bs.length > 1) {
+                for (var i = 0; i < bs.length; i++) {
+                    cleanHtml(bs[i].getElementsByTagName('*'));
+                    if (htm == null)
+                        htm = bs[i].innerHTML;
+                    else
+                        htm += bs[i].innerHTML;
+                }
+            } else {
+                //console.log('OK = ' + h1s.length, it);
+                cleanHtml(it.getElementsByTagName('*'));
+                htm = it.innerHTML;
+            }
+        }
     }
 
-    function cleanHtml(elements) {
+    function findMain(elements) {
         for (var i = 0; i < elements.length; i++) {
             var it = elements[i], css = it.className, id = it.id, tagName = it.tagName, text = it.textContent, ok = false;
-            
+
             if (it.hasChildNodes() == false) {
                 //console.log('REMOVE: ', it);
+                it.parentNode.removeChild(it);
             } else {
                 if (css == null) css = ''; else css = css.toLowerCase();
                 if (id == null) id = ''; else id = id.toLowerCase();
@@ -163,44 +191,88 @@ namespace appie
                 if (id.length == 0 && css.length == 0 || text.length == 0) continue;
 
                 ok = is_content(id, css, tagName, text);
-                //console.log(id + ': ' + css + ' = ' + it.childNodes.length, ok);
 
                 if (ok) {
                     var h1 = it.getElementsByTagName('h1').length;
                     if (htm == null && h1 > 0) {
                         //console.log('OK = ' + h1, it);
+                        cleanHtml(it.getElementsByTagName('*'));
                         htm = it.innerHTML;
                     }
-                    return;
+                    //return;
                 } else {
-                    if (it.childElementCount > 0)
-                        cleanHtml(it.childNodes);;
+                    //console.log(id + ': ' + css + ' remove = ' + is_remove(id, css), htm);
+                    if (htm != null || is_remove(id, css)) {
+                        //console.log('remove: ', it);
+                        it.parentNode.removeChild(it);
+                    } else
+                        findMain(it.childNodes);
                 }
             }
         }
     }
 
     function is_content(id, css, tagName, text) {
-        var ok = (id.length > 0 && id.indexOf('main') != -1) || (css.length > 0 && css.indexOf('main') != -1) 
+        var ok = (id.length > 0 && id.indexOf('main') != -1) || (css.length > 0 && css.indexOf('main') != -1)
             || (id.length > 0 && id.indexOf('content') != -1) || (css.length > 0 && css.indexOf('content') != -1);
         if (ok) {
             if (
-                id.indexOf('menu') != -1
-                || css.indexOf('menu') != -1
-                || id.indexOf('search') != -1
-                || css.indexOf('search') != -1
-                || id.indexOf('header') != -1
-                || css.indexOf('header') != -1
-                || id.indexOf('footer') != -1
-                || css.indexOf('footer') != -1
-                || id.indexOf('cookie') != -1
-                || css.indexOf('cookie') != -1
-                || id.indexOf('error') != -1
-                || css.indexOf('error') != -1
+            id.indexOf('menu') != -1
+            || css.indexOf('menu') != -1
+            || id.indexOf('search') != -1
+            || css.indexOf('search') != -1
+            || id.indexOf('header') != -1
+            || css.indexOf('header') != -1
+            || id.indexOf('footer') != -1
+            || css.indexOf('footer') != -1
+            || id.indexOf('cookie') != -1
+            || css.indexOf('cookie') != -1
+            || id.indexOf('feedback') != -1
+            || css.indexOf('feedback') != -1
+            || id.indexOf('error') != -1
+            || css.indexOf('error') != -1
             ) return false;
             return true;
         }
         return false;
+    }
+
+    function cleanHtml(elements) {
+        for (var i = 0; i < elements.length; i++) {
+            var it = elements[i], css = it.className, id = it.id, tagName = it.tagName, text = it.textContent, ok = false;
+            if (is_remove(id, css)) it.parentNode.removeChild(it);
+        }
+    }
+
+    function is_remove(id, css) {
+        return id.indexOf('search') != -1
+            || css.indexOf('search') != -1
+            || id.indexOf('header') != -1
+            || css.indexOf('header') != -1
+            || id.indexOf('footer') != -1
+            || css.indexOf('footer') != -1
+            || id.indexOf('cookie') != -1
+            || css.indexOf('cookie') != -1
+            || id.indexOf('newsletter') != -1
+            || css.indexOf('newsletter') != -1
+            || id.indexOf('breadcrumb') != -1
+            || css.indexOf('breadcrumb') != -1
+            || id.indexOf('metadata') != -1
+            || css.indexOf('metadata') != -1
+            || id.indexOf('feedback') != -1
+            || css.indexOf('feedback') != -1
+            || id.indexOf('sidebar') != -1
+            || css.indexOf('sidebar') != -1
+            || id.indexOf('page-background') != -1
+            || css.indexOf('page-background') != -1
+            || id.indexOf('share-') != -1
+            || css.indexOf('share-') != -1
+            || id.indexOf('share-') != -1
+            || css.indexOf('-action') != -1
+            || id.indexOf('nav-') != -1
+            || css.indexOf('nav-') != -1
+            || id.indexOf('error') != -1
+            || css.indexOf('error') != -1;
     }
 
     </script>";
