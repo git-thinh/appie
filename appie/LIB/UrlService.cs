@@ -39,8 +39,178 @@ namespace appie
         }
     }
 
+    // UrlService.GetAsync("http://...", (result) => { ;;; });
     public class UrlService
     {
+        public readonly static Func<Stream, UrlAnanyticResult> Func_GetHTML_UTF8_FORMAT_BROWSER = (stream) =>
+        {
+            string s = string.Empty;
+            using (var reader = new StreamReader(stream, Encoding.UTF8))
+                s = reader.ReadToEnd();
+            if (s.Length > 0)
+                s = HttpUtility.HtmlDecode(s);
+            
+            string si = string.Empty;
+            s = Regex.Replace(s, @"<script[^>]*>[\s\S]*?</script>", string.Empty);
+            //s = Regex.Replace(s, @"<style[^>]*>[\s\S]*?</style>", string.Empty);
+            s = Regex.Replace(s, @"<noscript[^>]*>[\s\S]*?</noscript>", string.Empty);
+            s = Regex.Replace(s, @"(?s)(?<=<!--).+?(?=-->)", string.Empty).Replace("<!---->", string.Empty);
+
+            //s = Regex.Replace(s, @"<noscript[^>]*>[\s\S]*?</noscript>", string.Empty);
+            //s = Regex.Replace(s, @"<noscript[^>]*>[\s\S]*?</noscript>", string.Empty);
+            //s = Regex.Replace(s, @"</?(?i:embed|object|frameset|frame|iframe|meta|link)(.|\n|\s)*?>", string.Empty, RegexOptions.Singleline | RegexOptions.IgnoreCase);
+            s = Regex.Replace(s, @"</?(?i:base|header|footer|nav|form|input|select|option|fieldset|button|iframe|link|symbol|path|canvas|use|ins|svg|embed|object|frameset|frame|meta)(.|\n|\s)*?>", string.Empty, RegexOptions.Singleline | RegexOptions.IgnoreCase);
+
+            // Remove attribute style="padding:10px;..."
+            s = Regex.Replace(s, @"<([^>]*)(\sstyle="".+?""(\s|))(.*?)>", string.Empty);
+            s = s.Replace(@">"">", ">");
+
+            string[] lines = s.Split(new char[] { '\r', '\n' }, StringSplitOptions.None).Select(x => x.Trim()).Where(x => x.Length > 0).ToArray();
+            s = string.Join(Environment.NewLine, lines);
+
+            int pos = s.ToLower().IndexOf("<body");
+            if (pos > 0)
+            {
+                s = s.Substring(pos + 5);
+                pos = s.IndexOf('>') + 1;
+                s = s.Substring(pos, s.Length - pos).Trim();
+            }
+
+            //s = s
+            //    .Replace(@" data-src=""", @" src=""")
+            //    .Replace(@"src=""//", @"src=""http://");
+
+            //var mts = Regex.Matches(s, "<img.+?src=[\"'](.+?)[\"'].*?>", RegexOptions.IgnoreCase);
+            //if (mts.Count > 0)
+            //{
+            //    foreach (Match mt in mts)
+            //    {
+            //        s = s.Replace(mt.ToString(), string.Format("{0}{1}{2}", "<p class=box_img___>", mt.ToString(), "</p>"));
+            //    }
+            //}
+
+            //s = Regex.Replace(s, @"(?<=<li[^>]*>)\s*<a.*?(?=</li>)", "", RegexOptions.Singleline);
+            //s = s.Replace("<li></li>", string.Empty).Replace("<ul></ul>", string.Empty);
+
+            //foreach (Match m in Regex.Matches(s, @"<ul[^>]*>[\s\S]*?</ul>"))
+            //    s = s.Replace(m.Value, string.Empty);
+            //foreach (Match m in Regex.Matches(s, @"<li[^>]*>[\s\S]*?</li>"))
+            //    s = s.Replace(m.Value, string.Empty);
+            //s = RemoveAllHtmlTag(s, new string[] { "ul", "li" });
+            //s = s.Substring(s.Split('>')[0].Length + 1);
+
+            //foreach (Match m in Regex.Matches(s, @"<div [^>]*class=\""\s*menu.*?\""([\s\S]*?)</div>", RegexOptions.IgnoreCase)) s = s.Replace(m.Value, string.Empty);
+            //foreach (Match m in Regex.Matches(s, @"<div [^>]*class=\""\s*search.*?\""([\s\S]*?)</div>", RegexOptions.IgnoreCase)) s = s.Replace(m.Value, string.Empty);
+            //foreach (Match m in Regex.Matches(s, @"<div [^>]*class=\""\s*newsletters.*?\""([\s\S]*?)</div>", RegexOptions.IgnoreCase)) s = s.Replace(m.Value, string.Empty);
+
+            //s = removeById_ClassName(s, "menu");
+            //s = removeById_ClassName(s, "search");
+            //s = removeById_ClassName(s, "_newsletter_");//news_newsletter_form
+
+            #region
+            s =  
+@"<html>
+<head>
+    <meta charset=""utf-8"" />
+    <meta http-equiv=""X-UA-Compatible"" content=""IE=edge"" />
+    <title></title>
+    <style type=""text/css"">
+        body {
+            padding: 20px 10px;
+            margin: 0;
+            font-size: 1.5em;
+        }
+
+        p {
+            line-height: 1.7em;
+        }
+        
+        a {
+            text-decoration: none;
+        } 
+
+        img {
+            max-width: 20% !important;
+        }
+        p.box_img___ {
+            display:none;
+            text-align:right;
+        }
+        p.box_img___ img{
+        }
+    </style> 
+</head>
+<body>" + s +
+@"
+<script type=""text/javascript"">
+    var htm;
+    cleanHtml(document.body.childNodes, 0);
+    //console.log('OK: ', htm);
+    if (htm != null) {
+        document.body.innerHTML = htm;
+    }
+
+    function cleanHtml(elements) {
+        for (var i = 0; i < elements.length; i++) {
+            var it = elements[i], css = it.className, id = it.id, tagName = it.tagName, text = it.textContent, ok = false;
+            
+            if (it.hasChildNodes() == false) {
+                //console.log('REMOVE: ', it);
+            } else {
+                if (css == null) css = ''; else css = css.toLowerCase();
+                if (id == null) id = ''; else id = id.toLowerCase();
+                if (text == null) text = ''; else text = text.trim();
+                if (id.length == 0 && css.length == 0 || text.length == 0) continue;
+
+                ok = is_content(id, css, tagName, text);
+                //console.log(id + ': ' + css + ' = ' + it.childNodes.length, ok);
+
+                if (ok) {
+                    var h1 = it.getElementsByTagName('h1').length;
+                    if (htm == null && h1 > 0) {
+                        //console.log('OK = ' + h1, it);
+                        htm = it.innerHTML;
+                    }
+                    return;
+                } else {
+                    if (it.childElementCount > 0)
+                        cleanHtml(it.childNodes);;
+                }
+            }
+        }
+    }
+
+    function is_content(id, css, tagName, text) {
+        var ok = (id.length > 0 && id.indexOf('main') != -1) || (css.length > 0 && css.indexOf('main') != -1) 
+            || (id.length > 0 && id.indexOf('content') != -1) || (css.length > 0 && css.indexOf('content') != -1);
+        if (ok) {
+            if (
+                id.indexOf('menu') != -1
+                || css.indexOf('menu') != -1
+                || id.indexOf('search') != -1
+                || css.indexOf('search') != -1
+                || id.indexOf('header') != -1
+                || css.indexOf('header') != -1
+                || id.indexOf('footer') != -1
+                || css.indexOf('footer') != -1
+                || id.indexOf('cookie') != -1
+                || css.indexOf('cookie') != -1
+                || id.indexOf('error') != -1
+                || css.indexOf('error') != -1
+            ) return false;
+            return true;
+        }
+        return false;
+    }
+
+    </script>";
+            #endregion
+
+            File.WriteAllText("result_.html", s);
+
+            return new UrlAnanyticResult() { Ok = true, Html = s };
+        };
+
         public readonly static Func<Stream, UrlAnanyticResult> Func_GetHTML_UTF8 = (stream) =>
         {
             string s = string.Empty;
@@ -122,7 +292,38 @@ namespace appie
                     response.Close();
                 }
             }
-        }        
+        }
+
+        static string RemoveAllHtmlTag(string content, string[] removeTagArray)
+        {
+            string result = content;
+            //string[] removeTagArray = new string[] { "b", "a", "script", "i", "ul", "li", "ol", "font", "span", "div", "u" };
+            foreach (string removeTag in removeTagArray)
+            {
+                string regExpressionToRemoveBeginTag = string.Format("<{0}([^>]*)>", removeTag);
+                Regex regEx = new Regex(regExpressionToRemoveBeginTag, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+                result = regEx.Replace(result, "");
+
+                string regExpressionToRemoveEndTag = string.Format("</{0}([^>]*)>", removeTag);
+                regEx = new Regex(regExpressionToRemoveEndTag, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+                result = regEx.Replace(result, "");
+            }
+            return result;
+        }
+
+        static string removeById_ClassName(string s, string Id_className)
+        {
+            foreach (Match m in Regex.Matches(s, @"<div .*?class=['""](.+?)['""].*?>(.+?)</div>"))
+                if (m.Groups[1].Value.ToLower().Contains(Id_className))
+                    s = s.Replace(m.Value, string.Empty);
+
+            //foreach (Match m in Regex.Matches(s, @"<div .*?id=['""](.+?)['""].*?>(.+?)</div>"))
+            foreach (Match m in Regex.Matches(s, @"<div[^>]*?ids*=s*[""\']?([^\'"" >]+?)[ \'""][^>]*?>(.+?)</div>"))
+                if (m.Groups[1].Value.ToLower().Contains(Id_className))
+                    s = s.Replace(m.ToString(), string.Empty);
+
+            return s;
+        }
     }
 
 }

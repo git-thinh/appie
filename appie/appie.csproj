@@ -94,6 +94,7 @@
   <ItemGroup>
     <Compile Include="API\DHTMLEventHandler.cs" />
     <Compile Include="API\IFORM.cs" />
+    <Compile Include="FORM\Prompt.cs" />
     <Compile Include="FORM\fApp.cs">
       <SubType>Form</SubType>
     </Compile>

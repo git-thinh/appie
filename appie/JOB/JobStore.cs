@@ -344,11 +344,7 @@ namespace appie
 
         public event EventHandler OnUrlFetchComplete;
         #endregion
-
-        //#region [ VAR: LINK ]
-        //readonly JobInfo job_Link;
-        //#endregion
-
+        
         #endregion
 
         public JobStore()
@@ -380,11 +376,6 @@ namespace appie
             #endregion
 
             f_addJob(new JobLink(this));
-
-            //#region [ LINK ]
-            //job_Link = new JobInfo(new JobLink(this), new AutoResetEvent(false));
-            //f_addGroupJobName(job_Link.f_getJob());
-            //#endregion
         }
 
         ~JobStore()
@@ -406,12 +397,7 @@ namespace appie
 
             #region [ URL ]
             #endregion
-
-            //#region [ LINK ]
-            //job_Link.f_stopJob();
-            //job_Link.f_stopAndFreeResource();
-            //#endregion
-
+            
             GC.Collect(); // Start .NET CLR Garbage Collection
             GC.WaitForPendingFinalizers(); // Wait for Garbage Collection to finish
         }

@@ -95,7 +95,7 @@ namespace appie
             m_brow_web = new System.Windows.Forms.WebBrowser()
             {
                 Dock = DockStyle.Fill,
-                ScriptErrorsSuppressed = true,
+                ScriptErrorsSuppressed = false,
                 IsWebBrowserContextMenuEnabled = false,
             };
             m_tab = new TabControl()

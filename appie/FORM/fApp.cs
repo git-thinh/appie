@@ -19,30 +19,21 @@ namespace appie
     {
         private void f_event_OnReceiveMessage(IFORM form, Message m)
         {
-            switch (m.JobName) {
+            switch (m.JobName)
+            {
                 case JOB_NAME.SYS_LINK:
-                    switch (m.getAction()) {
+                    switch (m.getAction())
+                    {
                         case MESSAGE_ACTION.ITEM_SEARCH:
-                            m_history_items_listBox.crossThreadPerformSafely(() =>
-                            {
-                                m_history_items_listBox.Items.Clear();
-                            });
-                            if (m.Output.Ok) {
-                                if (m.Output.GetData() is oLink[]) {
-                                    oLink[] links = (oLink[])m.Output.GetData();
-                                    m_history_items_listBox.crossThreadPerformSafely(() =>
-                                    {
-                                        foreach (oLink li in links)
-                                            m_history_items_listBox.Items.Add(li.TitleDomain());
-                                    });
-                                }
-                            }
+                            if (m.Output.Ok)
+                                if (m.Output.GetData() is oLink[])
+                                    f_history_drawNodes((oLink[])m.Output.GetData());
                             break;
                     }
                     break;
             }
         }
-        
+
         #region [ VARIABLE ]
 
         readonly Font font_Title = new Font("Arial", 11f, FontStyle.Regular);
@@ -53,12 +44,16 @@ namespace appie
         Panel m_footer;
         TextBox m_log_Text;
 
+        #endregion
+
+        #region [ VAR: HISTORY ]
+        TextBox m_history_search_textBox;
+        TreeView m_history_items_treeView;
+        #endregion
+
+        #region [ VAR: LINK ]
         TextBox m_link_search_textBox;
         ListBox m_link_items_listBox;
-
-        TextBox m_history_search_textBox;
-        ListBox m_history_items_listBox;
-
         #endregion
 
         #region [ VAR: BROWSER ]
@@ -122,7 +117,7 @@ namespace appie
             m_brow_web = new System.Windows.Forms.WebBrowser()
             {
                 Dock = DockStyle.Fill,
-                ScriptErrorsSuppressed = true,
+                ScriptErrorsSuppressed = false,
                 IsWebBrowserContextMenuEnabled = false,
             };
             m_tab = new TabControl()
@@ -208,7 +203,7 @@ namespace appie
             });
 
             #endregion
-            
+
             #region [ LINK ]
 
             m_link_search_textBox = new TextBox()
@@ -242,7 +237,8 @@ namespace appie
                 Dock = DockStyle.Top,
                 BorderStyle = BorderStyle.FixedSingle,
             };
-            m_history_search_textBox.KeyDown += (se, ev) => {
+            m_history_search_textBox.KeyDown += (se, ev) =>
+            {
                 if (ev.KeyCode == Keys.Enter)
                 {
                     int[] job_IDs = this.JobStore.f_job_getIdsByName(JOB_NAME.SYS_LINK);
@@ -251,28 +247,21 @@ namespace appie
                 }
             };
 
-            m_history_items_listBox = new ListBox()
+            m_history_items_treeView = new TreeView()
             {
                 Dock = DockStyle.Fill,
                 BorderStyle = BorderStyle.FixedSingle,
                 Font = font_Title,
             };
-            m_history_items_listBox.ValueMember = "Item1";
-            m_history_items_listBox.DisplayMember = "Item2";
 
             tab_History.Controls.AddRange(new Control[] {
-                m_history_items_listBox,
+                m_history_items_treeView,
                 m_history_search_textBox,
             });
 
-            m_history_items_listBox.MouseDoubleClick += f_history_items_selectIndexChange;
+            m_history_items_treeView.MouseDoubleClick += f_history_items_selectIndexChange;
 
-            m_history_items_listBox.Items.AddRange(new Tuple<string, string>[] {
-                new Tuple<string,string>("Youtube","https://www.youtube.com/"),
-                new Tuple<string,string>("Google","https://www.google.com/search?q=english+pronunciation"),
-                new Tuple<string,string>("pronuncian.com","https://pronuncian.com/pronounce-th-sounds/"),
-                new Tuple<string,string>("learning-english-online.net","https://www.learning-english-online.net/pronunciation/the-english-th/"),
-            });
+            f_history_drawNodes(null);
 
             #endregion
 
@@ -313,7 +302,7 @@ namespace appie
             });
 
             #endregion
-            
+
             #region [ Add Control -> UI ]
 
             m_browser_Toolbar.Controls.AddRange(new Control[] {
@@ -409,6 +398,70 @@ namespace appie
 
         #endregion
 
+        #region [ HISTORY ]
+
+        void f_history_drawNodes(oLink[] links)
+        {
+            m_history_items_treeView.crossThreadPerformSafely(() =>
+            {
+                m_history_items_treeView.Nodes.Clear();
+                m_history_items_treeView.Nodes.AddRange(new TreeNode[] {
+                    new TreeNode("Youtube"){ Tag = new oLink(){ Title = "Youtube", Tags= "", Link = "https://www.youtube.com/results?search_query={0}" } },
+                    new TreeNode("Google"){ Tag = new oLink(){ Title = "Google", Tags= "", Link = "https://www.google.com/search?q={0}" } },
+                    new TreeNode("Grammar By Oxford"){ Tag = new oLink(){ Title = "Grammar By Oxford", Tags= "", Link = "https://en.oxforddictionaries.com/grammar/" } },
+                    new TreeNode("British Grammar By Cambridge"){ Tag = new oLink(){ Title = "British Grammar By Cambridge", Tags= "", Link = "https://dictionary.cambridge.org/grammar/british-grammar/" } },
+                    new TreeNode("Pronuncian.com"){ Tag = new oLink(){ Title = "Pronuncian.com", Tags= "", Link = "https://pronuncian.com/pronounce-th-sounds/" } },
+                    new TreeNode("Learning-english-online.net"){ Tag = new oLink(){ Title = "Learning-english-online.net", Tags= "", Link = "https://www.learning-english-online.net/pronunciation/the-english-th/" } },
+                });
+            });
+            if (links != null && links.Length > 0)
+            {
+                List<string> tags = new List<string>();
+                foreach (string[] a in links.Select(x => x.Tags.Split(','))) tags.AddRange(a);
+                tags = tags.Select(x => x.Trim()).Distinct().ToList();
+                TreeNode[] nodes = tags.Select(x => new TreeNode(x)).ToArray();
+                foreach (TreeNode node in nodes) node.Nodes.AddRange(links.Where(o => o.Tags.Contains(node.Text)).Select(o => new TreeNode(o.TitleDomain()) { Tag = o }).ToArray());
+                m_history_items_treeView.crossThreadPerformSafely(() =>
+                {
+                    m_history_items_treeView.Nodes.AddRange(nodes);
+                });
+            }
+        }
+
+        void f_history_items_selectIndexChange(object sender, EventArgs e)
+        {
+            TreeNode node = m_history_items_treeView.SelectedNode;
+            if (node != null && node.Tag != null)
+            {
+                oLink link = node.Tag as oLink;
+                string url = string.Empty;
+                if (link.Title == "Youtube" || link.Title == "Google")
+                {
+                    string key = Prompt.ShowDialog("Input to search?", link.Title).Trim();
+                    if (key.Length > 0)
+                        url = string.Format(link.Link, key);
+                }
+                else url = link.Link;
+                if (url.Length > 0)
+                {
+                    m_tab_Browser.Text = link.TitleDomain();
+                    m_brow_web.DocumentText = "<h1>LOADING: " + url + "</h1>";
+                    UrlService.GetAsync(url, UrlService.Func_GetHTML_UTF8_FORMAT_BROWSER, (result) =>
+                     {
+                         if (result.Ok)
+                         {
+                             m_brow_web.crossThreadPerformSafely(() =>
+                             {
+                                 m_brow_web.DocumentText = result.Html;
+                             });
+                         }
+                     });
+                }
+            }
+        }
+
+        #endregion
+
         #region
 
         //oSetting f_setting_Get() {
@@ -418,10 +471,6 @@ namespace appie
         //        MaxThread = int.Parse(setting_maxThread_textBox.Text.Trim()),
         //    };
         //}
-
-        void f_history_items_selectIndexChange(object sender, EventArgs e)
-        {
-        }
 
         void f_package_openFile()
         {
