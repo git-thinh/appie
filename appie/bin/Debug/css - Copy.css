@@ -1,0 +1,213 @@
+﻿html * {
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    padding: 20px 10px;
+    margin: 0;
+    font-size: 1.5em;
+}
+
+h1 {
+    text-align: left;
+    clear: both;
+    padding-bottom: 30px;
+    padding-top: 10px;
+    font-size: 1.9em;
+    line-height: 1.1em;
+}
+
+
+h2, h3, h4, h5, h6 {
+    margin: 0px;
+    line-height: 1.1em;
+}
+
+h2, h3 {
+    padding: 15px 0;
+    font-size: 1.5em;
+}
+
+h4, h5, h6 {
+    padding: 0 0 20px 0;
+    font-size: 1.1em;
+}
+
+audio {
+    padding: 10px;
+    margin: 0px;
+}
+
+article {
+    display: inline-block;
+    width: 100%;
+    padding-bottom: 30px;
+}
+
+pre {
+    display: inline-block;
+    width: auto;
+    clear: both;
+    margin: 3px 0 7px 0;
+    background-color: #eff0f1; /*#fcc*/
+    padding: 7px 30px;
+    font-size: 0.7em;
+    line-height: 1.5em;
+    white-space: pre-wrap;
+    font-family: Consolas,Menlo,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New,monospace,sans-serif;
+}
+
+code {
+    padding: 1px 5px;
+    background-color: #eff0f1;
+    font-family: Consolas,Menlo,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New,monospace,sans-serif;
+}
+
+div {
+    line-height: 1.3em;
+}
+
+ul, ol {
+    clear: both;
+    display: inline-block;
+    margin: 0;
+    padding: 0 0 15px 40px;
+    min-width: 90%;
+}
+
+    ul li, ol li {
+        display: list-item;
+        width: 100%;
+        clear: both;
+        margin: 0;
+        padding: 0 0 5px 0;
+    }
+
+        ul li ul, ol li ol {
+            padding: 10px 40px;
+        }
+
+        ul li div, ul li p, ul li span, ul li i {
+            font-style: normal;
+            font-size: 1em;
+        }
+
+        ul li a {
+            font-weight: bold;
+        }
+
+p {
+    padding: 0;
+    margin: 0;
+}
+
+a {
+    text-decoration: none;
+    font-weight: normal;
+    color: #07C;
+}
+
+    a:visited {
+        color: #005999;
+    }
+
+    a:hover {
+        color: blue;
+        text-decoration: underline;
+    }
+
+
+img {
+    max-width: 20% !important;
+}
+
+p.box_img___ {
+    display: none;
+    text-align: right;
+}
+
+    p.box_img___ img {
+    }
+
+/*stackoverflow.com*/
+
+body.stackoverflow_com .question .comments-list {
+    border-top: 3px solid #777;
+    margin-top: 30px;
+    padding-top: 30px;
+}
+
+body.stackoverflow_com .question .votecell {
+    display: none;
+}
+
+body.stackoverflow_com #answers {
+    border-top: 3px solid #000;
+    margin-top: 30px;
+    padding-top: 30px;
+    padding-left: 70px;
+}
+
+    body.stackoverflow_com #answers .pager-answers {
+        text-align: right;
+        padding-bottom: 15px;
+    }
+
+
+    body.stackoverflow_com #answers .vote {
+        text-align: right;
+    }
+
+        body.stackoverflow_com #answers .vote .vote-count-post {
+            border: 1px solid #ddd;
+            font-size: 0.7em;
+            padding: 3px;
+            color: #ccc;
+        }
+
+    body.stackoverflow_com #answers ul.comments-list {
+        padding-left: 70px;
+        padding-top: 20px;
+    }
+
+        body.stackoverflow_com #answers ul.comments-list li.comment .comment-body {
+            font-size: 0.8em;
+        }
+
+        body.stackoverflow_com #answers ul.comments-list li.comment .comment-date {
+            font-size: 0.7em;
+            color: #ccc;
+            font-style: normal;
+        }
+
+    body.stackoverflow_com #answers .answer,
+    body.stackoverflow_com #answers .accepted-answer {
+        border-bottom: 1px solid #555;
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+    }
+
+/*github.com*/
+
+body.github_com .file-navigation, body.github_com .pagehead-actions, body.github_com .gist-banner, body.github_com .js-permalink-shortcut, body.github_com .commit-tease, body.github_com .repository-lang-stats-graph, body.github_com .pagehead-actions {
+    display: none;
+}
+
+body.github_com ul.numbers-summary li {
+    float: left;
+    margin-right: 30px;
+    width: auto;
+    clear: none;
+    padding-top: 15px;
+}
+
+/*docs.microsoft.com*/
+
+body.docs_microsoft_com .content-header {
+    display: none;
+}
+body.docs_microsoft_com a[data-linktype="relative-path"] {
+    display:block;
+    width:100%;
+}

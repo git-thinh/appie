@@ -1,480 +1,1238 @@
-<html>
-<head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title></title>
-    <style type="text/css">
-        body {
-            padding: 20px 10px;
-            margin: 0;
-            font-size: 1.5em;
+<html><head><meta charset="utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge" /><title></title><style type="text/css">html * {
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    padding: 20px 10px;
+    margin: 0;
+    font-size: 1.5em;
+}
+
+h1 {
+    text-align: left;
+    clear: both;
+    padding-bottom: 30px;
+    padding-top: 10px;
+    font-size: 1.9em;
+    line-height: 1.1em;
+}
+
+
+h2, h3, h4, h5, h6 {
+    margin: 0px;
+    line-height: 1.1em;
+}
+
+h2, h3 {
+    padding: 15px 0;
+    font-size: 1.5em;
+}
+
+h4, h5, h6 {
+    padding: 20px 0 0 0;
+    font-size: 1.1em;
+}
+
+audio {
+    padding: 10px;
+    margin: 0px;
+}
+
+article {
+    display: inline-block;
+    width: 100%;
+    padding-bottom: 30px;
+}
+
+pre {
+    display: inline-block;
+    width: auto;
+    clear: both;
+    margin: 3px 0 7px 0;
+    background-color: #eff0f1; /*#fcc*/
+    padding: 7px 30px;
+    font-size: 0.7em;
+    line-height: 1.5em;
+    white-space: pre-wrap;
+    font-family: Consolas,Menlo,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New,monospace,sans-serif;
+}
+
+code {
+    padding: 1px 5px;
+    background-color: #eff0f1;
+    font-family: Consolas,Menlo,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New,monospace,sans-serif;
+}
+
+div {
+    line-height: 1.3em;
+}
+
+ul, ol {
+    clear: both;
+    display: inline-block;
+    margin: 0;
+    padding: 0 0 15px 40px;
+    min-width: 90%;
+}
+
+    ul li, ol li {
+        display: list-item;
+        width: 100%;
+        clear: both;
+        margin: 0;
+        padding: 0 0 5px 0;
+    }
+
+        ul li ul, ol li ol {
+            padding: 10px 40px;
         }
 
-        p {
-            line-height: 1.7em;
+        ul li div, ul li p, ul li span, ul li i {
+            font-style: normal;
+            font-size: 1em;
         }
-        
-        a {
-            text-decoration: none;
-        } 
 
-        img {
-            max-width: 20% !important;
+        ul li a {
+            font-weight: bold;
         }
-        p.box_img___ {
-            display:none;
-            text-align:right;
+
+p {
+    padding: 0;
+    margin: 0;
+    line-height: 1.7em;
+}
+
+a {
+    text-decoration: none;
+    font-weight: normal;
+    color: #07C;
+}
+
+    a:visited {
+        color: #005999;
+    }
+
+    a:hover {
+        color: blue;
+        text-decoration: underline;
+    }
+
+
+img {
+    max-width: 20% !important;
+}
+
+p.box_img___ {
+    display: none;
+    text-align: right;
+}
+
+    p.box_img___ img {
+    }
+
+/*stackoverflow.com*/
+
+body.stackoverflow .question .comments-list {
+    border-top: 3px solid #777;
+    margin-top: 30px;
+    padding-top: 30px;
+}
+
+body.stackoverflow .question .votecell {
+    display: none;
+}
+
+body.stackoverflow #answers {
+    border-top: 3px solid #000;
+    margin-top: 30px;
+    padding-top: 30px;
+    padding-left: 70px;
+}
+
+    body.stackoverflow #answers .pager-answers {
+        text-align: right;
+        padding-bottom: 15px;
+    }
+
+
+    body.stackoverflow #answers .vote {
+        text-align: right;
+    }
+
+        body.stackoverflow #answers .vote .vote-count-post {
+            border: 1px solid #ddd;
+            font-size: 0.7em;
+            padding: 3px;
+            color: #ccc;
         }
-        p.box_img___ img{
+
+    body.stackoverflow #answers ul.comments-list {
+        padding-left: 70px;
+        padding-top: 20px;
+    }
+
+        body.stackoverflow #answers ul.comments-list li.comment .comment-body {
+            font-size: 0.8em;
         }
-    </style> 
-</head>
-<body><a href="/">Pronuncian: American English Pronunciation</a></span>
-<span id="mobile-navigation-label"></span>
-<ul>
-<li class="">
-<label for="folder-toggle-56a3d15e2399a33c9bb6b5f7" class="folder-toggle-label">Lessons</label>
-<a href="/sounds/" class="">Sound Pronunciation</a>
-<a href="/introduction-to-linking/" class="">Intro to linking</a>
-<a href="/pitch-lessons/" class="">Pitch Lessons</a>
-<a href="/introduction-to-syllable-stress/" class="">Intro to syllable stress</a>
-<a href="/introduction-to-sentence-stress/" class="">Intro to Sentence Stress</a>
-<a href="/learning-bits/" class="">Learning bits</a>
-</li>
-<li class="">
-<a href="/podcasts/">Podcasts</a>
-</li>
-<li class="">
-<a href="/videos/">Videos</a>
-</li>
-<li class="">
-<a href="/books-products/">Books & Products</a>
-</li>
+
+        body.stackoverflow #answers ul.comments-list li.comment .comment-date {
+            font-size: 0.7em;
+            color: #ccc;
+            font-style: normal;
+        }
+
+    body.stackoverflow #answers .answer,
+    body.stackoverflow #answers .accepted-answer {
+        border-bottom: 1px solid #555;
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+    }
+
+/*github.com*/
+
+body.github .file-navigation, body.github .pagehead-actions, body.github .gist-banner, body.github .js-permalink-shortcut, body.github .commit-tease, body.github .repository-lang-stats-graph, body.github .pagehead-actions {
+    display: none;
+}
+
+body.github ul.numbers-summary li {
+    float: left;
+    margin-right: 30px;
+    width: auto;
+    clear: none;
+    padding-top: 15px;
+}
+
+/*docs.microsoft.com*/
+
+body.microsoft .content-header, body.microsoft #secondary #sidebar-widget-area {
+    display: none;
+}
+body.microsoft a[data-linktype="relative-path"] {
+    display: block;
+    width: 100%;
+}
+</style></head><body class=github>
+<a href="#start-of-content" tabindex="1" class="px-2 py-4 bg-blue text-white show-on-focus js-skip-to-content">Skip to content</a>
+<div id="js-pjax-loader-bar" class="pjax-loader-bar"><div class="progress"></div></div>
+<div class="container-lg d-flex px-3">
+<div class="d-flex flex-justify-between flex-items-center">
+<a class="header-logo-invertocat my-0" href="https://github.com/" aria-label="Homepage" data-ga-click="(Logged out) Header, go to homepage, icon:logo-wordmark">
+</a>
+</div>
+<div class="HeaderMenu HeaderMenu--bright d-flex flex-justify-between flex-auto">
+<ul class="d-flex list-style-none">
+<li class="ml-2">
+<a class="js-selected-navigation-item HeaderNavlink px-0 py-2 m-0" data-ga-click="Header, click, Nav menu - item:features" data-selected-links="/features /features/project-management /features/code-review /features/project-management /features/integrations /features" href="/features">
+Features
+</a>              </li>
+<li class="ml-4">
+<a class="js-selected-navigation-item HeaderNavlink px-0 py-2 m-0" data-ga-click="Header, click, Nav menu - item:business" data-selected-links="/business /business/security /business/customers /business" href="/business">
+Business
+</a>              </li>
+<li class="ml-4">
+<a class="js-selected-navigation-item HeaderNavlink px-0 py-2 m-0" data-ga-click="Header, click, Nav menu - item:explore" data-selected-links="/explore /trending /trending/developers /integrations /integrations/feature/code /integrations/feature/collaborate /integrations/feature/ship showcases showcases_search showcases_landing /explore" href="/explore">
+Explore
+</a>              </li>
+<li class="ml-4">
+<a class="js-selected-navigation-item HeaderNavlink px-0 py-2 m-0" data-ga-click="Header, click, Nav menu - item:marketplace" data-selected-links=" /marketplace" href="/marketplace">
+Marketplace
+</a>              </li>
+<li class="ml-4">
+<a class="js-selected-navigation-item HeaderNavlink px-0 py-2 m-0" data-ga-click="Header, click, Nav menu - item:pricing" data-selected-links="/pricing /pricing/developer /pricing/team /pricing/business-hosted /pricing/business-enterprise /pricing" href="/pricing">
+Pricing
+</a>              </li>
 </ul>
-<div id="canvas-wrapper">
-<div id="canvas">
-<div id="page-header-wrapper">
-<div id="page-header">
-<div id="navigation-top">
-<div class="horizontal-navigation-bar clear with-logo">
-<div id="banner-wrapper" data-content-field="site-title">
-<a href="/"><p class=box_img___><p class=box_img___><p class=box_img___><img id="banner" src="//static1.squarespace.com/static/56a3a52dcbced637feaca73c/t/56a679365a5668348972ed55/1525719655409/?format=1500w" alt="Pronuncian: American English Pronunciation" /></p></p></p></a>
-</div>
-<ul>
-<li aria-haspopup="true" class="folder-collection folder"><a href="#" onClick="return false;">Lessons</a><span class="delimiter">/</span><div class="subnav"><ul><li class="page-collection"><a href="/sounds/">Sound Pronunciation</a></li><li class="page-collection"><a href="/introduction-to-linking/">Intro to linking</a></li><li class="page-collection"><a href="/pitch-lessons/">Pitch Lessons</a></li><li class="page-collection"><a href="/introduction-to-syllable-stress/">Intro to syllable stress</a></li><li class="page-collection"><a href="/introduction-to-sentence-stress/">Intro to Sentence Stress</a></li><li class="blog-collection"><a href="/learning-bits/">Learning bits</a></li></ul></div></li>
-<li class="blog-collection"><a href="/podcasts/">Podcasts</a><span class="delimiter">/</span></li>
-<li class="page-collection"><a href="/videos/">Videos</a><span class="delimiter">/</span></li>
-<li class="products-collection"><a href="/books-products/">Books & Products</a><span class="delimiter">/</span></li>
-</ul>
-<div id="sqs-social" class="social-links sqs-svg-icon--list" data-content-field="connected-accounts">
-<a href="https://twitter.com/pronuncian" target="_blank" class="sqs-svg-icon--wrapper twitter">
-<div>
-</div>
-</a>
-<a href="http://www.facebook.com/pronuncian" target="_blank" class="sqs-svg-icon--wrapper facebook">
-<div>
-</div>
-</a>
-<a href="http://soundcloud.com/user-772841178" target="_blank" class="sqs-svg-icon--wrapper soundcloud">
-<div>
-</div>
-</a>
-<a href="https://www.youtube.com/channel/UCv4b_OcZBTmgXjPqnbULjLw" target="_blank" class="sqs-svg-icon--wrapper youtube">
-<div>
-</div>
-</a>
-<a href="https://www.linkedin.com/company/pronuncian-com" target="_blank" class="sqs-svg-icon--wrapper linkedin">
-<div>
-</div>
-</a>
-<a href="https://www.pinterest.com/pronuncian/" target="_blank" class="sqs-svg-icon--wrapper pinterest">
-<div>
-</div>
-</a>
-</div>
-</div>
-</div>
-<div id="banner-area-wrapper">
-<div id="banner-area">
-<div id="page-thumb" class="content-fill">
-<p class=box_img___><img data-src="https://static1.squarespace.com/static/56a3a52dcbced637feaca73c/t/57d2211a893fc0e555e34fab/1473388827955/th_sound.gif" data-image="https://static1.squarespace.com/static/56a3a52dcbced637feaca73c/t/57d2211a893fc0e555e34fab/1473388827955/th_sound.gif" data-image-dimensions="1000x1003" data-image-focal-point="0.5,0.5" alt="th_sound.gif"  /></p>
-</div>
-<div class="banner-overlay"></div>
-<div id="banner-wrapper" data-content-field="site-title">
-<a href="/" rel="bookmark">
-<p class=box_img___><p class=box_img___><p class=box_img___><img id="banner" src="//static1.squarespace.com/static/56a3a52dcbced637feaca73c/t/56a679365a5668348972ed55/1525719655409/?format=1500w" alt="Pronuncian: American English Pronunciation" /></p></p></p>
-</a>
-</div>
-<div id="page-title-wrapper" class="js-text-shrink" data-collection-id="56afce2c60b5e962e81a12d2" data-edit-main-image="Page Banner">
-<h1 id="page-title" class="page-title">How to pronounce the 'th sounds' /ð, θ/ in American English</h1>
-<div id="page-description" class="page-description"><p style="margin-left:0px; margin-right:0px">ESL: The 'voiced th' <strong>/ð/</strong> and 'unvoiced th' <strong>/θ/</strong> sounds are the only pair of English sounds that share a single, common spelling.  To pronounce the sounds, the tip of the tongue is placed behind the top front teeth. The friction occurs between the tip of the tongue and the top front teeth. </p></div>
-</div>
-</div>
-</div>
-<div id="navigation-bottom">
-<div class="horizontal-navigation-bar clear with-logo">
-<div id="banner-wrapper" data-content-field="site-title">
-<a href="/"><p class=box_img___><p class=box_img___><p class=box_img___><img id="banner" src="//static1.squarespace.com/static/56a3a52dcbced637feaca73c/t/56a679365a5668348972ed55/1525719655409/?format=1500w" alt="Pronuncian: American English Pronunciation" /></p></p></p></a>
-</div>
-<ul>
-<li aria-haspopup="true" class="folder-collection folder"><a href="#" onClick="return false;">Lessons</a><span class="delimiter">/</span><div class="subnav"><ul><li class="page-collection"><a href="/sounds/">Sound Pronunciation</a></li><li class="page-collection"><a href="/introduction-to-linking/">Intro to linking</a></li><li class="page-collection"><a href="/pitch-lessons/">Pitch Lessons</a></li><li class="page-collection"><a href="/introduction-to-syllable-stress/">Intro to syllable stress</a></li><li class="page-collection"><a href="/introduction-to-sentence-stress/">Intro to Sentence Stress</a></li><li class="blog-collection"><a href="/learning-bits/">Learning bits</a></li></ul></div></li>
-<li class="blog-collection"><a href="/podcasts/">Podcasts</a><span class="delimiter">/</span></li>
-<li class="page-collection"><a href="/videos/">Videos</a><span class="delimiter">/</span></li>
-<li class="products-collection"><a href="/books-products/">Books & Products</a><span class="delimiter">/</span></li>
-</ul>
-<div id="sqs-social" class="social-links sqs-svg-icon--list" data-content-field="connected-accounts">
-<a href="https://twitter.com/pronuncian" target="_blank" class="sqs-svg-icon--wrapper twitter">
-<div>
-</div>
-</a>
-<a href="http://www.facebook.com/pronuncian" target="_blank" class="sqs-svg-icon--wrapper facebook">
-<div>
-</div>
-</a>
-<a href="http://soundcloud.com/user-772841178" target="_blank" class="sqs-svg-icon--wrapper soundcloud">
-<div>
-</div>
-</a>
-<a href="https://www.youtube.com/channel/UCv4b_OcZBTmgXjPqnbULjLw" target="_blank" class="sqs-svg-icon--wrapper youtube">
-<div>
-</div>
-</a>
-<a href="https://www.linkedin.com/company/pronuncian-com" target="_blank" class="sqs-svg-icon--wrapper linkedin">
-<div>
-</div>
-</a>
-<a href="https://www.pinterest.com/pronuncian/" target="_blank" class="sqs-svg-icon--wrapper pinterest">
-<div>
-</div>
-</a>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div id="page-body-wrapper" class="one-sidebar">
-<div id="page-body">
-<div id="content-wrapper">
-<div id="content">
-<div id="page-body-header" class="extra-wrapper">
-<div class="sqs-layout sqs-grid-12 columns-12" data-layout-label="How to pronounce the 'th sounds' /ð, θ/ in American English Header Content" data-type="block-field" data-updated-on="1515108138865" id="page-header-56afce2c60b5e962e81a12d2"><div class="row sqs-row"><div class="col sqs-col-12 span-12"><div class="sqs-block image-block sqs-block-image" data-block-type="5" id="block-yui_3_17_2_32_1460659594939_7613"><div class="sqs-block-content">
-<div class="image-block-outer-wrapper layout-caption-hidden design-layout-inline">
-<div class="intrinsic" style="max-width:1456.0px;">
-<a href="/books-products" >
-<div style="padding-bottom:12.362637519836426%;" class="image-block-wrapper   has-aspect-ratio" data-description="" >
-<p class=box_img___><img class="thumb-image" alt="pronunciation-book.png" data-src="https://static1.squarespace.com/static/56a3a52dcbced637feaca73c/t/5711a59937013bc975782c08/1460774322897/pronunciation-book.png" data-image="https://static1.squarespace.com/static/56a3a52dcbced637feaca73c/t/5711a59937013bc975782c08/1460774322897/pronunciation-book.png" data-image-dimensions="1456x180" data-image-focal-point="0.5,0.5" data-load="false" data-image-id="5711a59937013bc975782c08" data-type="image" /></p>
-</div>
-</a>
-</div>
-</div>
-</div></div><div class="sqs-block html-block sqs-block-html" data-block-type="2" id="block-yui_3_17_2_41_1459705070012_12654"><div class="sqs-block-content"><p><a href="/introduction-to-fricatives">Introduction to Fricatives</a> > <strong>How to pronounce ’voiced and unvoiced th’ /ð,θ/</strong>><a href="/voiced-and-unvoiced-th-spellings"> Common ’voiced and unvoiced th’ spellings /θ, ð/</a> > <a href="/voiced-th">Practice pronouncing ’voiced th’ /ð/</a> > <a href="/unvoiced-th">Practice pronouncing ’unvoiced th’ /θ/</a></p><h1><strong>How to pronounce the voiced and unvoiced 'th sounds' </strong><strong>/ð,θ/</strong></h1></div></div></div></div></div>
-</div>
-<div class="main-content" data-content-field="main-content" data-collection-id="56afce2c60b5e962e81a12d2" data-edit-main-image="Page Banner">
-<div class="sqs-layout sqs-grid-12 columns-12" data-type="page" data-updated-on="1515108439862" id="page-56afce2c60b5e962e81a12d2"><div class="row sqs-row"><div class="col sqs-col-12 span-12"><div class="sqs-block image-block sqs-block-image sqs-col-6 span-6 float float-right" data-block-type="5" id="block-yui_3_17_2_18_1515105072008_9832"><div class="sqs-block-content">
-<div class="image-block-outer-wrapper layout-caption-below design-layout-inline">
-<div class="intrinsic" style="max-width:1000.0px;">
-<div style="padding-bottom:100.30000305175781%;" class="image-block-wrapper   has-aspect-ratio" data-description="<p>"Voiced and Unvoiced th sound' Illustration</p>" >
-<p class=box_img___><img class="thumb-image" alt=" "Voiced and Unvoiced th sound' Illustration " data-src="https://static1.squarespace.com/static/56a3a52dcbced637feaca73c/t/5a4eb6e3e4966b7a7629bbb2/1515108104221/th_sound.gif" data-image="https://static1.squarespace.com/static/56a3a52dcbced637feaca73c/t/5a4eb6e3e4966b7a7629bbb2/1515108104221/th_sound.gif" data-image-dimensions="1000x1003" data-image-focal-point="0.5,0.5" data-load="false" data-image-id="5a4eb6e3e4966b7a7629bbb2" data-type="image" /></p>
-</div>
-<div class="image-caption-wrapper">
-<div class="image-caption"><p>"Voiced and Unvoiced th sound' Illustration</p></div>
-</div>
-</div>
-</div>
-</div></div><div class="sqs-block html-block sqs-block-html" data-block-type="2" id="block-yui_3_17_2_18_1515105072008_9077"><div class="sqs-block-content"><p>The 'voiced th' <strong>/ð/</strong> and 'unvoiced th' <strong>/θ/</strong> sounds are the only pair of English sounds that share a single, common spelling. For that reason, the 'th sounds' are presented together in this ESL/ELL pronunciation lesson.</p><p>With the exception of being voiced or unvoiced, the <strong>/ð/</strong> and <strong>/θ/</strong> are nearly identical; the tip of the tongue is placed behind the top front teeth. The friction occurs between the tip of the tongue and the top front teeth. Subtle friction may also occur between the top of the front of the tongue and the tooth ridge. The lips are kept relaxed during the production of both 'th sounds.'</p><p>An alternative method of producing the 'th sounds' is to place the tip of the tongue between the top and bottom front teeth. While this method will produce the correct sound, it often creates difficulties transitioning to and from other sounds. This is because the tongue needs to be so much further forward when between the front teeth as compared to behind the top front teeth.</p><p>The 'th sounds' are continuous consonants, meaning that they should be capable of being held for a few seconds with even and smooth pronunciation for the entire duration. Because the sounds are fricatives, the majority of the sound comes from the friction of the air traveling through a small opening in the vocal tract.</p><h2><strong>Listen to the 'th sounds'</strong></h2></div></div><div class="row sqs-row"><div class="col sqs-col-6 span-6"><div class="sqs-block audio-block sqs-block-audio" data-block-type="41" id="block-2ecc26e175ed1a6e600f"><div class="sqs-block-content">
-<div
-class="sqs-audio-embed"
-data-url="http://static1.squarespace.com/static/56a3a52dcbced637feaca73c/t/56afd1ca22482e15b61c7450/1454363082955/voiced_th.mp3/original/voiced_th.mp3"
-data-mime-type=""
-data-title="voiced th"
-data-author=""
-data-show-download="false"
-data-design-style="legacy"
-data-duration-in-ms="0"
-data-color-theme="dark"
+<div class="d-flex">
+<div class="d-lg-flex flex-items-center mr-3">
+<div class="header-search scoped-search site-scoped-search js-site-search position-relative js-jump-to"
+role="search combobox"
+aria-owns="jump-to-results"
+aria-label="Search or jump to"
+aria-haspopup="listbox"
+aria-expanded="true"
 >
+<div class="position-relative">
 </div>
-</div></div><div class="sqs-block audio-block sqs-block-audio" data-block-type="41" id="block-yui_3_17_2_7_1454361440652_20951"><div class="sqs-block-content">
-<div
-class="sqs-audio-embed"
-data-url="http://static1.squarespace.com/static/56a3a52dcbced637feaca73c/t/56afd1ee22482e15b61c759c/1454363118963/unvoiced_th.mp3/original/unvoiced_th.mp3"
-data-mime-type=""
-data-title="unvoiced th"
-data-author=""
-data-show-download="false"
-data-design-style="legacy"
-data-duration-in-ms="0"
-data-color-theme="dark"
->
 </div>
-</div></div><div class="sqs-block html-block sqs-block-html" data-block-type="2" id="block-yui_3_17_2_18_1515105072008_42284"><div class="sqs-block-content"><h2><strong>Continue learning about the 'th sounds'</strong></h2></div></div><div class="sqs-block html-block sqs-block-html" data-block-type="2" id="block-yui_3_17_2_18_1515105072008_27057"><div class="sqs-block-content"><ul dir="ltr"><li>Learn the <a href="/voiced-and-unvoiced-th-spellings">common 'th sound' spellings</a></li><li><a href="/voiced-th">Practice the 'voiced th' </a><strong><a href="/voiced-th">/ð/</a> </strong>and<a href="/unvoiced-th"> 'unvoiced th' </a><strong><a href="/unvoiced-th">/θ/</a> </strong>with these listen and repeat words.</li></ul></div></div></div><div class="col sqs-col-6 span-6"><div class="sqs-block image-block sqs-block-image" data-block-type="5" id="block-yui_3_17_2_4_1473375162685_7464"><div class="sqs-block-content">
-<div class="image-block-outer-wrapper layout-caption-below design-layout-inline">
-<div class="intrinsic" style="max-width:800.0px;">
-<a href="/books-products" >
-<div style="padding-bottom:95.25%;" class="image-block-wrapper   has-aspect-ratio" data-description="<p>the description for the th sounds and all the other sounds of english is in <a href="/books-products">Pronunciation Pages!</a></p>" >
-<p class=box_img___><img class="thumb-image" alt=" the description for the th sounds and all the other sounds of english is in  Pronunciation Pages!  " data-src="https://static1.squarespace.com/static/56a3a52dcbced637feaca73c/t/57d22164893fc0e555e3521d/1473388920209/" data-image="https://static1.squarespace.com/static/56a3a52dcbced637feaca73c/t/57d22164893fc0e555e3521d/1473388920209/" data-image-dimensions="800x762" data-image-focal-point="0.5,0.5" data-load="false" data-image-id="57d22164893fc0e555e3521d" data-type="image" /></p>
 </div>
+<span class="d-inline-block">
+<div class="HeaderNavlink px-0 py-2 m-0">
+<a class="text-bold text-white no-underline" href="/login?return_to=%2Fneuecc%2FCloudStructures" data-ga-click="(Logged out) Header, clicked Sign in, text:sign-in">Sign in</a>
+<span class="text-gray">or</span>
+<a class="text-bold text-white no-underline" href="/join?source=header-repo" data-ga-click="(Logged out) Header, clicked Sign up, text:sign-up">Sign up</a>
+</div>
+</span>
+</div>
+</div>
+</div>
+</div>
+<div id="start-of-content" class="show-on-focus"></div>
+<div id="js-flash-container">
+</div>
+<div role="main" class="application-main ">
+<div itemscope itemtype="http://schema.org/SoftwareSourceCode" class="">
+<div id="js-repo-pjax-container" data-pjax-container >
+<div class="pagehead repohead instapaper_ignore readability-menu experiment-repo-nav  ">
+<div class="repohead-details-container clearfix container">
+<ul class="pagehead-actions">
+<li>
+<a href="/login?return_to=%2Fneuecc%2FCloudStructures"
+class="btn btn-sm btn-with-count tooltipped tooltipped-n"
+aria-label="You must be signed in to watch a repository" rel="nofollow">
+Watch
 </a>
-<div class="image-caption-wrapper">
-<div class="image-caption"><p>the description for the th sounds and all the other sounds of english is in <a href="/books-products">Pronunciation Pages!</a></p></div>
-</div>
-</div>
-</div>
-</div></div></div></div></div></div></div>
-</div>
-<div id="page-body-footer" class="extra-wrapper">
-<div class="sqs-layout sqs-grid-12 columns-12 empty" data-layout-label="How to pronounce the 'th sounds' /ð, θ/ in American English Footer Content" data-type="block-field" id="page-footer-56afce2c60b5e962e81a12d2"><div class="row sqs-row"><div class="col sqs-col-12 span-12"></div></div></div>
-</div>
-</div>
-</div>
-<div id="sidebar-one-wrapper" class="vertical-navigation-bar-wrapper">
-<div id="sidebar-one" class="vertical-navigation-bar">
-<ul>
-<li aria-haspopup="true" class="folder-collection folder"><a href="#" onClick="return false;">Lessons</a><span class="delimiter">/</span><div class="subnav"><ul><li class="page-collection"><a href="/sounds/">Sound Pronunciation</a></li><li class="page-collection"><a href="/introduction-to-linking/">Intro to linking</a></li><li class="page-collection"><a href="/pitch-lessons/">Pitch Lessons</a></li><li class="page-collection"><a href="/introduction-to-syllable-stress/">Intro to syllable stress</a></li><li class="page-collection"><a href="/introduction-to-sentence-stress/">Intro to Sentence Stress</a></li><li class="blog-collection"><a href="/learning-bits/">Learning bits</a></li></ul></div></li>
-<li class="blog-collection"><a href="/podcasts/">Podcasts</a><span class="delimiter">/</span></li>
-<li class="page-collection"><a href="/videos/">Videos</a><span class="delimiter">/</span></li>
-<li class="products-collection"><a href="/books-products/">Books & Products</a><span class="delimiter">/</span></li>
+<a class="social-count" href="/neuecc/CloudStructures/watchers"
+aria-label="18 users are watching this repository">
+18
+</a>
+</li>
+<li>
+<a href="/login?return_to=%2Fneuecc%2FCloudStructures"
+class="btn btn-sm btn-with-count tooltipped tooltipped-n"
+aria-label="You must be signed in to star a repository" rel="nofollow">
+Star
+</a>
+<a class="social-count js-social-count" href="/neuecc/CloudStructures/stargazers"
+aria-label="66 users starred this repository">
+66
+</a>
+</li>
+<li>
+<a href="/login?return_to=%2Fneuecc%2FCloudStructures"
+class="btn btn-sm btn-with-count tooltipped tooltipped-n"
+aria-label="You must be signed in to fork a repository" rel="nofollow">
+Fork
+</a>
+<a href="/neuecc/CloudStructures/network" class="social-count"
+aria-label="22 users forked this repository">
+22
+</a>
+</li>
 </ul>
-<div class="site-info">
-<h3 class="site-title">Pronuncian: American English Pronunciation</h3>
-<div class="site-description"><p>Learn and practice American English pronunciation with free online lessons and videos. Minimal pairs and listen-and repeat practice helps English Language Learners speak English more fluently and achieve accent reduction.</p></div>
+<h1 class="public ">
+<span class="author" itemprop="author"><a class="url fn" rel="author" href="/neuecc">neuecc</a></span><span class="path-divider">/</span><strong itemprop="name"><a data-pjax="#js-repo-pjax-container" href="/neuecc/CloudStructures">CloudStructures</a></strong>
+</h1>
 </div>
-<div class="sqs-layout sqs-grid-1 columns-1" data-layout-label="Sidebar One Content" data-type="block-field" data-updated-on="1515024741358" id="sidebar-one-blocks"><div class="row sqs-row"><div class="col sqs-col-1 span-1"><div class="sqs-block donation-block sqs-block-donation" data-block-type="52" id="block-yui_3_17_2_22_1472154212174_9552"><div class="sqs-block-content">
-<div class="sqs-donate-button-wrapper sqs-donate-button-wrapper--align-center">
-<div class="sqs-donate-button sqs-suppress-edit-mode sqs-system-button sqs-editable-button" data-donate-page-id="57c1dad4725e258e4bdf9613">Donate</div>
-</div>
-</div></div><div class="sqs-block search-block sqs-block-search" data-block-type="33" id="block-yui_3_17_2_5_1453578599472_9166"><div class="sqs-block-content"><div class="sqs-search-ui-text-input sqs-search-ui-button-wrapper color-dark" data-source="block" data-preview="true" data-collection="">
-<div class="spinner-wrapper"></div>
-</div>
-</div></div><div class="sqs-block image-block sqs-block-image" data-block-type="5" id="block-yui_3_17_2_3_1496945577778_7144"><div class="sqs-block-content">
-<div class="image-block-outer-wrapper layout-caption-hidden design-layout-inline">
-<div class="intrinsic" style="max-width:2392.0px;">
-<div style="padding-bottom:128.3026885986328%;" class="image-block-wrapper   has-aspect-ratio" data-description="<p>Free English Pronunciation Guide</p>" >
-<p class=box_img___><img class="thumb-image" alt=" Free English Pronunciation Guide " data-src="https://static1.squarespace.com/static/56a3a52dcbced637feaca73c/t/5939949e17bffc830207a04b/1496945879730/" data-image="https://static1.squarespace.com/static/56a3a52dcbced637feaca73c/t/5939949e17bffc830207a04b/1496945879730/" data-image-dimensions="2392x3069" data-image-focal-point="0.5,0.5" data-load="false" data-image-id="5939949e17bffc830207a04b" data-type="image" /></p>
-</div>
-</div>
-</div>
-</div></div><div class="sqs-block newsletter-block sqs-block-newsletter" data-block-type="51" id="block-yui_3_17_2_3_1490402390876_26512"><div class="sqs-block-content">
-<div class="newsletter-form-wrapper newsletter-form-show-name newsletter-form-wrapper--layoutFloat newsletter-form-wrapper--alignCenter" >
-<h2 class="newsletter-form-header-title">Get our FREE A-Z Pronunciation Guide now!</h2>
-<div class="newsletter-form-header-description"><p>Sign up with your email address to download the guide for FREE and receive our news and updates.</p></div>
-<div class="newsletter-form-body">
-<div class="newsletter-form-fields-wrapper form-fields">
-<div class="newsletter-form-field-wrapper field first-name">
-<label class="newsletter-form-field-label title">First Name</label>
-</div>
-<div class="newsletter-form-field-wrapper field last-name">
-<label class="newsletter-form-field-label title">Last Name</label>
-</div>
-<div id="email-yui_3_17_2_3_1490402390876_26519" class="newsletter-form-field-wrapper form-item field email required">
-<label class="newsletter-form-field-label title" for="email-yui_3_17_2_3_1490402390876_26519-field">Email Address</label>
-</div>
-</div>
-<div class="newsletter-form-button-wrapper submit-wrapper">
-<span class="newsletter-form-spinner sqs-spin light large"></span><span class="newsletter-form-button-label">Sign Up</span><span class="newsletter-form-button-icon"></span>
-</div>
-</div>
-<div class="newsletter-form-footnote"><p>We respect your privacy.</p></div>
-<div class="hidden form-submission-text">Thank you!</div>
-<div class="hidden form-submission-html" data-submission-html=""></div>
-</div>
-</div></div><div class="sqs-block code-block sqs-block-code" data-block-type="23" id="block-yui_3_17_2_142_1454108196291_12689"><div class="sqs-block-content"><center>
-</center></div></div></div></div></div>
-</div>
-</div>
-<div class="clearer" id="body-clearer"></div>
-</div>
-</div>
-<div id="page-footer-wrapper">
-<div id="page-footer">
-<div id="sqs-social"class="social-links sqs-svg-icon--list" data-content-field="connected-accounts">
-<a href="https://twitter.com/pronuncian" target="_blank" class="sqs-svg-icon--wrapper twitter">
-<div>
-</div>
+<span itemscope itemtype="http://schema.org/ListItem" itemprop="itemListElement">
+<a class="js-selected-navigation-item selected reponav-item" itemprop="url" data-hotkey="g c" data-selected-links="repo_source repo_downloads repo_commits repo_releases repo_tags repo_branches repo_packages /neuecc/CloudStructures" href="/neuecc/CloudStructures">
+<span itemprop="name">Code</span>
+</a>  </span>
+<span itemscope itemtype="http://schema.org/ListItem" itemprop="itemListElement">
+<a itemprop="url" data-hotkey="g i" class="js-selected-navigation-item reponav-item" data-selected-links="repo_issues repo_labels repo_milestones /neuecc/CloudStructures/issues" href="/neuecc/CloudStructures/issues">
+<span itemprop="name">Issues</span>
+<span class="Counter">9</span>
+</a>    </span>
+<span itemscope itemtype="http://schema.org/ListItem" itemprop="itemListElement">
+<a data-hotkey="g p" itemprop="url" class="js-selected-navigation-item reponav-item" data-selected-links="repo_pulls checks /neuecc/CloudStructures/pulls" href="/neuecc/CloudStructures/pulls">
+<span itemprop="name">Pull requests</span>
+<span class="Counter">1</span>
+</a>  </span>
+<a data-hotkey="g b" class="js-selected-navigation-item reponav-item" data-selected-links="repo_projects new_repo_project repo_project /neuecc/CloudStructures/projects" href="/neuecc/CloudStructures/projects">
+Projects
+<span class="Counter" >0</span>
 </a>
-<a href="http://www.facebook.com/pronuncian" target="_blank" class="sqs-svg-icon--wrapper facebook">
-<div>
-</div>
-</a>
-<a href="http://soundcloud.com/user-772841178" target="_blank" class="sqs-svg-icon--wrapper soundcloud">
-<div>
-</div>
-</a>
-<a href="https://www.youtube.com/channel/UCv4b_OcZBTmgXjPqnbULjLw" target="_blank" class="sqs-svg-icon--wrapper youtube">
-<div>
-</div>
-</a>
-<a href="https://www.linkedin.com/company/pronuncian-com" target="_blank" class="sqs-svg-icon--wrapper linkedin">
-<div>
-</div>
-</a>
-<a href="https://www.pinterest.com/pronuncian/" target="_blank" class="sqs-svg-icon--wrapper pinterest">
-<div>
-</div>
+<a class="js-selected-navigation-item reponav-item" data-selected-links="repo_graphs repo_contributors dependency_graph pulse /neuecc/CloudStructures/pulse" href="/neuecc/CloudStructures/pulse">
+Insights
 </a>
 </div>
-<div class="sqs-layout sqs-grid-12 columns-12" data-layout-label="Footer Content" data-type="block-field" data-updated-on="1473450202627" id="footer-blocks"><div class="row sqs-row"><div class="col sqs-col-12 span-12"><div class="sqs-block code-block sqs-block-code" data-block-type="23" id="block-yui_3_17_2_3_1473450006383_5874"><div class="sqs-block-content">
-</div></div><div class="sqs-block code-block sqs-block-code" data-block-type="23" id="block-yui_3_17_2_36_1461954236033_19461"><div class="sqs-block-content"><p>Copyright Seattle Learning Academy 2007-2016 •
-• <a href="/legal">Legal</a>
-</p></div></div><div class="sqs-block socialaccountlinks-v2-block sqs-block-socialaccountlinks-v2" data-block-type="54" id="block-yui_3_17_2_1_1412172079418_4944"><div class="sqs-block-content">
-<div class="sqs-svg-icon--outer social-icon-alignment-center social-icons-color-standard social-icons-size-large social-icons-style-regular " >
-<a href="https://twitter.com/pronuncian" target="_blank" class="sqs-svg-icon--wrapper twitter">
-<div>
+<div class="container new-discussion-timeline experiment-repo-nav  ">
+<div class="repository-content ">
+<div class="signup-prompt-bg rounded-1">
+<div class="signup-prompt p-4 text-center mb-4 rounded-1">
+<div class="position-relative">
+<h3 class="pt-2">Join GitHub today</h3>
+<p class="col-6 mx-auto">GitHub is home to over 28 million developers working together to host and review code, manage projects, and build software together.</p>
+<a class="btn btn-primary" href="/join?source=prompt-code" data-ga-click="(Logged out) Sign up prompt, clicked Sign up, text:sign-up">Sign up</a>
 </div>
-</a><a href="http://www.facebook.com/pronuncian" target="_blank" class="sqs-svg-icon--wrapper facebook">
-<div>
 </div>
-</a><a href="http://soundcloud.com/user-772841178" target="_blank" class="sqs-svg-icon--wrapper soundcloud">
-<div>
 </div>
-</a><a href="https://www.youtube.com/channel/UCv4b_OcZBTmgXjPqnbULjLw" target="_blank" class="sqs-svg-icon--wrapper youtube">
-<div>
+<div class="js-repo-meta-container">
+<div class="repository-meta mb-0  js-repo-meta-edit js-details-container ">
+<div class="repository-meta-content col-11 mb-1">
+<span class="col-11 text-gray-dark mr-2" itemprop="about">
+Redis Client based on StackExchange.Redis.
+</span>
 </div>
-</a><a href="https://www.linkedin.com/company/pronuncian-com" target="_blank" class="sqs-svg-icon--wrapper linkedin">
-<div>
 </div>
-</a><a href="https://www.pinterest.com/pronuncian/" target="_blank" class="sqs-svg-icon--wrapper pinterest">
-<div>
-</div>
+<div class="mb-3 repository-topics-container js-repository-topics-container js-details-container">
+<div id="topics-list-container" data-url="/neuecc/CloudStructures/settings/topics">
+<div class="list-topics-container f6 mt-1">
+<a href="/topics/c-sharp" class="topic-tag topic-tag-link" data-ga-click="Topic, repository page" data-octo-click="topic_click" data-octo-dimensions="topic:c-sharp">
+c-sharp
 </a>
-</div></div></div></div></div></div>
+<a href="/topics/redis-client" class="topic-tag topic-tag-link" data-ga-click="Topic, repository page" data-octo-click="topic_click" data-octo-dimensions="topic:redis-client">
+redis-client
+</a>
+<a href="/topics/redis" class="topic-tag topic-tag-link" data-ga-click="Topic, repository page" data-octo-click="topic_click" data-octo-dimensions="topic:redis">
+redis
+</a>
 </div>
 </div>
 </div>
 </div>
-</body>
-</html>
-<script type="text/javascript">
-    
-    var htm;
-    findMain(document.body.childNodes, 0);
-    //console.log('OK: ', htm == null ? 'NULL -> find H1' : htm.length);
-    if (htm == null) findH1();
-    if (htm == null) {
-        //console.log('FAILLL: ');
-        cleanHtml(document.getElementsByTagName('*'));
-    } else document.body.innerHTML = htm;
+<div class="overall-summary overall-summary-bottomless">
+<div class="stats-switcher-viewport js-stats-switcher-viewport">
+<div class="stats-switcher-wrapper">
+<ul class="numbers-summary">
+<li class="commits">
+<a data-pjax href="/neuecc/CloudStructures/commits/master">
+<span class="num text-emphasized">
+119
+</span>
+commits
+</a>
+</li>
+<li>
+<a data-pjax href="/neuecc/CloudStructures/branches">
+<span class="num text-emphasized">
+2
+</span>
+branches
+</a>
+</li>
+<li>
+<a href="/neuecc/CloudStructures/releases">
+<span class="num text-emphasized">
+4
+</span>
+releases
+</a>
+</li>
+<li>
+<a href="/neuecc/CloudStructures/graphs/contributors">
+<span class="num text-emphasized">
+2
+</span>
+contributors
+</a>
+</li>
+</ul>
+<div class="repository-lang-stats">
+<ol class="repository-lang-stats-numbers">
+<li>
+<a href="/neuecc/CloudStructures/search?l=c%23"  data-ga-click="Repository, language stats search click, location:repo overview">
+<span class="color-block language-color" style="background-color:#178600;"></span>
+<span class="lang">C#</span>
+<span class="percent">82.2%</span>
+</a>
+</li>
+<li>
+<a href="/neuecc/CloudStructures/search?l=html"  data-ga-click="Repository, language stats search click, location:repo overview">
+<span class="color-block language-color" style="background-color:#e34c26;"></span>
+<span class="lang">HTML</span>
+<span class="percent">17.8%</span>
+</a>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div class="repository-lang-stats-graph js-toggle-lang-stats" title="Click for language details" data-ga-click="Repository, language bar stats toggle, location:repo overview">
+<span class="language-color" aria-label="C# 82.2%" style="width:82.2%; background-color:#178600;" itemprop="keywords">C#</span>
+<span class="language-color" aria-label="HTML 17.8%" style="width:17.8%; background-color:#e34c26;" itemprop="keywords">HTML</span>
+</div>
+<div class="file-navigation in-mid-page d-flex flex-items-start">
+<div class="select-menu branch-select-menu js-menu-container js-select-menu float-left">
+<i>Branch:</i>
+<span class="js-select-button css-truncate-target">master</span>
+<div class="select-menu-modal-holder js-menu-content js-navigation-container" data-pjax>
+<div class="select-menu-modal">
+<div class="select-menu-header">
+<span class="select-menu-title">Switch branches/tags</span>
+</div>
+<div class="select-menu-filters">
+<div class="select-menu-text-filter">
+</div>
+<div class="select-menu-tabs">
+<ul>
+<li class="select-menu-tab">
+<a href="#" data-tab-filter="branches" data-filter-placeholder="Filter branches/tags" class="js-select-menu-tab" role="tab">Branches</a>
+</li>
+<li class="select-menu-tab">
+<a href="#" data-tab-filter="tags" data-filter-placeholder="Find a tag…" class="js-select-menu-tab" role="tab">Tags</a>
+</li>
+</ul>
+</div>
+</div>
+<div class="select-menu-list select-menu-tab-bucket js-select-menu-tab-bucket" data-tab-filter="branches" role="menu">
+<div data-filterable-for="context-commitish-filter-field" data-filterable-type="substring">
+<a class="select-menu-item js-navigation-item js-navigation-open "
+href="/neuecc/CloudStructures/tree/JSONdotNet"
+data-name="JSONdotNet"
+data-skip-pjax="true"
+rel="nofollow">
+<span class="select-menu-item-text css-truncate-target js-select-menu-filter-text">
+JSONdotNet
+</span>
+</a>
+<a class="select-menu-item js-navigation-item js-navigation-open selected"
+href="/neuecc/CloudStructures/tree/master"
+data-name="master"
+data-skip-pjax="true"
+rel="nofollow">
+<span class="select-menu-item-text css-truncate-target js-select-menu-filter-text">
+master
+</span>
+</a>
+</div>
+<div class="select-menu-no-results">Nothing to show</div>
+</div>
+<div class="select-menu-list select-menu-tab-bucket js-select-menu-tab-bucket" data-tab-filter="tags">
+<div data-filterable-for="context-commitish-filter-field" data-filterable-type="substring">
+<a class="select-menu-item js-navigation-item js-navigation-open "
+href="/neuecc/CloudStructures/tree/1.2.0"
+data-name="1.2.0"
+data-skip-pjax="true"
+rel="nofollow">
+<span class="select-menu-item-text css-truncate-target" title="1.2.0">
+1.2.0
+</span>
+</a>
+<a class="select-menu-item js-navigation-item js-navigation-open "
+href="/neuecc/CloudStructures/tree/1.1.0"
+data-name="1.1.0"
+data-skip-pjax="true"
+rel="nofollow">
+<span class="select-menu-item-text css-truncate-target" title="1.1.0">
+1.1.0
+</span>
+</a>
+<a class="select-menu-item js-navigation-item js-navigation-open "
+href="/neuecc/CloudStructures/tree/1.0.0"
+data-name="1.0.0"
+data-skip-pjax="true"
+rel="nofollow">
+<span class="select-menu-item-text css-truncate-target" title="1.0.0">
+1.0.0
+</span>
+</a>
+<a class="select-menu-item js-navigation-item js-navigation-open "
+href="/neuecc/CloudStructures/tree/0.1.0"
+data-name="0.1.0"
+data-skip-pjax="true"
+rel="nofollow">
+<span class="select-menu-item-text css-truncate-target" title="0.1.0">
+0.1.0
+</span>
+</a>
+</div>
+<div class="select-menu-no-results">Nothing to show</div>
+</div>
+</div>
+</div>
+</div>
+New pull request
+<div class="breadcrumb flex-auto">
+</div>
+<div class="BtnGroup">
+<a href="/neuecc/CloudStructures/find/master"
+class="btn btn-sm empty-icon float-right BtnGroup-item"
+data-pjax
+data-hotkey="t"
+data-ga-click="Repository, find file, location:repo overview">
+Find file
+</a>
+</div>
+<details class="get-repo-select-menu js-get-repo-select-menu position-relative details-overlay details-reset">
+<summary class="btn btn-sm btn-primary">
+Clone or download
+<span class="dropdown-caret"></span>
+</summary>
+<div class="position-relative">
+<div class="get-repo-modal dropdown-menu dropdown-menu-sw pb-0 js-toggler-container  js-get-repo-modal">
+<div class="get-repo-modal-options">
+<div class="clone-options https-clone-options">
+<h4 class="mb-1">
+Clone with HTTPS
+<a class="muted-link" href="https://help.github.com/articles/which-remote-url-should-i-use" target="_blank" title="Which remote URL should I use?">
+</a>
+</h4>
+<p class="mb-2 get-repo-decription-text">
+Use Git or checkout with SVN using the web URL.
+</p>
+<div class="input-group">
+<div class="input-group-button">
+<clipboard-copy value="https://github.com/neuecc/CloudStructures.git" aria-label="Copy to clipboard" class="btn btn-sm">
+</clipboard-copy>
+</div>
+</div>
+</div>
+<div class="mt-2">
+<a href="https://desktop.github.com" class="btn btn-outline get-repo-btn tooltipped tooltipped-s tooltipped-multiline js-get-repo" data-open-app="windows" aria-label="Clone neuecc/CloudStructures to your computer and use it in GitHub Desktop.">
+Open in Desktop
+</a>
+<a href="/neuecc/CloudStructures/archive/master.zip"
+class="btn btn-outline get-repo-btn
+"
+rel="nofollow"
+data-ga-click="Repository, download zip, location:repo overview">
+Download ZIP
+</a>
+</div>
+</div>
+<div class="js-modal-download-mac py-2 px-3 d-none">
+<h4 class="lh-condensed mb-3">Launching GitHub Desktop<span class="animated-ellipsis-container"><span class="animated-ellipsis">...</span></span></h4>
+<p class="text-gray">If nothing happens, <a href="https://desktop.github.com/">download GitHub Desktop</a> and try again.</p>
+<p>Go back</p>
+</div>
+<div class="js-modal-download-windows py-2 px-3 d-none">
+<h4 class="lh-condensed mb-3">Launching GitHub Desktop<span class="animated-ellipsis-container"><span class="animated-ellipsis">...</span></span></h4>
+<p class="text-gray">If nothing happens, <a href="https://desktop.github.com/">download GitHub Desktop</a> and try again.</p>
+<p>Go back</p>
+</div>
+<div class="js-modal-download-xcode py-2 px-3 d-none">
+<h4 class="lh-condensed mb-3">Launching Xcode<span class="animated-ellipsis-container"><span class="animated-ellipsis">...</span></span></h4>
+<p class="text-gray">If nothing happens, <a href="https://developer.apple.com/xcode/">download Xcode</a> and try again.</p>
+<p>Go back</p>
+</div>
+<div class="js-modal-download-visual-studio py-2 px-3 d-none">
+<h4 class="lh-condensed mb-3">Launching Visual Studio<span class="animated-ellipsis-container"><span class="animated-ellipsis">...</span></span></h4>
+<p class="text-gray">If nothing happens, <a href="https://visualstudio.github.com/">download the GitHub extension for Visual Studio</a> and try again.</p>
+<p>Go back</p>
+</div>
+</div>
+</div>
+</details>
+</div>
+<div class="commit-tease js-details-container Details d-flex">
+<div class="AvatarStack flex-self-start ">
+<div class="AvatarStack-body" aria-label="neuecc">
+<a class="avatar" data-skip-pjax="true" data-hovercard-user-id="46207" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="/neuecc">
+<img height="20" width="20" alt="@neuecc" src="https://avatars2.githubusercontent.com/u/46207?s=60&v=4" />
+</a>  </div>
+</div>
+<div class="flex-auto f6 no-wrap mr-3">
+<a href="/neuecc/CloudStructures/commits?author=neuecc"
+class="commit-author tooltipped tooltipped-s user-mention"
+aria-label="View all commits by neuecc">neuecc</a>
+<a data-pjax="true" title="remove connection retry code" class="message" href="/neuecc/CloudStructures/commit/6fc9887f2b4651dcd158c708fd0e442729189f9a">remove connection retry code</a>
+</div>
+<div class="no-wrap">
+Latest commit
+<a class="commit-tease-sha" href="/neuecc/CloudStructures/commit/6fc9887f2b4651dcd158c708fd0e442729189f9a" data-pjax>
+6fc9887
+</a>
+<span itemprop="dateModified"><relative-time datetime="2017-04-14T15:54:32Z">Apr 14, 2017</relative-time></span>
+</div>
+</div>
+<div class="file-wrap">
+<a class="d-none js-permalink-shortcut" data-hotkey="y" href="/neuecc/CloudStructures/tree/6fc9887f2b4651dcd158c708fd0e442729189f9a">Permalink</a>
+<table class="files js-navigation-container js-active-navigation-container" data-pjax>
+<tbody>
+<tr class="warning include-fragment-error">
+<td class="icon"></td>
+<td class="content" colspan="3">Failed to load latest commit information.</td>
+</tr>
+<tr class="js-navigation-item">
+<td class="icon">
+<img width="16" height="16" class="spinner" alt="" src="https://assets-cdn.github.com/images/spinners/octocat-spinner-32.gif" />
+</td>
+<td class="content">
+<span class="css-truncate css-truncate-target"><a class="js-navigation-open" title=".nuget" id="3ce4907e9cfb8bdf6d2f0d8f9d816070-e308ab95a4517f66732abd4e9d62ef5dc3b24f01" href="/neuecc/CloudStructures/tree/master/.nuget">.nuget</a></span>
+</td>
+<td class="message">
+<span class="css-truncate css-truncate-target">
+<a data-pjax="true" title="create Demo.Mvc and some fixes" class="message" href="/neuecc/CloudStructures/commit/b74d416fd756b686565049afb9db584380194366">create Demo.Mvc and some fixes</a>
+</span>
+</td>
+<td class="age">
+<span class="css-truncate css-truncate-target"><time-ago datetime="2013-11-13T10:56:26Z">Nov 13, 2013</time-ago></span>
+</td>
+</tr>
+<tr class="js-navigation-item">
+<td class="icon">
+<img width="16" height="16" class="spinner" alt="" src="https://assets-cdn.github.com/images/spinners/octocat-spinner-32.gif" />
+</td>
+<td class="content">
+<span class="css-truncate css-truncate-target"><a class="js-navigation-open" title="This path skips through empty directories" id="baa19d2c16e4d098f5bd816c14b16b2c-c476b1c8083d686f8d610ae940777003353cff40" href="/neuecc/CloudStructures/tree/master/.vs/config"><span class="simplified-path">.vs/</span>config</a></span>
+</td>
+<td class="message">
+<span class="css-truncate css-truncate-target">
+<a data-pjax="true" title="Update StackExchange.Redis from 1.0.450 to 1.0.481" class="message" href="/neuecc/CloudStructures/commit/ed519ea5bc8d3dc43057b7d2dc2b697c8216b921">Update StackExchange.Redis from 1.0.450 to 1.0.481</a>
+</span>
+</td>
+<td class="age">
+<span class="css-truncate css-truncate-target"><time-ago datetime="2015-10-09T08:23:15Z">Oct 9, 2015</time-ago></span>
+</td>
+</tr>
+<tr class="js-navigation-item">
+<td class="icon">
+<img width="16" height="16" class="spinner" alt="" src="https://assets-cdn.github.com/images/spinners/octocat-spinner-32.gif" />
+</td>
+<td class="content">
+<span class="css-truncate css-truncate-target"><a class="js-navigation-open" title="CloudStructures.Demo.Mvc" id="544a36b193a023a0c1e44e43483913ab-55bbe3b27092d07583d25deb09659916d3b991ee" href="/neuecc/CloudStructures/tree/master/CloudStructures.Demo.Mvc">CloudStructures.Demo.Mvc</a></span>
+</td>
+<td class="message">
+<span class="css-truncate css-truncate-target">
+<a data-pjax="true" title="Update StackExchange.Redis from 1.0.450 to 1.0.481" class="message" href="/neuecc/CloudStructures/commit/ed519ea5bc8d3dc43057b7d2dc2b697c8216b921">Update StackExchange.Redis from 1.0.450 to 1.0.481</a>
+</span>
+</td>
+<td class="age">
+<span class="css-truncate css-truncate-target"><time-ago datetime="2015-10-09T08:23:15Z">Oct 9, 2015</time-ago></span>
+</td>
+</tr>
+<tr class="js-navigation-item">
+<td class="icon">
+<img width="16" height="16" class="spinner" alt="" src="https://assets-cdn.github.com/images/spinners/octocat-spinner-32.gif" />
+</td>
+<td class="content">
+<span class="css-truncate css-truncate-target"><a class="js-navigation-open" title="CloudStructures.LZ4" id="fe5c3bba24279cefcd9e31160860c53d-92d9def599e812d12c53d2fcd2d21a284e9255d9" href="/neuecc/CloudStructures/tree/master/CloudStructures.LZ4">CloudStructures.LZ4</a></span>
+</td>
+<td class="message">
+<span class="css-truncate css-truncate-target">
+<a data-pjax="true" title="ready for 1.2.0" class="message" href="/neuecc/CloudStructures/commit/02910310131826e854ecc9a8c57a346857b471cc">ready for 1.2.0</a>
+</span>
+</td>
+<td class="age">
+<span class="css-truncate css-truncate-target"><time-ago datetime="2015-10-09T08:32:06Z">Oct 9, 2015</time-ago></span>
+</td>
+</tr>
+<tr class="js-navigation-item">
+<td class="icon">
+<img width="16" height="16" class="spinner" alt="" src="https://assets-cdn.github.com/images/spinners/octocat-spinner-32.gif" />
+</td>
+<td class="content">
+<span class="css-truncate css-truncate-target"><a class="js-navigation-open" title="CloudStructures.Rx" id="9bc9c62ab86f16b1850adff583d89105-1258b0633834dd1019afaffae3e917102fc672ea" href="/neuecc/CloudStructures/tree/master/CloudStructures.Rx">CloudStructures.Rx</a></span>
+</td>
+<td class="message">
+<span class="css-truncate css-truncate-target">
+<a data-pjax="true" title="ready for 1.1.0" class="message" href="/neuecc/CloudStructures/commit/9857ab3c55709bcf49cc225a53292eecc29e586e">ready for 1.1.0</a>
+</span>
+</td>
+<td class="age">
+<span class="css-truncate css-truncate-target"><time-ago datetime="2015-05-26T02:59:16Z">May 26, 2015</time-ago></span>
+</td>
+</tr>
+<tr class="js-navigation-item">
+<td class="icon">
+<img width="16" height="16" class="spinner" alt="" src="https://assets-cdn.github.com/images/spinners/octocat-spinner-32.gif" />
+</td>
+<td class="content">
+<span class="css-truncate css-truncate-target"><a class="js-navigation-open" title="CloudStructures.Tests" id="c61c3d802ad1fa1c10a9669b8006cc10-99675eee04bc21b45ad6554bf3c408227a3b6570" href="/neuecc/CloudStructures/tree/master/CloudStructures.Tests">CloudStructures.Tests</a></span>
+</td>
+<td class="message">
+<span class="css-truncate css-truncate-target">
+<a data-pjax="true" title="Update StackExchange.Redis from 1.0.450 to 1.0.481" class="message" href="/neuecc/CloudStructures/commit/ed519ea5bc8d3dc43057b7d2dc2b697c8216b921">Update StackExchange.Redis from 1.0.450 to 1.0.481</a>
+</span>
+</td>
+<td class="age">
+<span class="css-truncate css-truncate-target"><time-ago datetime="2015-10-09T08:23:15Z">Oct 9, 2015</time-ago></span>
+</td>
+</tr>
+<tr class="js-navigation-item">
+<td class="icon">
+<img width="16" height="16" class="spinner" alt="" src="https://assets-cdn.github.com/images/spinners/octocat-spinner-32.gif" />
+</td>
+<td class="content">
+<span class="css-truncate css-truncate-target"><a class="js-navigation-open" title="CloudStructures" id="5c8db13db130601da56479c730c3cbf5-2eb7587cbf45cfd6faad8866bc6a1df465dcb46b" href="/neuecc/CloudStructures/tree/master/CloudStructures">CloudStructures</a></span>
+</td>
+<td class="message">
+<span class="css-truncate css-truncate-target">
+<a data-pjax="true" title="remove connection retry code" class="message" href="/neuecc/CloudStructures/commit/6fc9887f2b4651dcd158c708fd0e442729189f9a">remove connection retry code</a>
+</span>
+</td>
+<td class="age">
+<span class="css-truncate css-truncate-target"><time-ago datetime="2017-04-14T15:54:32Z">Apr 14, 2017</time-ago></span>
+</td>
+</tr>
+<tr class="js-navigation-item">
+<td class="icon">
+<img width="16" height="16" class="spinner" alt="" src="https://assets-cdn.github.com/images/spinners/octocat-spinner-32.gif" />
+</td>
+<td class="content">
+<span class="css-truncate css-truncate-target"><a class="js-navigation-open" title="Docs" id="a3907cd461d8739aa3266047bc4b8c0c-8517160bac18957aaf042a76a2e1f7b4c54f4065" href="/neuecc/CloudStructures/tree/master/Docs">Docs</a></span>
+</td>
+<td class="message">
+<span class="css-truncate css-truncate-target">
+<a data-pjax="true" title="remove connection retry code" class="message" href="/neuecc/CloudStructures/commit/6fc9887f2b4651dcd158c708fd0e442729189f9a">remove connection retry code</a>
+</span>
+</td>
+<td class="age">
+<span class="css-truncate css-truncate-target"><time-ago datetime="2017-04-14T15:54:32Z">Apr 14, 2017</time-ago></span>
+</td>
+</tr>
+<tr class="js-navigation-item">
+<td class="icon">
+<img width="16" height="16" class="spinner" alt="" src="https://assets-cdn.github.com/images/spinners/octocat-spinner-32.gif" />
+</td>
+<td class="content">
+<span class="css-truncate css-truncate-target"><a class="js-navigation-open" title="Glimpse.CloudStructures.Redis" id="7d4d7cecbd9b432592d2e7020b3042f0-5a03f7f8e1d450f43ac9a9c6205419d7a87843bc" href="/neuecc/CloudStructures/tree/master/Glimpse.CloudStructures.Redis">Glimpse.CloudStructures.Redis</a></span>
+</td>
+<td class="message">
+<span class="css-truncate css-truncate-target">
+<a data-pjax="true" title="ready for 1.2.0" class="message" href="/neuecc/CloudStructures/commit/02910310131826e854ecc9a8c57a346857b471cc">ready for 1.2.0</a>
+</span>
+</td>
+<td class="age">
+<span class="css-truncate css-truncate-target"><time-ago datetime="2015-10-09T08:32:06Z">Oct 9, 2015</time-ago></span>
+</td>
+</tr>
+<tr class="js-navigation-item">
+<td class="icon">
+<img width="16" height="16" class="spinner" alt="" src="https://assets-cdn.github.com/images/spinners/octocat-spinner-32.gif" />
+</td>
+<td class="content">
+<span class="css-truncate css-truncate-target"><a class="js-navigation-open" title="packages" id="2fc9e51174a78dd5bfc57e8e368590b3-009ccba3cecb4030f9430b59ae836f121e5cf36f" href="/neuecc/CloudStructures/tree/master/packages">packages</a></span>
+</td>
+<td class="message">
+<span class="css-truncate css-truncate-target">
+<a data-pjax="true" title="Add CloudStructures.LZ4" class="message" href="/neuecc/CloudStructures/commit/62bae2660989e87b930dac2a059ce3f9c01fce75">Add CloudStructures.LZ4</a>
+</span>
+</td>
+<td class="age">
+<span class="css-truncate css-truncate-target"><time-ago datetime="2015-02-05T09:45:05Z">Feb 5, 2015</time-ago></span>
+</td>
+</tr>
+<tr class="js-navigation-item">
+<td class="icon">
+<img width="16" height="16" class="spinner" alt="" src="https://assets-cdn.github.com/images/spinners/octocat-spinner-32.gif" />
+</td>
+<td class="content">
+<span class="css-truncate css-truncate-target"><a class="js-navigation-open" title=".gitignore" id="a084b794bc0759e7a6b77810e01874f2-a17ad18998961c27d6509180baa8674f53876d96" href="/neuecc/CloudStructures/blob/master/.gitignore">.gitignore</a></span>
+</td>
+<td class="message">
+<span class="css-truncate css-truncate-target">
+<a data-pjax="true" title="REedisSettings, RedisString, RedisList and RedisClass" class="message" href="/neuecc/CloudStructures/commit/df27a221faaf3cf16977537cd47fb8ec1320a7af">REedisSettings, RedisString, RedisList and RedisClass</a>
+</span>
+</td>
+<td class="age">
+<span class="css-truncate css-truncate-target"><time-ago datetime="2013-03-24T19:43:32Z">Mar 24, 2013</time-ago></span>
+</td>
+</tr>
+<tr class="js-navigation-item">
+<td class="icon">
+<img width="16" height="16" class="spinner" alt="" src="https://assets-cdn.github.com/images/spinners/octocat-spinner-32.gif" />
+</td>
+<td class="content">
+<span class="css-truncate css-truncate-target"><a class="js-navigation-open" title="CloudStructures.sln" id="38a92897c943af134ff351a3c35150fe-973461f7e5810a70e78fffe3ce9f01cfe9c3cd9e" href="/neuecc/CloudStructures/blob/master/CloudStructures.sln">CloudStructures.sln</a></span>
+</td>
+<td class="message">
+<span class="css-truncate css-truncate-target">
+<a data-pjax="true" title="Add NuPkg" class="message" href="/neuecc/CloudStructures/commit/07923ad650267494b10acd37e87f1d616ee2f0dc">Add NuPkg</a>
+</span>
+</td>
+<td class="age">
+<span class="css-truncate css-truncate-target"><time-ago datetime="2015-02-05T10:41:29Z">Feb 5, 2015</time-ago></span>
+</td>
+</tr>
+<tr class="js-navigation-item">
+<td class="icon">
+<img width="16" height="16" class="spinner" alt="" src="https://assets-cdn.github.com/images/spinners/octocat-spinner-32.gif" />
+</td>
+<td class="content">
+<span class="css-truncate css-truncate-target"><a class="js-navigation-open" title="README.md" id="04c6e90faac2675aa89e2176d2eec7d8-6780beb72a1a0db33588cbb8c6deb9700884d39e" href="/neuecc/CloudStructures/blob/master/README.md">README.md</a></span>
+</td>
+<td class="message">
+<span class="css-truncate css-truncate-target">
+<a data-pjax="true" title="ready for 1.2.0" class="message" href="/neuecc/CloudStructures/commit/02910310131826e854ecc9a8c57a346857b471cc">ready for 1.2.0</a>
+</span>
+</td>
+<td class="age">
+<span class="css-truncate css-truncate-target"><time-ago datetime="2015-10-09T08:32:06Z">Oct 9, 2015</time-ago></span>
+</td>
+</tr>
+<tr class="js-navigation-item">
+<td class="icon">
+<img width="16" height="16" class="spinner" alt="" src="https://assets-cdn.github.com/images/spinners/octocat-spinner-32.gif" />
+</td>
+<td class="content">
+<span class="css-truncate css-truncate-target"><a class="js-navigation-open" title="UpgradeLog.htm" id="39ca21f8da4b9a4a91ee0f8a5aff2642-65fd3d7f9d0f62675cad0db8069fdc9d502fd808" href="/neuecc/CloudStructures/blob/master/UpgradeLog.htm">UpgradeLog.htm</a></span>
+</td>
+<td class="message">
+<span class="css-truncate css-truncate-target">
+<a data-pjax="true" title="[wip]move to StackExchange.Redis #2" class="message" href="/neuecc/CloudStructures/commit/29c481974b43c9a02c0b05b31372634d839a7f8f">[wip]move to StackExchange.Redis</a> <a class="issue-link js-issue-link" data-error-text="Failed to load issue title" data-id="29781594" data-permission-text="Issue title is private" data-url="https://github.com/neuecc/CloudStructures/issues/2" href="https://github.com/neuecc/CloudStructures/issues/2">#2</a>
+</span>
+</td>
+<td class="age">
+<span class="css-truncate css-truncate-target"><time-ago datetime="2015-02-02T16:41:56Z">Feb 2, 2015</time-ago></span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="readme" class="readme boxed-group clearfix announce instapaper_body md">
+<h3>
+README.md
+</h3>
+<article class="markdown-body entry-content" itemprop="text"><h1><a id="user-content-cloudstructures" class="anchor" aria-hidden="true" href="#cloudstructures"></a>CloudStructures</h1>
+<p>Redis Client based on <a href="https://github.com/StackExchange/StackExchange.Redis">StackExchange.Redis</a>. CloudStructures appends connection management, auto serialize/deserialize for RedisValue, key distributed connection(sharding), command logging, Web.config supports and Redis Profiler for Glimpse.</p>
+<h2><a id="user-content-why-use-cloudstructures" class="anchor" aria-hidden="true" href="#why-use-cloudstructures"></a>Why use CloudStructures?</h2>
+<p>StackExchange.Redis is pure, low level library. It is Redis driver like ADO.NET. Using raw is very hard. CloudStructures is simple O/R(Object/Redis) Mapper like Dapper in ADO.NET.</p>
+<h2><a id="user-content-install" class="anchor" aria-hidden="true" href="#install"></a>Install</h2>
+<p>from NuGet - <a href="https://nuget.org/packages/CloudStructures/" rel="nofollow">CloudStructures</a></p>
+<pre><code>PM> Install-Package CloudStructures
+</code></pre>
+<h2><a id="user-content-how-to-use" class="anchor" aria-hidden="true" href="#how-to-use"></a>How to use</h2>
+<p>At first, create <code>RedisSettings</code> or <code>RedisGroup</code> that represents StackExchange.Redis's ConnectionMultiplexer holder and create RedisStructure Class(<code>RedisString</code>, <code>RedisList</code>, etc).</p>
+<div class="highlight highlight-source-cs"><pre><span class="pl-c"><span class="pl-c">//</span> Settings should holds in static variable</span>
+<span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">class</span> <span class="pl-en">RedisServer</span>
+{
+<span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">readonly</span> <span class="pl-en">RedisSettings</span> <span class="pl-smi">Default</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">RedisSettings</span>(<span class="pl-s"><span class="pl-pds">"</span>127.0.0.1<span class="pl-pds">"</span></span>);
+}
+<span class="pl-c"><span class="pl-c">//</span> a class</span>
+<span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">Person</span>
+{
+<span class="pl-k">public</span> <span class="pl-k">string</span> <span class="pl-smi">Name</span> { <span class="pl-k">get</span>; <span class="pl-k">set</span>; }
+<span class="pl-k">public</span> <span class="pl-k">int</span> <span class="pl-smi">Age</span> { <span class="pl-k">get</span>; <span class="pl-k">set</span>; }
+}
+<span class="pl-c"><span class="pl-c">//</span> Create RedisString... (or you can use RedisSettings.Default.String<Person>("key"))</span>
+<span class="pl-k">var</span> <span class="pl-smi">redis</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">RedisString</span><<span class="pl-en">Person</span>>(<span class="pl-smi">RedisServer</span>.<span class="pl-smi">Default</span>, <span class="pl-s"><span class="pl-pds">"</span>test-string-key<span class="pl-pds">"</span></span>);
+<span class="pl-c"><span class="pl-c">//</span> call command(IntelliSense helps you)</span>
+<span class="pl-k">await</span> <span class="pl-smi">redis</span>.<span class="pl-en">Set</span>(<span class="pl-k">new</span> <span class="pl-en">Person</span> { <span class="pl-smi">Name</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>John<span class="pl-pds">"</span></span>, <span class="pl-smi">Age</span> <span class="pl-k">=</span> <span class="pl-c1">34</span> });
+<span class="pl-c"><span class="pl-c">//</span> get is the same as </span>
+<span class="pl-k">var</span> <span class="pl-smi">copy</span> <span class="pl-k">=</span> <span class="pl-k">await</span> <span class="pl-smi">redis</span>.<span class="pl-en">Get</span>();
+<span class="pl-c"><span class="pl-c">//</span> List is the same as</span>
+<span class="pl-k">var</span> <span class="pl-smi">list</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">RedisList</span><<span class="pl-en">Person</span>>(<span class="pl-smi">RedisServer</span>.<span class="pl-smi">Default</span>, <span class="pl-s"><span class="pl-pds">"</span>test-list-key<span class="pl-pds">"</span></span>);
+<span class="pl-k">await</span> <span class="pl-smi">list</span>.<span class="pl-en">LeftPush</span>(<span class="pl-k">new</span>[] { <span class="pl-k">new</span> <span class="pl-en">Person</span> { <span class="pl-smi">Name</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>Tom<span class="pl-pds">"</span></span> }, <span class="pl-k">new</span> <span class="pl-en">Person</span> { <span class="pl-smi">Name</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>Mary<span class="pl-pds">"</span></span> } });
+<span class="pl-k">var</span> <span class="pl-smi">persons</span> <span class="pl-k">=</span> <span class="pl-k">await</span> <span class="pl-smi">list</span>.<span class="pl-en">Range</span>(<span class="pl-c1">0</span>, <span class="pl-c1">10</span>);</pre></div>
+<p>CloudStructures manage object serialization/deserialization automatically.</p>
+<h2><a id="user-content-data-structure-of-redis" class="anchor" aria-hidden="true" href="#data-structure-of-redis"></a>Data structure of Redis</h2>
+<p>CloudStructures supports these Redis data types. All methods are async.</p>
+<table>
+<thead>
+<tr>
+<th>Class</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>RedisString<T></code></td>
+<td>Redis's Strings API</td>
+</tr>
+<tr>
+<td><code>RedisList<T></code></td>
+<td>Redis's Lists API</td>
+</tr>
+<tr>
+<td><code>RedisSet<T></code></td>
+<td>Redis's Sets API</td>
+</tr>
+<tr>
+<td><code>RedisHash<TKey></code></td>
+<td>Redis's Hashes API</td>
+</tr>
+<tr>
+<td><code>RedisDictionary<TKey, TValue></code></td>
+<td>Hashes API with constrained value type.</td>
+</tr>
+<tr>
+<td><code>RedisClass<T></code></td>
+<td>C# type mapped Redis Hashes</td>
+</tr>
+<tr>
+<td><code>RedisSortedSet<T></code></td>
+<td>Redis's SortedSets API</td>
+</tr>
+<tr>
+<td><code>RedisHyperLogLog<T></code></td>
+<td>Redis's HyperLogLog API</td>
+</tr>
+<tr>
+<td><code>RedisLua</code></td>
+<td>Lua EVALSHA API</td>
+</tr></tbody></table>
+<p>Methods are simply wrapped StackExchange.Redis's API. Data type prefix(String/List/Set/etc) are Class, removed async suffix and RedisValue to T. For example <code>ListLeftPushAsync(RedisKey, RedisValue)</code> -> <code>new RedisList<T>(RedisKey)</code>.<code>LeftPush(T)</code>.</p>
+<p>All storing methods have <code>RedisExpiry</code> argument. If expiry isn't null which is appended expiry second. RedisExpiry is convert from DateTime/TimeSpan implicitly.</p>
+<div class="highlight highlight-source-cs"><pre><span class="pl-k">var</span> <span class="pl-smi">list</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">RedisList</span><<span class="pl-k">int</span>>(<span class="pl-smi">settings</span>);
+<span class="pl-k">await</span> <span class="pl-smi">list</span>.<span class="pl-en">LeftPush</span>(<span class="pl-c1">1</span>, <span class="pl-smi">expiry</span>: <span class="pl-smi">TimeSpan</span>.<span class="pl-en">FromSeconds</span>(<span class="pl-c1">30</span>));
+<span class="pl-k">await</span> <span class="pl-smi">list</span>.<span class="pl-en">LeftPush</span>(<span class="pl-c1">10</span>, <span class="pl-smi">expiry</span>: <span class="pl-smi">DateTime</span>.<span class="pl-smi">Now</span>.<span class="pl-en">AddDays</span>(<span class="pl-c1">1</span>));</pre></div>
+<p>And all classes have <code>Expire</code>, <code>Exists</code>, <code>Delete</code>, <code>TimeToLive</code>.</p>
+<p>Some classes have additional methods. RedisList has <code>LeftPushAndFixLength</code> that simulate fixed size list by LPUSH and TRIM. RedisSortedSet has <code>RangeByRankWithScoresAndRank</code> that returns value, score and rank. If class has Increment method which is appended <code>IncrementLimitByMax</code> and <code>IncrementLimitByMin</code> there are increment with max/min limit by custom LUA script.</p>
+<p>Some methods return <code>RedisResult<T></code>. If Redis returns null <code>RedisResult<T>.HasValue</code> is false. You can take value from <code>Value</code> property or <code>GetValueOrDefault(defaultValue)</code> method or <code>GetValueOrNull()</code> method that if HasValue is false then return null.</p>
+<div class="highlight highlight-source-cs"><pre><span class="pl-k">var</span> <span class="pl-smi">redis</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">RedisString</span><<span class="pl-k">int</span>>(<span class="pl-smi">settings</span>);
+<span class="pl-k">var</span> <span class="pl-smi">result</span> <span class="pl-k">=</span> <span class="pl-k">await</span> <span class="pl-en">Get</span>();
+<span class="pl-c"><span class="pl-c">//</span> take from .Value</span>
+<span class="pl-k">if</span> (<span class="pl-smi">result</span>.<span class="pl-smi">HasValue</span>) <span class="pl-smi">Debug</span>.<span class="pl-en">Write</span>(<span class="pl-smi">result</span>.<span class="pl-smi">Value</span>);
+<span class="pl-c"><span class="pl-c">//</span> or from GetValueOrDefault</span>
+<span class="pl-k">var</span> <span class="pl-smi">value</span> <span class="pl-k">=</span> <span class="pl-smi">result</span>.<span class="pl-en">GetValueOrDefault</span>(<span class="pl-k">-</span><span class="pl-c1">1</span>);
+<span class="pl-c"><span class="pl-c">//</span> take boxed value</span>
+<span class="pl-k">var</span> <span class="pl-smi">objectValue</span> <span class="pl-k">=</span> <span class="pl-smi">result</span>.<span class="pl-en">GetValueOrNull</span>();</pre></div>
+<p>CloudStructures does not provide multiple key operation such as SUNION, ZINTERSTORE, etc. Because connection might be distributed by RedisGroup, secondary key may not exist in first key's Redis. If you want to do it, you can take raw connection and do manual deserialize.</p>
+<div class="highlight highlight-source-cs"><pre><span class="pl-c"><span class="pl-c">//</span> Connections in the group must be single</span>
+<span class="pl-k">var</span> <span class="pl-smi">rawResults</span> <span class="pl-k">=</span> <span class="pl-smi">settings</span>.<span class="pl-en">GetConnection</span>().<span class="pl-en">GetDatabase</span>().<span class="pl-en">SetCombine</span>(<span class="pl-smi">SetOperation</span>.<span class="pl-smi">Union</span>, <span class="pl-s"><span class="pl-pds">"</span>firstKey<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>secondKey<span class="pl-pds">"</span></span>);
+<span class="pl-k">var</span> <span class="pl-smi">results</span> <span class="pl-k">=</span> <span class="pl-smi">rawResults</span>.<span class="pl-en">Select</span>(<span class="pl-smi">x</span> <span class="pl-k">=></span> { <span class="pl-k">long</span> <span class="pl-smi">size</span>; <span class="pl-k">return</span> <span class="pl-smi">settings</span>.<span class="pl-smi">ValueConverter</span>.<span class="pl-en">Deserialize</span><<span class="pl-en">Person</span>>(<span class="pl-smi">x</span>, <span class="pl-k">out</span> <span class="pl-smi">size</span>); }).<span class="pl-en">ToArray</span>();</pre></div>
+<h2><a id="user-content-configuration" class="anchor" aria-hidden="true" href="#configuration"></a>Configuration</h2>
+<p>load configuration from web.config or app.config</p>
+<div class="highlight highlight-text-xml"><pre><<span class="pl-ent">configSections</span>>
+<<span class="pl-ent">section</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>cloudStructures<span class="pl-pds">"</span></span> <span class="pl-e">type</span>=<span class="pl-s"><span class="pl-pds">"</span>CloudStructures.CloudStructuresConfigurationSection, CloudStructures<span class="pl-pds">"</span></span> />
+</<span class="pl-ent">configSections</span>>
+<<span class="pl-ent">cloudStructures</span>>
+<<span class="pl-ent">redis</span>>
+<<span class="pl-ent">group</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>Cache<span class="pl-pds">"</span></span>>
+<span class="pl-c"><span class="pl-c"></span></span>
+<<span class="pl-ent">add</span> <span class="pl-e">connectionString</span>=<span class="pl-s"><span class="pl-pds">"</span>127.0.0.1,allowAdmin=true<span class="pl-pds">"</span></span> <span class="pl-e">db</span>=<span class="pl-s"><span class="pl-pds">"</span>0<span class="pl-pds">"</span></span> />
+<<span class="pl-ent">add</span> <span class="pl-e">connectionString</span>=<span class="pl-s"><span class="pl-pds">"</span>127.0.0.1,allowAdmin=true<span class="pl-pds">"</span></span> <span class="pl-e">db</span>=<span class="pl-s"><span class="pl-pds">"</span>1<span class="pl-pds">"</span></span> />
+</<span class="pl-ent">group</span>>
+<<span class="pl-ent">group</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>Session<span class="pl-pds">"</span></span>>
+<span class="pl-c"><span class="pl-c"></span></span>
+<<span class="pl-ent">add</span> <span class="pl-e">connectionString</span>=<span class="pl-s"><span class="pl-pds">"</span>127.0.0.1,allowAdmin=true<span class="pl-pds">"</span></span> <span class="pl-e">db</span>=<span class="pl-s"><span class="pl-pds">"</span>2<span class="pl-pds">"</span></span> <span class="pl-e">valueConverter</span>=<span class="pl-s"><span class="pl-pds">"</span>CloudStructures.GZipJsonRedisValueConverter, CloudStructures<span class="pl-pds">"</span></span>  <span class="pl-e">commandTracer</span>=<span class="pl-s"><span class="pl-pds">"</span>Glimpse.CloudStructures.Redis.GlimpseRedisCommandTracer, Glimpse.CloudStructures.Redis<span class="pl-pds">"</span></span> />
+</<span class="pl-ent">group</span>>
+</<span class="pl-ent">redis</span>>
+</<span class="pl-ent">cloudStructures</span>></pre></div>
+<div class="highlight highlight-source-cs"><pre><span class="pl-c"><span class="pl-c">//</span> setting hold static fields</span>
+<span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">class</span> <span class="pl-en">RedisGroups</span>
+{
+<span class="pl-c"><span class="pl-c">//</span> load from web.config</span>
+<span class="pl-k">static</span> <span class="pl-en">Dictionary</span><<span class="pl-k">string</span>, <span class="pl-en">RedisGroup</span>> <span class="pl-smi">configDict</span> <span class="pl-k">=</span> <span class="pl-smi">CloudStructures</span>.<span class="pl-smi">CloudStructuresConfigurationSection</span>
+.<span class="pl-en">GetSection</span>()
+.<span class="pl-en">ToRedisGroups</span>()
+.<span class="pl-en">ToDictionary</span>(<span class="pl-smi">x</span> <span class="pl-k">=></span> <span class="pl-smi">x</span>.<span class="pl-smi">GroupName</span>);
+<span class="pl-c"><span class="pl-c">//</span> setup group</span>
+<span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">readonly</span> <span class="pl-en">RedisGroup</span> <span class="pl-smi">Cache</span> <span class="pl-k">=</span> <span class="pl-smi">configDict</span>[<span class="pl-s"><span class="pl-pds">"</span>Cache<span class="pl-pds">"</span></span>];
+<span class="pl-k">public</span> <span class="pl-k">static</span> <span class="pl-k">readonly</span> <span class="pl-en">RedisGroup</span> <span class="pl-smi">Session</span> <span class="pl-k">=</span> <span class="pl-smi">configDict</span>[<span class="pl-s"><span class="pl-pds">"</span>Session<span class="pl-pds">"</span></span>];
+<span class="pl-k">static</span> <span class="pl-en">RedisGroups</span>()
+{
+<span class="pl-c"><span class="pl-c">//</span> If you want to enable Glimpse's RedisInfo then register groups</span>
+<span class="pl-smi">Glimpse</span>.<span class="pl-smi">CloudStructures</span>.<span class="pl-smi">Redis</span>.<span class="pl-smi">RedisInfoTab</span>.<span class="pl-en">RegisiterConnection</span>(<span class="pl-k">new</span>[] { <span class="pl-smi">Cache</span>, <span class="pl-smi">Session</span> });
+}
+}</pre></div>
+<p>connectionString is <a href="https://github.com/StackExchange/StackExchange.Redis/blob/master/Docs/Configuration.md">StackExchange.Redis's Configuration String</a>.</p>
+<h2><a id="user-content-valueconverter" class="anchor" aria-hidden="true" href="#valueconverter"></a>ValueConverter</h2>
+<p>Default ValueConverter(Serializer) is JSON by <a href="https://github.com/kevin-montrose/Jil">Jil</a>. You can change ValueConverter on RediSettings's valueConverter property. ClousStructure has 2 compressed valueConverter. One is <code>GZipJsonRedisValueConverter</code> it's bundled CloudStructures. Another is <code>LZ4JsonRedisValueConverter</code> it's used fastest compression algorithm <a href="https://code.google.com/p/lz4/" rel="nofollow">LZ4</a>.</p>
+<p>Install from NuGet - <a href="https://nuget.org/packages/CloudStructures.LZ4/" rel="nofollow">CloudStructures.LZ4</a></p>
+<pre><code>PM> Install-Package CloudStructures.LZ4
+</code></pre>
+<p>and configuration for</p>
+<div class="highlight highlight-text-xml"><pre>valueConverter="CloudStructures.LZ4JsonRedisValueConverter, CloudStructures.LZ4"</pre></div>
+<h2><a id="user-content-glimpsecloudstructuresredis" class="anchor" aria-hidden="true" href="#glimpsecloudstructuresredis"></a>Glimpse.CloudStructures.Redis</h2>
+<p>CloudStructures has Redis Profiler for <a href="http://getglimpse.com/" rel="nofollow">Glimpse</a>.</p>
+<p>Install from NuGet - <a href="https://nuget.org/packages/Glimpse.CloudStructures.Redis/" rel="nofollow">Glimpse.CloudStructures.Redis</a></p>
+<pre><code>PM> Install-Package Glimpse.CloudStructures.Redis
+</code></pre>
+<p>Setup Glimpse and add config with GlimpseRedisCommandTracer. If you use RedisInfoTab then have to set connectionString's allowAdmin = true and regisiter RedisGroup at first.</p>
+<div class="highlight highlight-text-xml"><pre><<span class="pl-ent">add</span> <span class="pl-e">connectionString</span>=<span class="pl-s"><span class="pl-pds">"</span>127.0.0.1,allowAdmin=true<span class="pl-pds">"</span></span> <span class="pl-e">db</span>=<span class="pl-s"><span class="pl-pds">"</span>0<span class="pl-pds">"</span></span> <span class="pl-e">commandTracer</span>=<span class="pl-s"><span class="pl-pds">"</span>Glimpse.CloudStructures.Redis.GlimpseRedisCommandTracer, Glimpse.CloudStructures.Redis<span class="pl-pds">"</span></span> /></pre></div>
+<div class="highlight highlight-source-cs"><pre><span class="pl-smi">Glimpse</span>.<span class="pl-smi">CloudStructures</span>.<span class="pl-smi">Redis</span>.<span class="pl-smi">RedisInfoTab</span>.<span class="pl-en">RegisiterConnection</span>(<span class="pl-k">new</span>[] { <span class="pl-smi">Cache</span>, <span class="pl-smi">Session</span> });</pre></div>
+<p>Okay, you can see timeline tab, can visualize parallel access.</p>
+<p><a target="_blank" href="/neuecc/CloudStructures/blob/master/Docs/RedisTimeline.png"><img src="/neuecc/CloudStructures/raw/master/Docs/RedisTimeline.png" alt="" style="max-width:100%;"></a></p>
+<p>Look at the RedisTab! You can see Sent/Received object's dump, each size, key expire, command duration, warning at duplicate command & key.</p>
+<p><a target="_blank" href="/neuecc/CloudStructures/blob/master/Docs/RedisTab.png"><img src="/neuecc/CloudStructures/raw/master/Docs/RedisTab.png" alt="" style="max-width:100%;"></a></p>
+<p>Finally, RedisInfoTab. Showing all serverinfo, commandstat, server-configuration and client-configuration and client-status-counter.</p>
+<p><a target="_blank" href="/neuecc/CloudStructures/blob/master/Docs/RedisInfoTab.png"><img src="/neuecc/CloudStructures/raw/master/Docs/RedisInfoTab.png" alt="" style="max-width:100%;"></a></p>
+<h2><a id="user-content-author-info" class="anchor" aria-hidden="true" href="#author-info"></a>Author Info</h2>
+<p>Yoshifumi Kawai(a.k.a. neuecc) is software developer in Japan.
+He is Director/CTO at Grani, Inc.
+Grani is top social game developer in Japan(and I'm CTO at Grani).<br>
+He awarded Microsoft MVP for Visual C# since 2011.
+He is known by creator of <a href="http://linqjs.codeplex.com/" rel="nofollow">linq.js</a>(LINQ to Objects for JavaScript) and <a href="https://github.com/neuecc/UniRx">UniRx</a>(Reactive Extensions for Unity)</p>
+<p>Blog: <a href="http://neue.cc/" rel="nofollow">http://neue.cc/</a> (JPN)<br>
+Twitter: <a href="https://twitter.com/neuecc" rel="nofollow">https://twitter.com/neuecc</a> (JPN)</p>
+<h2><a id="user-content-history" class="anchor" aria-hidden="true" href="#history"></a>History</h2>
+<p>2015-10-09 ver 1.1</p>
+<ul>
+<li>improved GetConnection handling(use connectTimeout and retryCount)</li>
+<li>add RedisSettings.OnConnectAsyncFailed</li>
+<li>update NuGet packages(StackExchange.Redis)</li>
+</ul>
+<p>2015-05-26 ver 1.1</p>
+<ul>
+<li>fix SoretedSet.Add(IEnumerable) set wrong key</li>
+<li>update NuGet packages(Jil and StackExchange.Redis)</li>
+</ul>
+<p>2015-02-11 ver 1.0.1(only CloudStructures.LZ4)</p>
+<ul>
+<li>LZ4JsonRedisValueConverter's default buffer size changed to 64KB</li>
+</ul>
+<p>2015-02-06 ver 1.0.0</p>
+<ul>
+<li>changed base library from BookSleeve to StackExchange.Redis</li>
+<li>overhaul all API, many breaking changes</li>
+<li>improvement RedisTab for Glimpse</li>
+<li>add RedisInfoTab for Glimpse</li>
+<li>regsiter CloudStructures.LZ4 on NuGet</li>
+<li>document rewrite</li>
+</ul>
+<p>2013-11-16 ver 0.6.1</p>
+<ul>
+<li>fix, Configuration's GetElementKey take uniq by Host, Port, Db.</li>
+</ul>
+<p>2013-11-15 ver 0.6.0</p>
+<ul>
+<li>add, Glimpse.CloudStructures.Redis</li>
+<li>improved, connection waitOpen use syncTimeout.</li>
+<li>improved, can monitor RedisConnection event(Open/Close/Error/Shutdown) on RedisSettings.</li>
+<li>fix bugs, List.AddFirstAndFixLength is always trimed right length -1.</li>
+<li>breaking changes, ICommandTracer receive many extra key(settings, sentObject, receivedObject).</li>
+</ul>
+<h2><a id="user-content-license" class="anchor" aria-hidden="true" href="#license"></a>License</h2>
+<p>under <a href="http://opensource.org/licenses/MIT" rel="nofollow">MIT License</a></p>
+</article>
+</div>
+</div>
+<div class="modal-backdrop js-touch-events"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="footer container-lg px-3" role="contentinfo">
+<div class="position-relative d-flex flex-justify-between pt-6 pb-2 mt-6 f6 text-gray border-top border-gray-light ">
+<ul class="list-style-none d-flex flex-wrap ">
+<li class="mr-3">© 2018 <span title="0.25091s from unicorn-654b689596-8st9c">GitHub</span>, Inc.</li>
+<li class="mr-3"><a data-ga-click="Footer, go to terms, text:terms" href="https://github.com/site/terms">Terms</a></li>
+<li class="mr-3"><a data-ga-click="Footer, go to privacy, text:privacy" href="https://github.com/site/privacy">Privacy</a></li>
+<li class="mr-3"><a href="https://help.github.com/articles/github-security/" data-ga-click="Footer, go to security, text:security">Security</a></li>
+<li class="mr-3"><a href="https://status.github.com/" data-ga-click="Footer, go to status, text:status">Status</a></li>
+<li><a data-ga-click="Footer, go to help, text:help" href="https://help.github.com">Help</a></li>
+</ul>
+<a aria-label="Homepage" title="GitHub" class="footer-octicon" href="https://github.com">
+</a>
+<ul class="list-style-none d-flex flex-wrap ">
+<li class="mr-3"><a data-ga-click="Footer, go to contact, text:contact" href="https://github.com/contact">Contact GitHub</a></li>
+<li class="mr-3"><a href="https://developer.github.com" data-ga-click="Footer, go to api, text:api">API</a></li>
+<li class="mr-3"><a href="https://training.github.com" data-ga-click="Footer, go to training, text:training">Training</a></li>
+<li class="mr-3"><a href="https://shop.github.com" data-ga-click="Footer, go to shop, text:shop">Shop</a></li>
+<li class="mr-3"><a href="https://blog.github.com" data-ga-click="Footer, go to blog, text:blog">Blog</a></li>
+<li><a data-ga-click="Footer, go to about, text:about" href="https://github.com/about">About</a></li>
+</ul>
+</div>
+<div class="d-flex flex-justify-center pb-6">
+<span class="f6 text-gray-light"></span>
+</div>
+</div>
+<div id="ajax-error-message" class="ajax-error-message flash flash-error">
+You can’t perform that action at this time.
+</div>
+<div class="js-stale-session-flash stale-session-flash flash flash-warn flash-banner d-none">
+<span class="signed-in-tab-flash">You signed in with another tab or window. <a href="">Reload</a> to refresh your session.</span>
+<span class="signed-out-tab-flash">You signed out in another tab or window. <a href="">Reload</a> to refresh your session.</span>
+</div>
+<div class="facebox" id="facebox" style="display:none;">
+<div class="facebox-popup">
+<div class="facebox-content" role="dialog" aria-labelledby="facebox-header" aria-describedby="facebox-description">
+</div>
+</div>
+</div>
+<div class="Popover js-hovercard-content position-absolute" style="display: none; outline: none;" tabindex="0">
+<div class="Popover-message Popover-message--bottom-left Popover-message--large Box box-shadow-large" style="width:360px;">
+</div>
+</div>
+<div id="hovercard-aria-description" class="sr-only">
+Press h to open a hovercard with more details.
+</div><script type="text/javascript"> 
+var url = 'https://github.com/neuecc/CloudStructures';
+var au = url.split('/');
+var domain = au[0] + '://' + au[2];
 
-    function findH1() {
-        var h1s = document.getElementsByTagName('h1');
-        if (h1s.length > 0) {
-            var it = h1s[h1s.length - 1].parentNode;
-            while (it.parentNode.tagName != 'BODY') {
-                it = it.parentNode;
-            }
-            var bs = document.getElementsByClassName(it.className);
-            if (bs.length > 1) {
-                for (var i = 0; i < bs.length; i++) {
-                    cleanHtml(bs[i].getElementsByTagName('*'));
-                    if (htm == null)
-                        htm = bs[i].innerHTML;
-                    else
-                        htm += bs[i].innerHTML;
-                }
-            } else {
-                //console.log('OK = ' + h1s.length, it);
-                cleanHtml(it.getElementsByTagName('*'));
-                htm = it.innerHTML;
-            }
-        }
+var dels = [], a = [];
+
+var h1s = document.getElementsByTagName('h1');
+if (h1s.length == 0) h1s = document.getElementsByTagName('h2');
+
+if (h1s.length > 0) {
+    var it = h1s[h1s.length - 1].parentNode;
+    while (it.parentNode.tagName != 'BODY') {
+        it = it.parentNode;
     }
 
-    function findMain(elements) {
-        for (var i = 0; i < elements.length; i++) {
-            var it = elements[i], css = it.className, id = it.id, tagName = it.tagName, text = it.textContent, ok = false;
+    dels = [], a = [];
+    a = document.body.childNodes;
+    for (var i = 0; i < a.length; i++)
+        if (a[i] != it) dels.push(a[i]);
+    for (var i = 0; i < dels.length; i++)
+        if (dels[i] != null && dels[i].parentNode != null) dels[i].parentNode.removeChild(dels[i]);
+}
 
-            if (it.hasChildNodes() == false) {
-                //console.log('REMOVE: ', it);
-                it.parentNode.removeChild(it);
-            } else {
-                if (css == null) css = ''; else css = css.toLowerCase();
-                if (id == null) id = ''; else id = id.toLowerCase();
-                if (text == null) text = ''; else text = text.trim();
-                if (id.length == 0 && css.length == 0 || text.length == 0) continue;
-
-                ok = is_content(id, css, tagName, text);
-
-                if (ok) {
-                    var h1 = it.getElementsByTagName('h1').length;
-                    if (htm == null && h1 > 0) {
-                        //console.log('OK = ' + h1, it);
-                        cleanHtml(it.getElementsByTagName('*'));
-                        htm = it.innerHTML;
-                    }
-                    //return;
-                } else {
-                    //console.log(id + ': ' + css + ' remove = ' + is_remove(id, css), htm);
-                    if (htm != null || is_remove(id, css)) {
-                        //console.log('remove: ', it);
-                        it.parentNode.removeChild(it);
-                    } else
-                        findMain(it.childNodes);
-                }
-            }
-        }
+a = document.body.getElementsByTagName('*');
+for (var i = 0; i < a.length; i++) {
+    if (a[i].hasAttribute('style')) a[i].removeAttribute('style');
+    if (a[i].tagName == 'PRE') continue;
+    if (a[i].tagName == 'CODE') {
+        var code = a[i].innerHTML;
+        code = code.split('<').join('&lt;').split('>').join('&gt;');
+        a[i].innerHTML = code;
+        //console.log(code);
+    } else {
+        if (is_remove_text(a[i].textContent) || is_remove_id(a[i].id) || is_remove_css(a[i].className)) dels.push(a[i]);
     }
+}
+for (var i = 0; i < dels.length; i++)
+    if (dels[i] != null && dels[i].parentNode != null) dels[i].parentNode.removeChild(dels[i]);
 
-    function is_content(id, css, tagName, text) {
-        var ok = (id.length > 0 && id.indexOf('main') != -1) || (css.length > 0 && css.indexOf('main') != -1)
-            || (id.length > 0 && id.indexOf('content') != -1) || (css.length > 0 && css.indexOf('content') != -1);
-        if (ok) {
-            if (
-            id.indexOf('menu') != -1
-            || css.indexOf('menu') != -1
-            || id.indexOf('search') != -1
-            || css.indexOf('search') != -1
-            || id.indexOf('header') != -1
-            || css.indexOf('header') != -1
-            || id.indexOf('footer') != -1
-            || css.indexOf('footer') != -1
-            || id.indexOf('cookie') != -1
-            || css.indexOf('cookie') != -1
-            || id.indexOf('feedback') != -1
-            || css.indexOf('feedback') != -1
-            || id.indexOf('error') != -1
-            || css.indexOf('error') != -1
-            ) return false;
-            return true;
-        }
-        return false;
-    }
+function is_remove_text(s) {
+    if (s == null || s.trim().length == 0) return true;
+    s = s.toLowerCase().trim();
+    return s == 'read more'
+        || s == 'see more'
+        || s == 'further reading'
+        || s == 'log in'
+        || s == 'ad'
+        || s.indexOf('sign in') == 0
+        || s.indexOf('sign up') == 0
+        || s.indexOf('copyright ') == 0
+}
 
-    function cleanHtml(elements) {
-        for (var i = 0; i < elements.length; i++) {
-            var it = elements[i], css = it.className, id = it.id, tagName = it.tagName, text = it.textContent, ok = false;
-            if (is_remove(id, css)) it.parentNode.removeChild(it);
-        }
-    }
+function is_remove_id(s) {
+    if (s == null || s.trim().length == 0) return false;
+    s = s.toLowerCase();
+    return s.indexOf('search') != -1
+        //|| s.indexOf('header') != -1
+        //|| s.indexOf('footer') != -1
+        //|| s.indexOf('sidebar') != -1
+        || s.indexOf('login') != -1
+        || s.indexOf('cookie') != -1
+        || s.indexOf('newsletter') != -1
+        || s.indexOf('breadcrumb') != -1
+        || s.indexOf('metadata') != -1
+        || s.indexOf('feedback') != -1
+        || s.indexOf('user-info') != -1
+        || s.indexOf('post-menu') != -1
+        || s.indexOf('share-') != -1
+        || s.indexOf('share-') != -1
+        || s.indexOf('nav-') != -1
+        || s.indexOf('adbanner') != -1
+        || s.indexOf('error') != -1
+        || s.indexOf('navigation-') != -1
+        || s.indexOf('page-action') == 0
+        || s.indexOf('pageaction') == 0
+        || s.indexOf('memberbar') != -1
+        || s == 'sidebar'
 
-    function is_remove(id, css) {
-        return id.indexOf('search') != -1
-            || css.indexOf('search') != -1
-            || id.indexOf('header') != -1
-            || css.indexOf('header') != -1
-            || id.indexOf('footer') != -1
-            || css.indexOf('footer') != -1
-            || id.indexOf('cookie') != -1
-            || css.indexOf('cookie') != -1
-            || id.indexOf('newsletter') != -1
-            || css.indexOf('newsletter') != -1
-            || id.indexOf('breadcrumb') != -1
-            || css.indexOf('breadcrumb') != -1
-            || id.indexOf('metadata') != -1
-            || css.indexOf('metadata') != -1
-            || id.indexOf('feedback') != -1
-            || css.indexOf('feedback') != -1
-            || id.indexOf('sidebar') != -1
-            || css.indexOf('sidebar') != -1
-            || id.indexOf('page-background') != -1
-            || css.indexOf('page-background') != -1
-            || id.indexOf('share-') != -1
-            || css.indexOf('share-') != -1
-            || id.indexOf('share-') != -1
-            || css.indexOf('-action') != -1
-            || id.indexOf('nav-') != -1
-            || css.indexOf('nav-') != -1
-            || id.indexOf('error') != -1
-            || css.indexOf('error') != -1;
-    }
+        || s.indexOf('comments-link-') == 0
+}
 
-    </script>
+function is_remove_css(s) {
+    if (s == null || s.trim().length == 0) return false;
+    s = s.toLowerCase();
+    return s.indexOf('hide') != -1
+        || s.indexOf('search') != -1
+        //|| s.indexOf('header') != -1
+        //|| s.indexOf('footer') != -1
+        //|| s.indexOf('sidebar') != -1
+        || s.indexOf('cookie') != -1
+        || s.indexOf('newsletter') != -1
+        || s.indexOf('breadcrumb') != -1
+        || s.indexOf('metadata') != -1
+        || s.indexOf('feedback') != -1
+        || s.indexOf('user-info') != -1
+        || s.indexOf('post-menu') != -1
+        || s.indexOf('share-') != -1
+        || s.indexOf('share-') != -1
+        || s.indexOf('nav-') != -1
+        || s.indexOf('navbar') != -1
+        || s.indexOf('adbanner') != -1
+        || s.indexOf('error') != -1
+
+        || s.indexOf('page-action') == 0
+        || s.indexOf('pageaction') == 0
+        || s.indexOf('memberbar') != -1
+
+        || s.indexOf('rating') != -1
+        || s.indexOf('social') != -1
+
+        /*stackoverflow.com*/
+        || s.indexOf('answers-subheader') != -1
+        //|| s == 'vote'
+        || s == 'vote-up-off'
+        || s == 'vote-down-off'
+        || s == 'bottom-notice'
+        || s == 'question-status'
+        || s == 'post-taglist'
+        || s == 'comment-score'
+        || s.indexOf('comment-user') != -1 
+        || s.indexOf('vote-accepted') != -1 
+
+        /*github.com*/
+        || s.indexOf('signup-') != -1 
+}   </script>

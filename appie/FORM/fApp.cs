@@ -448,6 +448,7 @@ namespace appie
                 else url = link.Link;
                 if (url.Length > 0)
                 {
+                    m_url_textBox.Text = url;
                     m_tab_Browser.Text = link.TitleDomain();
                     m_brow_web.DocumentText = "<h1>LOADING: " + url + "</h1>";
 

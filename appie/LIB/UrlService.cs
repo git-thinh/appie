@@ -51,6 +51,9 @@ namespace appie
     // UrlService.GetAsync("http://...", (result) => { ;;; });
     public class UrlService
     {
+        public static string js = File.ReadAllText("clean.js");
+        public static string css = File.ReadAllText("css.css");
+
         public readonly static Func<Stream, UrlAnanyticResult> Func_GetHTML_UTF8_FORMAT_BROWSER = (stream) =>
         {
             string s = string.Empty;
@@ -59,18 +62,17 @@ namespace appie
             if (s.Length > 0)
                 s = HttpUtility.HtmlDecode(s);
 
-            var mbody = Regex.Match(s, @"(?<=<body[^>]*>)\s*[\s\S].*?(?=</body>)");
-            if (mbody.Success) s = mbody.Groups[1].Value;
+            var mbody = Regex.Match(s, @"(?<=<body[^>]*>)[\s\S]*?(?=</body>)");
+            if (mbody.Success) s = mbody.Value;
 
             string si = string.Empty;
             s = Regex.Replace(s, @"<script[^>]*>[\s\S]*?</script>", string.Empty);
             //s = Regex.Replace(s, @"<style[^>]*>[\s\S]*?</style>", string.Empty);
             s = Regex.Replace(s, @"<noscript[^>]*>[\s\S]*?</noscript>", string.Empty);
             s = Regex.Replace(s, @"(?s)(?<=<!--).+?(?=-->)", string.Empty).Replace("<!---->", string.Empty);
-
-            //s = Regex.Replace(s, @"<noscript[^>]*>[\s\S]*?</noscript>", string.Empty);
-            //s = Regex.Replace(s, @"<noscript[^>]*>[\s\S]*?</noscript>", string.Empty);
-            //s = Regex.Replace(s, @"</?(?i:embed|object|frameset|frame|iframe|meta|link)(.|\n|\s)*?>", string.Empty, RegexOptions.Singleline | RegexOptions.IgnoreCase);
+            s = Regex.Replace(s, @"<form[^>]*>[\s\S]*?</form>", string.Empty);
+            s = Regex.Replace(s, @"<select[^>]*>[\s\S]*?</select>", string.Empty);
+            s = Regex.Replace(s, @"<script[^>]*>[\s\S]*?</script>", string.Empty);
             s = Regex.Replace(s, @"</?(?i:base|header|footer|nav|form|input|select|option|fieldset|button|iframe|link|symbol|path|canvas|use|ins|svg|embed|object|frameset|frame|meta)(.|\n|\s)*?>", string.Empty, RegexOptions.Singleline | RegexOptions.IgnoreCase);
 
             //// Remove attribute style="padding:10px;..."
@@ -80,22 +82,16 @@ namespace appie
             string[] lines = s.Split(new char[] { '\r', '\n' }, StringSplitOptions.None).Select(x => x.Trim()).Where(x => x.Length > 0).ToArray();
             s = string.Join(Environment.NewLine, lines);
 
-            //int pos = s.ToLower().IndexOf("<body");
-            //if (pos > 0)
-            //{
-            //    s = s.Substring(pos + 5);
-            //    pos = s.IndexOf('>') + 1;
-            //    s = s.Substring(pos, s.Length - pos).Trim();
-            //}
+            s = s
+                //.Replace(@"<code>", @"<textarea>").Replace(@"</code>", @"</textarea>")
+                //.Replace(@"<code>", string.Empty).Replace(@"</code>", string.Empty) 
+                .Replace(@" data-src=""", @" src=""")
+                .Replace(@"src=""//", @"src=""http://");
 
-            //s = s
-            //    .Replace(@" data-src=""", @" src=""")
-            //    .Replace(@"src=""//", @"src=""http://");
-
-            var mts = Regex.Matches(s, "<img.+?src=[\"'](.+?)[\"'].*?>", RegexOptions.IgnoreCase);
-            if (mts.Count > 0) 
-                foreach (Match mt in mts) 
-                    s = s.Replace(mt.ToString(), string.Format("{0}{1}{2}", "<p class=box_img___>", mt.ToString(), "</p>")); 
+            //var mts = Regex.Matches(s, "<img.+?src=[\"'](.+?)[\"'].*?>", RegexOptions.IgnoreCase);
+            //if (mts.Count > 0) 
+            //    foreach (Match mt in mts) 
+            //        s = s.Replace(mt.ToString(), string.Format("{0}{1}{2}", "<p class=box_img___>", mt.ToString(), "</p>")); 
 
             //s = Regex.Replace(s, @"(?<=<li[^>]*>)\s*<a.*?(?=</li>)", "", RegexOptions.Singleline);
             //s = s.Replace("<li></li>", string.Empty).Replace("<ul></ul>", string.Empty);
@@ -114,179 +110,6 @@ namespace appie
             //s = removeById_ClassName(s, "menu");
             //s = removeById_ClassName(s, "search");
             //s = removeById_ClassName(s, "_newsletter_");//news_newsletter_form
-
-            #region
-            s =  
-@"<html>
-<head>
-    <meta charset=""utf-8"" />
-    <meta http-equiv=""X-UA-Compatible"" content=""IE=edge"" />
-    <title></title>
-    <style type=""text/css"">
-        body {
-            padding: 20px 10px;
-            margin: 0;
-            font-size: 1.5em;
-        }
-
-        p {
-            line-height: 1.7em;
-        }
-        
-        a {
-            text-decoration: none;
-        } 
-
-        img {
-            max-width: 20% !important;
-        }
-        p.box_img___ {
-            display:none;
-            text-align:right;
-        }
-        p.box_img___ img{
-        }
-    </style> 
-</head>
-<body>" + s +
-@"
-<script type=""text/javascript"">
-    
-    var htm;
-    findMain(document.body.childNodes, 0);
-    //console.log('OK: ', htm == null ? 'NULL -> find H1' : htm.length);
-    if (htm == null) findH1();
-    if (htm == null) {
-        //console.log('FAILLL: ');
-        cleanHtml(document.getElementsByTagName('*'));
-    } else document.body.innerHTML = htm;
-
-    function findH1() {
-        var h1s = document.getElementsByTagName('h1');
-        if (h1s.length > 0) {
-            var it = h1s[h1s.length - 1].parentNode;
-            while (it.parentNode.tagName != 'BODY') {
-                it = it.parentNode;
-            }
-            var bs = document.getElementsByClassName(it.className);
-            if (bs.length > 1) {
-                for (var i = 0; i < bs.length; i++) {
-                    cleanHtml(bs[i].getElementsByTagName('*'));
-                    if (htm == null)
-                        htm = bs[i].innerHTML;
-                    else
-                        htm += bs[i].innerHTML;
-                }
-            } else {
-                //console.log('OK = ' + h1s.length, it);
-                cleanHtml(it.getElementsByTagName('*'));
-                htm = it.innerHTML;
-            }
-        }
-    }
-
-    function findMain(elements) {
-        for (var i = 0; i < elements.length; i++) {
-            var it = elements[i], css = it.className, id = it.id, tagName = it.tagName, text = it.textContent, ok = false;
-
-            if (it.hasChildNodes() == false) {
-                //console.log('REMOVE: ', it);
-                it.parentNode.removeChild(it);
-            } else {
-                if (css == null) css = ''; else css = css.toLowerCase();
-                if (id == null) id = ''; else id = id.toLowerCase();
-                if (text == null) text = ''; else text = text.trim();
-                if (id.length == 0 && css.length == 0 || text.length == 0) continue;
-
-                ok = is_content(id, css, tagName, text);
-
-                if (ok) {
-                    var h1 = it.getElementsByTagName('h1').length;
-                    if (htm == null && h1 > 0) {
-                        //console.log('OK = ' + h1, it);
-                        cleanHtml(it.getElementsByTagName('*'));
-                        htm = it.innerHTML;
-                    }
-                    //return;
-                } else {
-                    //console.log(id + ': ' + css + ' remove = ' + is_remove(id, css), htm);
-                    if (htm != null || is_remove(id, css)) {
-                        //console.log('remove: ', it);
-                        it.parentNode.removeChild(it);
-                    } else
-                        findMain(it.childNodes);
-                }
-            }
-        }
-    }
-
-    function is_content(id, css, tagName, text) {
-        var ok = (id.length > 0 && id.indexOf('main') != -1) || (css.length > 0 && css.indexOf('main') != -1)
-            || (id.length > 0 && id.indexOf('content') != -1) || (css.length > 0 && css.indexOf('content') != -1);
-        if (ok) {
-            if (
-            id.indexOf('menu') != -1
-            || css.indexOf('menu') != -1
-            || id.indexOf('search') != -1
-            || css.indexOf('search') != -1
-            || id.indexOf('header') != -1
-            || css.indexOf('header') != -1
-            || id.indexOf('footer') != -1
-            || css.indexOf('footer') != -1
-            || id.indexOf('cookie') != -1
-            || css.indexOf('cookie') != -1
-            || id.indexOf('feedback') != -1
-            || css.indexOf('feedback') != -1
-            || id.indexOf('error') != -1
-            || css.indexOf('error') != -1
-            ) return false;
-            return true;
-        }
-        return false;
-    }
-
-    function cleanHtml(elements) {
-        for (var i = 0; i < elements.length; i++) {
-            var it = elements[i], css = it.className, id = it.id, tagName = it.tagName, text = it.textContent, ok = false;
-            if (is_remove(id, css)) it.parentNode.removeChild(it);
-        }
-    }
-
-    function is_remove(id, css) {
-        return id.indexOf('search') != -1
-            || css.indexOf('search') != -1
-            || id.indexOf('header') != -1
-            || css.indexOf('header') != -1
-            || id.indexOf('footer') != -1
-            || css.indexOf('footer') != -1
-            || id.indexOf('cookie') != -1
-            || css.indexOf('cookie') != -1
-            || id.indexOf('newsletter') != -1
-            || css.indexOf('newsletter') != -1
-            || id.indexOf('breadcrumb') != -1
-            || css.indexOf('breadcrumb') != -1
-            || id.indexOf('metadata') != -1
-            || css.indexOf('metadata') != -1
-            || id.indexOf('feedback') != -1
-            || css.indexOf('feedback') != -1
-            || id.indexOf('sidebar') != -1
-            || css.indexOf('sidebar') != -1
-            || id.indexOf('page-background') != -1
-            || css.indexOf('page-background') != -1
-            || id.indexOf('share-') != -1
-            || css.indexOf('share-') != -1
-            || id.indexOf('share-') != -1
-            || css.indexOf('-action') != -1
-            || id.indexOf('nav-') != -1
-            || css.indexOf('nav-') != -1
-            || id.indexOf('error') != -1
-            || css.indexOf('error') != -1;
-    }
-
-    </script>";
-            #endregion
-
-            File.WriteAllText("result_.html", s);
 
             return new UrlAnanyticResult() { Ok = true, Html = s };
         };
@@ -357,6 +180,16 @@ namespace appie
                     if (funcAnalytic != null)
                     {
                         UrlAnanyticResult rs = funcAnalytic(stream);
+                        if (!string.IsNullOrEmpty(rs.Html))
+                        {
+                            //string domain = request.RequestUri.Host.Replace('.', '_');
+                            string[] ad = request.RequestUri.Host.Split(new char[] { '.', ':' });
+                            string domain = ad.Length > 2 ? ad[ad.Length - 2] : ad[0];
+                            rs.Html = @"<html><head><meta charset=""utf-8"" /><meta http-equiv=""X-UA-Compatible"" content=""IE=edge"" /><title></title><style type=""text/css"">" + css + "</style></head><body class=" + domain + ">" + rs.Html + @"<script type=""text/javascript""> " + js + " </script>";
+                            rs.Html = rs.Html.Replace("[_URL_]", request.RequestUri.ToString());
+                            
+                            File.WriteAllText("result_.html", rs.Html);
+                        }
                         rs.Msg = msg;
                         callback(rs);
                     }

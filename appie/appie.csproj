@@ -904,6 +904,10 @@
     <None Include="LIB\HtmlAgilityPack.CssSelectors\README.md" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="bin\Debug\clean - Copy.js" />
+    <Content Include="bin\Debug\clean.js" />
+    <Content Include="bin\Debug\css - Copy.css" />
+    <Content Include="bin\Debug\css.css" />
     <Content Include="bin\Debug\demo3.html" />
     <Content Include="bin\Debug\demo2.html" />
     <Content Include="bin\Debug\demo1.html" />
