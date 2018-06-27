@@ -1,7 +1,7 @@
 ﻿
 var url = '[_URL_]';
 var au = url.split('/');
-var domain = au[0] + '://' + au[2];
+var domain = au[0] + '//' + au[2];
 
 var dels = [], a = [];
 
@@ -36,7 +36,22 @@ for (var i = 0; i < a.length; i++) {
     }
 }
 for (var i = 0; i < dels.length; i++)
-    if (dels[i] != null && dels[i].parentNode != null) dels[i].parentNode.removeChild(dels[i]);
+    if (dels[i] != null && dels[i].parentNode != null && dels[i].tagName != 'IMG') {
+        if (dels[i].getElementsByTagName('img').length > 0) continue; 
+        dels[i].parentNode.removeChild(dels[i]);
+    }
+
+
+a = document.body.getElementsByTagName('img');
+for (var i = 0; i < a.length; i++) {
+    if (a[i].src != null) {
+        var src = a[i].getAttribute('src');
+        if (src[0] == '/') {
+            src = domain + src;
+            a[i].setAttribute('src', src);
+        }
+    }
+}
 
 function is_remove_text(s) {
     if (s == null || s.trim().length == 0) return true;

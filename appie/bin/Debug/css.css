@@ -4,7 +4,7 @@
 }
 
 body {
-    padding: 20px 10px;
+    padding: 0 10px 20px;
     margin: 0;
     font-size: 1.5em;
 }
@@ -121,16 +121,8 @@ a {
 
 
 img {
-    max-width: 20% !important;
+    max-width: 90% !important;
 }
-
-p.box_img___ {
-    display: none;
-    text-align: right;
-}
-
-    p.box_img___ img {
-    }
 
 /*stackoverflow.com*/
 
@@ -213,3 +205,9 @@ body.microsoft a[data-linktype="relative-path"] {
     display: block;
     width: 100%;
 }
+
+/*codeproject.com*/
+
+body.codeproject .site-top-menu, body.codeproject .sub-headerbar, body.codeproject .article-wing-left, body.codeproject .article-wing-right, body.codeproject .container-content .article-nav, body.codeproject .site-header, body.codeproject .content-list .content-list-item .thumbnail {
+    display: none;
+} 
