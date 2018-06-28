@@ -107,9 +107,13 @@
     <Compile Include="JOB\JobGooTranslate.cs" />
     <Compile Include="JOB\JOB_NAME.cs" />
     <Compile Include="JOB\Message.cs" />
+    <Compile Include="LIB\Base\WeakTable.cs" />
     <Compile Include="LIB\Google\GooTranslateService_v1.cs" />
     <Compile Include="LIB\Google\GooTranslateService_v2.cs" />
-    <Compile Include="LIB\UrlService.cs" />
+    <Compile Include="LIB\Base\InternalList.cs" />
+    <Compile Include="LIB\Base\StringBuilderExt.cs" />
+    <Compile Include="LIB\Base\UndoStack.cs" />
+    <Compile Include="LIB\Base\UrlService.cs" />
     <Compile Include="LIB\NAudio\CachedSound.cs" />
     <Compile Include="LIB\NAudio\LoopStream.cs" />
     <Compile Include="LIB\NAudio\_Demo\Mp3Streaming\fMediaMP3Stream_Demo.cs">
@@ -885,7 +889,9 @@
     <Compile Include="LIB\System.Threading\ListThreadSafe.cs" />
     <Compile Include="LIB\System.Threading\QueueThreadSafe.cs" />
     <Compile Include="LIB\System.Threading\StackThreadSafe.cs" />
-    <Compile Include="LIB\Trace.cs" />
+    <Compile Include="LIB\Base\Trace.cs" />
+    <Compile Include="LIB\Base\WeakDictionary.cs" />
+    <Compile Include="LIB\Base\WeakReference.cs" />
     <Compile Include="LIB\YYProject.RichTextBoxEx\InternalNativeMembers.cs" />
     <Compile Include="LIB\YYProject.RichTextBoxEx\RichTextBoxEx.cs">
       <SubType>Component</SubType>
@@ -960,6 +966,7 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
