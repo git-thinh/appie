@@ -26,3 +26,5 @@ appie/bin/Debug/demo.bin
 appie/Run/appie.exe
 appie/Run/appie.pdb
 appie/Run/debug.log
+.vs/config/applicationhost.config
+appie/Run/appie.vshost.exe

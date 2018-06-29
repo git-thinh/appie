@@ -1,11 +1,9 @@
-﻿// fonts .svg .woff .ttf 
-
-
-using CefSharp;
+﻿using CefSharp;
 using CefSharp.WinForms;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -40,24 +38,12 @@ namespace appie
             this.Shown += f_form_Shown;
             this.FormClosing += f_form_Closing;
 
-            browser = new WebView(url, new BrowserSettings());
-            browser.Dock = DockStyle.Fill;
-            browser.RequestHandler = this;
-            this.Controls.Add(browser);
-            //this.WindowState = FormWindowState.Maximized;
-            //this.Text = String.Format("Chromium: {0}, CEF: {1}, CefSharp: {2}, Environment: x86", CEF.ChromiumVersion, CEF.CefVersion, CEF.CefSharpVersion);
-
-            var btn = new Button() { Location = new System.Drawing.Point(0, 0), Text = "DEV", Width = 45 };
-            btn.Click += (se, ev) =>
-            {
-                browser.ShowDevTools();
-            };
-            this.Controls.Add(btn);
-            btn.BringToFront();
+            f_brow_Init();
         }
 
         private void f_form_Closing(object sender, FormClosingEventArgs e)
         {
+            f_brow_Close();
         }
 
         private void f_form_Shown(object sender, EventArgs e)
@@ -69,35 +55,135 @@ namespace appie
 
         #region [ === BROWSER === ]
 
-        private readonly WebView browser;
-        //const string url = "https://www.google.com/maps";
-        //const string url = "http://web20office.com/crm/demo/system/login.php?r=/crm/demo";
-        //const string url = "file:///G:/_EL/Document/data_el2/book/84-cau-truc-va-cau-vi-du-thong-dung-trong-tieng-anh-giao-tiep.pdf";
-        const string url = "https://www.google.com";
-        //const string url = "https://www.youtube.com/";
-        //const string url = "https://drive.google.com/open?id=1TG-FDU0cZ48vaJCMcAO33iNOuNqgL9BH";
-        //const string url = "https://drive.google.com/open?id=1B_DuOqTAQOcZjuls6bw9Tnx_0nd8qpr8";
-        //const string url = "https://drive.google.com/file/d/1B_DuOqTAQOcZjuls6bw9Tnx_0nd8qpr8/view";
-        //const string url = "https://drive.google.com/file/d/1TG-FDU0cZ48vaJCMcAO33iNOuNqgL9BH/view";
+        const string DOMAIN_GOOGLE = "www.google.com";
+        const string DOM_CONTENT_LOADED = "DOM_CONTENT_LOADED";
 
-        string domain = url.Split('/')[2];
+        //string brow_URL = "https://www.google.com";
+        string brow_URL = "https://developers.google.com/web/tools/chrome-devtools/network-performance/";
+        //string brow_URL = "https://www.google.com/maps";
+        //string brow_URL = "http://web20office.com/crm/demo/system/login.php?r=/crm/demo";
+        //string brow_URL = "file:///G:/_EL/Document/data_el2/book/84-cau-truc-va-cau-vi-du-thong-dung-trong-tieng-anh-giao-tiep.pdf";
+        //string brow_URL = "https://www.youtube.com/";
+        //string brow_URL = "https://drive.google.com/open?id=1TG-FDU0cZ48vaJCMcAO33iNOuNqgL9BH";
+        //string brow_URL = "https://drive.google.com/open?id=1B_DuOqTAQOcZjuls6bw9Tnx_0nd8qpr8";
+        //string brow_URL = "https://drive.google.com/file/d/1B_DuOqTAQOcZjuls6bw9Tnx_0nd8qpr8/view";
+        //string brow_URL = "https://drive.google.com/file/d/1TG-FDU0cZ48vaJCMcAO33iNOuNqgL9BH/view";
+
+        string brow_Domain;
+        bool importPlugin = false;
+
+        TextBoxWaterMark brow_UrlTextBox;
+        WebView browser;
+        ControlTransparent brow_Transparent;
+
+        void f_brow_Init()
+        {
+            brow_Domain = brow_URL.Split('/')[2];
+            browser = new WebView(brow_URL, new BrowserSettings());
+            browser.Dock = DockStyle.Fill;
+            browser.RequestHandler = this;            
+            browser.ConsoleMessage += f_brow_onBrowserConsoleMessage;
+
+            brow_Transparent = new ControlTransparent() { Location = new Point(0, 0), Size = new Size(999,999) };
+
+            Panel footer = new Panel() { Dock = DockStyle.Bottom, Height = 32, BackColor = Color.WhiteSmoke, Padding = new Padding(9, 9, 9, 3) };
+
+            brow_UrlTextBox = new TextBoxWaterMark() { WaterMark = "HTTP://...", Dock = DockStyle.Fill, Height = 20 };
+            brow_UrlTextBox.KeyDown += (se, ev) =>
+            {
+                if (ev.KeyCode == Keys.Enter)
+                {
+                    f_brow_Go(brow_UrlTextBox.Text.Trim());
+                }
+            };
+
+            var btn = new Button() { Location = new System.Drawing.Point(0, 0), Text = "DEV", Width = 45, Height = 20, Dock = DockStyle.Right };
+            btn.Click += (se, ev) =>
+            {
+                browser.ShowDevTools();
+            };
+            btn.BringToFront();
+
+            footer.Controls.AddRange(new Control[] { brow_UrlTextBox, btn });
+            this.Controls.AddRange(new Control[] { brow_Transparent, browser, footer });
+        }
+        
+        private void f_brow_onBrowserConsoleMessage(object sender, ConsoleMessageEventArgs e)
+        {
+            string s = string.Format("LOG: ===== Line {0}, Source: {1}, Message: {2}", e.Line, e.Source, e.Message);
+            Debug.WriteLine(s);
+            switch (e.Message) {
+                case DOM_CONTENT_LOADED:
+                    f_brow_onDOMContentLoaded();
+                    break;
+            }
+        }
+
+        void f_brow_Go(string url)
+        {
+            if (Uri.IsWellFormedUriString(url, UriKind.RelativeOrAbsolute))
+            {
+                brow_URL = url;
+                brow_Domain = brow_URL.Split('/')[2];
+                browser.Load(brow_Domain);
+            }
+        }
+
+        void f_brow_onBeforeBrowse()
+        {
+            brow_Transparent.crossThreadPerformSafely(() => brow_Transparent.BringToFront());
+        }
+
+        void f_brow_onDOMContentLoaded()
+        {
+            brow_Transparent.crossThreadPerformSafely(() => brow_Transparent.SendToBack());
+        }
 
         #region [ IRequestHandler Members ]
 
         bool IRequestHandler.OnBeforeResourceLoad(IWebBrowser browser, IRequestResponse requestResponse)
         {
             //System.Diagnostics.Debug.WriteLine("OnBeforeResourceLoad");
-            IRequest request = requestResponse.Request;
-            string url = request.Url, s = string.Empty;
-            Debug.WriteLine(url);
             //var headers = request.GetHeaders();
-            if (url.Contains(".js")
-                || url.Contains(domain) == false
-                || url.Contains("font")
-                || url.Contains(".png") || url.Contains(".jpeg") || url.Contains(".jpg") || url.Contains(".gif"))
+            string url = requestResponse.Request.Url;
+            if (url.StartsWith("chrome-devtools://") == false)
             {
-                Debug.WriteLine("----> " + url);
-                return true;
+                if (importPlugin == false && (url.Contains(".js") || url.Contains("/js/")))
+                {
+                    MemoryStream stream;
+                    byte[] bytes;
+                    switch (brow_Domain)
+                    {
+                        case DOMAIN_GOOGLE:
+                            stream = new System.IO.MemoryStream();
+                            bytes = ASCIIEncoding.ASCII.GetBytes(@"document.addEventListener('DOMContentLoaded', function (event) { var a = document.querySelectorAll('img'); for (var i = 0; i < a.length; i++) { a[i].remove(); }; console.log('DOM_CONTENT_LOADED'); }); ");
+                            stream.Write(bytes, 0, bytes.Length);
+                            requestResponse.RespondWith(stream, "text/javascript; charset=utf-8");
+                            break;
+                        default:
+                            stream = new System.IO.MemoryStream();
+                            FileStream file = new FileStream(@"plugin.js", FileMode.Open, FileAccess.Read, FileShare.Read);
+                            bytes = new byte[file.Length];
+                            file.Read(bytes, 0, (int)file.Length);
+                            stream.Write(bytes, 0, (int)file.Length);
+                            file.Close();
+                            requestResponse.RespondWith(stream, "text/javascript; charset=utf-8");
+                            break;
+                    }
+                    Debug.WriteLine("----> JS === " + url);
+                    importPlugin = true;
+                    return false;
+                }
+
+                if (url.Contains(".js") || url.Contains("/js/")
+                    || url.Contains(brow_Domain) == false
+                    || url.Contains("font") || url.Contains(".svg") || url.Contains(".woff") || url.Contains(".ttf")
+                    || url.Contains("/image") || url.Contains(".png") || url.Contains(".jpeg") || url.Contains(".jpg") || url.Contains(".gif"))
+                {
+                    Debug.WriteLine("----> " + url);
+                    return true;
+                }
+                Debug.WriteLine(url);
             }
 
             #region
@@ -183,7 +269,7 @@ namespace appie
             //                ////}
             //                #endregion
             //            }
-            
+
             #endregion
 
             return false;
@@ -191,8 +277,19 @@ namespace appie
 
         bool IRequestHandler.OnBeforeBrowse(IWebBrowser browser, IRequest request, NavigationType naigationvType, bool isRedirect)
         {
-            Debug.WriteLine("GO ====> " + request.Url);
-            domain = request.Url.Split('/')[2];
+            if (request.Url.StartsWith("chrome-devtools://") == false)
+            {
+                Debug.WriteLine("GO ====> " + request.Url);
+
+                brow_URL = request.Url;
+                brow_Domain = brow_URL.Split('/')[2];
+                brow_UrlTextBox.crossThreadPerformSafely(() => brow_UrlTextBox.Text = brow_URL);
+
+                importPlugin = false;
+                return false;
+            }
+
+            f_brow_onBeforeBrowse();
             return false;
         }
 

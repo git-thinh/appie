@@ -134,7 +134,7 @@
     </Compile>
     <Compile Include="JOB\JOB_CONST.cs" />
     <Compile Include="JOB\JOB_STATE.cs" />
-    <Compile Include="LIB\CTextBox.cs">
+    <Compile Include="LIB\TextBoxWaterMark.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="LIB\ControlTransparent.cs">
