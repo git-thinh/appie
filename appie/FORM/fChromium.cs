@@ -1,4 +1,7 @@
-﻿using CefSharp;
+﻿// fonts .svg .woff .ttf 
+
+
+using CefSharp;
 using CefSharp.WinForms;
 using System;
 using System.Collections.Generic;
@@ -97,6 +100,10 @@ namespace appie
                 return true;
             }
 
+            #region
+
+            ////IRequest request = requestResponse.Request;
+            ////string url = request.Url, s = string.Empty;
             //            MemoryStream stream;
             //            byte[] bytes;
             //            if (url.EndsWith(".mp4"))
@@ -176,13 +183,16 @@ namespace appie
             //                ////}
             //                #endregion
             //            }
+            
+            #endregion
 
             return false;
         }
 
         bool IRequestHandler.OnBeforeBrowse(IWebBrowser browser, IRequest request, NavigationType naigationvType, bool isRedirect)
         {
-            //System.Diagnostics.Debug.WriteLine("OnBeforeBrowse");
+            Debug.WriteLine("GO ====> " + request.Url);
+            domain = request.Url.Split('/')[2];
             return false;
         }
 
