@@ -27,11 +27,12 @@ namespace appie
                     break;
             }
         }
-        
+
         #region [ === FORM === ]
 
         public fChromium(IJobStore store) : base(store)
         {
+            this.Text = "English";
             this.OnReceiveMessage += f_event_OnReceiveMessage;
             this.Shown += f_form_Shown;
             this.FormClosing += f_form_Closing;
@@ -41,10 +42,11 @@ namespace appie
             browser.RequestHandler = this;
             this.Controls.Add(browser);
             //this.WindowState = FormWindowState.Maximized;
-            this.Text = String.Format("Chromium: {0}, CEF: {1}, CefSharp: {2}, Environment: x86", CEF.ChromiumVersion, CEF.CefVersion, CEF.CefSharpVersion);
+            //this.Text = String.Format("Chromium: {0}, CEF: {1}, CefSharp: {2}, Environment: x86", CEF.ChromiumVersion, CEF.CefVersion, CEF.CefSharpVersion);
 
             var btn = new Button() { Location = new System.Drawing.Point(0, 0), Text = "DEV", Width = 45 };
-            btn.Click += (se, ev) => {
+            btn.Click += (se, ev) =>
+            {
                 browser.ShowDevTools();
             };
             this.Controls.Add(btn);
@@ -59,7 +61,7 @@ namespace appie
         {
             this.WindowState = FormWindowState.Maximized;
         }
-        
+
         #endregion
 
         #region [ === BROWSER === ]
@@ -68,12 +70,14 @@ namespace appie
         //const string url = "https://www.google.com/maps";
         //const string url = "http://web20office.com/crm/demo/system/login.php?r=/crm/demo";
         //const string url = "file:///G:/_EL/Document/data_el2/book/84-cau-truc-va-cau-vi-du-thong-dung-trong-tieng-anh-giao-tiep.pdf";
-        //const string url = "https://www.google.com";
+        const string url = "https://www.google.com";
         //const string url = "https://www.youtube.com/";
         //const string url = "https://drive.google.com/open?id=1TG-FDU0cZ48vaJCMcAO33iNOuNqgL9BH";
         //const string url = "https://drive.google.com/open?id=1B_DuOqTAQOcZjuls6bw9Tnx_0nd8qpr8";
         //const string url = "https://drive.google.com/file/d/1B_DuOqTAQOcZjuls6bw9Tnx_0nd8qpr8/view";
         //const string url = "https://drive.google.com/file/d/1TG-FDU0cZ48vaJCMcAO33iNOuNqgL9BH/view";
+
+        string domain = url.Split('/')[2];
 
         #region [ IRequestHandler Members ]
 
@@ -82,9 +86,16 @@ namespace appie
             //System.Diagnostics.Debug.WriteLine("OnBeforeResourceLoad");
             IRequest request = requestResponse.Request;
             string url = request.Url, s = string.Empty;
-
+            Debug.WriteLine(url);
             //var headers = request.GetHeaders();
-            //Debug.WriteLine(url);
+            if (url.Contains(".js")
+                || url.Contains(domain) == false
+                || url.Contains("font")
+                || url.Contains(".png") || url.Contains(".jpeg") || url.Contains(".jpg") || url.Contains(".gif"))
+            {
+                Debug.WriteLine("----> " + url);
+                return true;
+            }
 
             //            MemoryStream stream;
             //            byte[] bytes;
@@ -168,13 +179,13 @@ namespace appie
 
             return false;
         }
-         
+
         bool IRequestHandler.OnBeforeBrowse(IWebBrowser browser, IRequest request, NavigationType naigationvType, bool isRedirect)
         {
             //System.Diagnostics.Debug.WriteLine("OnBeforeBrowse");
             return false;
         }
-        
+
         void IRequestHandler.OnResourceResponse(IWebBrowser browser, string url, int status, string statusText, string mimeType, WebHeaderCollection headers)
         {
             //string content_type = headers.Get("Content-Type");
@@ -195,9 +206,10 @@ namespace appie
 
         #endregion
 
-        void f_brow_Close() { 
+        void f_brow_Close()
+        {
             browser.Dispose();
-            CEF.Shutdown(); 
+            CEF.Shutdown();
         }
 
         #endregion

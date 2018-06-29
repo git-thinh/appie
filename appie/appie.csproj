@@ -53,6 +53,9 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="AxInterop.WMPLib">
       <HintPath>DLL\AxInterop.WMPLib.dll</HintPath>
@@ -907,6 +910,8 @@
     <Content Include="bin\Debug\browser.html" />
     <Content Include="bin\Debug\xpath.html" />
     <Content Include="bin\Debug\template.html" />
+    <Content Include="icon.ico" />
+    <Content Include="icon.png" />
     <Content Include="LIB\NAudio\Changes.xml" />
     <Content Include="LIB\Salar.Bois\TODO.txt" />
     <Content Include="Note.txt" />
