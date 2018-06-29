@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>Run\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -107,7 +107,6 @@
     <Compile Include="JOB\JobGooTranslate.cs" />
     <Compile Include="JOB\JOB_NAME.cs" />
     <Compile Include="JOB\Message.cs" />
-    <Compile Include="LIB\Base\WeakTable.cs" />
     <Compile Include="LIB\Google\GooTranslateService_v1.cs" />
     <Compile Include="LIB\Google\GooTranslateService_v2.cs" />
     <Compile Include="LIB\Base\InternalList.cs" />
