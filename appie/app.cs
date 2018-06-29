@@ -52,7 +52,7 @@ namespace appie
             //Application.Run(new fMain());
             //Application.Run(new fEdit());
             //Application.Run(new fBrowser());
-            Application.Run(new fApp(jobs));
+            Application.Run(new fChromium(jobs));
         }
 
         public static IFORM get_Main() {
