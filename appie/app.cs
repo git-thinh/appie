@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CefSharp;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -48,6 +49,20 @@ namespace appie
         public static void RUN() {
             jobs = new JobStore();
             Application.EnableVisualStyles();
+
+
+            if (!CEF.Initialize(new Settings()))
+            {
+                ////////if (Environment.GetCommandLineArgs().Contains("--type=renderer"))
+                ////////{
+                ////////    Environment.Exit(0);
+                ////////}
+                ////////else
+                ////////{
+                ////////    return;
+                ////////}
+            }
+
             //Application.Run(new fMedia());
             //Application.Run(new fMain());
             //Application.Run(new fEdit());
