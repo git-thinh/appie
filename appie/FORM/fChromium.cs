@@ -1,5 +1,6 @@
 ﻿using CefSharp;
 using CefSharp.WinForms;
+using FarsiLibrary.Win;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,6 +15,10 @@ namespace appie
 {
     public class fChromium : fBase, IRequestHandler
     {
+        readonly Font font_Title = new Font("Arial", 11f, FontStyle.Regular);
+        readonly Font font_TextView = new Font("Courier New", 11f, FontStyle.Regular);
+        readonly Font font_LogView = new Font("Courier New", 9f, FontStyle.Regular);
+
         private void f_event_OnReceiveMessage(IFORM form, Message m)
         {
             switch (m.JobName)
@@ -40,6 +45,7 @@ namespace appie
             this.FormClosing += f_form_Closing;
 
             f_brow_Init();
+            f_tab_Init();
         }
 
         private void f_form_Closing(object sender, FormClosingEventArgs e)
@@ -80,7 +86,7 @@ namespace appie
             brow_EnabelJS = true, 
             brow_EnableCSS = false,
             brow_EnableImg = false,
-            brow_AutoCache = false;
+            brow_AutRequest = false;
 
         TextBoxWaterMark brow_UrlTextBox;
         WebView browser;
@@ -95,13 +101,15 @@ namespace appie
             browser.RequestHandler = this;
             browser.ConsoleMessage += f_brow_onBrowserConsoleMessage;
             browser.LoadCompleted += f_brow_onLoadCompleted;
+            browser.MenuHandler = new CustomMenuHandler();
 
             brow_Transparent = new ControlTransparent() { Location = new Point(0, 0), Size = new Size(999, 999) };
 
-            Panel toolbar = new Panel() { Dock = DockStyle.Top, Height = TOOLBAR_HEIGHT, BackColor = Color.WhiteSmoke, Padding = new Padding(3, 3, 0, 3) };
-            brow_ShortCutBar = new Panel() { Dock = DockStyle.Top, Height = SHORTCUTBAR_HEIGHT, BackColor = Color.Red, Padding = new Padding(0) };
+            Panel toolbar = new Panel() { Dock = DockStyle.Top, Height = TOOLBAR_HEIGHT, BackColor = SystemColors.Control, Padding = new Padding(3, 3, 0, 3) };
+            brow_ShortCutBar = new Panel() { Dock = DockStyle.Top, Height = SHORTCUTBAR_HEIGHT, BackColor = SystemColors.Control, Padding = new Padding(0) };
 
-            brow_UrlTextBox = new TextBoxWaterMark() { WaterMark = "HTTP://...", Dock = DockStyle.Fill, Height = 20 };
+            brow_UrlTextBox = new TextBoxWaterMark() { WaterMark = "HTTP://...", Dock = DockStyle.Fill, Height = 20, Font = font_Title, BorderStyle = BorderStyle.None,
+            BackColor = SystemColors.Control };
             brow_UrlTextBox.KeyDown += (se, ev) =>
             {
                 if (ev.KeyCode == Keys.Enter)
@@ -136,7 +144,7 @@ namespace appie
                 else
                     btn_EnableCSS.BackColor = SystemColors.Control;
             };
-            var btn_EnableImg = new Button() { Text = "Images", Width = 55, Height = 20, Dock = DockStyle.Right };
+            var btn_EnableImg = new Button() { Text = "Image", Width = 45, Height = 20, Dock = DockStyle.Right };
             btn_EnableImg.MouseClick += (se, ev) => {
                 brow_EnableImg = brow_EnableImg ? false : true;
                 if (brow_EnableImg)
@@ -144,20 +152,20 @@ namespace appie
                 else
                     btn_EnableImg.BackColor = SystemColors.Control;
             };
-            var btn_EnableAutoCache = new Button() { Text = "AutoCache", Width = 77, Height = 20, Dock = DockStyle.Right };
+            var btn_EnableAutoCache = new Button() { Text = "AutoRequest", Width = 79, Height = 20, Dock = DockStyle.Right };
             btn_EnableAutoCache.MouseClick += (se, ev) => {
-                brow_AutoCache = brow_AutoCache ? false : true;
-                if (brow_AutoCache)
+                brow_AutRequest = brow_AutRequest ? false : true;
+                if (brow_AutRequest)
                     btn_EnableAutoCache.BackColor = Color.OrangeRed;
                 else
                     btn_EnableAutoCache.BackColor = SystemColors.Control;
             };
-            var btn_BookMark = new Button() { Text = "BookMark", Width = 77, Height = 20, Dock = DockStyle.Right };
-
+            var btn_ToggleTab = new Button() { Text = "♡", Width = 19, Height = 20, Dock = DockStyle.Right };
+            btn_ToggleTab.MouseClick += (se, ev) => { f_tab_Toggle(); };
             toolbar.Controls.AddRange(new Control[] { brow_UrlTextBox,
                 btn_Devtool , btn_EnableCSS, btn_EnableJS, btn_EnableImg, btn_EnableAutoCache,
                 new Label() { Dock = DockStyle.Right, Width = 100 },
-                btn_BookMark
+                btn_ToggleTab
             });
             this.Controls.AddRange(new Control[] { brow_Transparent, browser,brow_ShortCutBar, toolbar,  });
         }
@@ -393,5 +401,46 @@ namespace appie
         }
 
         #endregion
+
+        #region [  === TAB === ]
+
+        FATabStrip tab_Main;
+        FATabStripItem tab_Note;
+        FATabStripItem tab_Link;
+
+        void f_tab_Init() {
+            tab_Main = new FATabStrip() { Dock = DockStyle.Right, Width = 399, AlwaysShowClose = false, AlwaysShowMenuGlyph = false };
+            tab_Link = new FATabStripItem() { Title = "Link", CanClose = false };
+
+            tab_Main.Items.AddRange(new FATabStripItem[] {
+                tab_Link
+            });
+
+            this.Controls.AddRange(new Control[] {
+                new Splitter() { Dock = DockStyle.Right, MinExtra = 0, MinSize = 0 },
+                tab_Main
+            });
+        }
+
+        void f_tab_Toggle() {
+            if (tab_Main.Width != 0) {
+                tab_Main.Tag = tab_Main.Width;
+                tab_Main.Width = 0;
+            } else {
+                if (tab_Main.Tag != null)
+                    tab_Main.Width = (int)tab_Main.Tag;
+                else tab_Main.Width = 399;
+            }
+        }
+
+        #endregion
+    }
+
+    public class CustomMenuHandler : IMenuHandler
+    {
+        public bool OnBeforeMenu(IWebBrowser browser)
+        {
+            return true;
+        }
     }
 }
