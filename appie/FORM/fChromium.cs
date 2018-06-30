@@ -7,6 +7,7 @@ using System.Drawing;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Web;
 using System.Windows.Forms;
 
 namespace appie
@@ -55,11 +56,16 @@ namespace appie
 
         #region [ === BROWSER === ]
 
-        const string DOMAIN_GOOGLE = "www.google.com";
+        const string DOMAIN_GOOGLE = "www.google.com.vn";
+        const string DOMAIN_BING = "www.bing.com";
         const string DOM_CONTENT_LOADED = "DOM_CONTENT_LOADED";
+        const int TOOLBAR_HEIGHT = 28;
+        const int SHORTCUTBAR_HEIGHT = 17;
 
-        //string brow_URL = "https://www.google.com";
-        string brow_URL = "https://developers.google.com/web/tools/chrome-devtools/network-performance/";
+        string brow_URL = "https://www.google.com.vn";
+        //string brow_URL = "https://www.bing.com";
+        //string brow_URL = "https://www.bing.com/search?go=Submit&qs=ds&form=QBLH&q=hello";
+        //string brow_URL = "https://developers.google.com/web/tools/chrome-devtools/network-performance/";
         //string brow_URL = "https://www.google.com/maps";
         //string brow_URL = "http://web20office.com/crm/demo/system/login.php?r=/crm/demo";
         //string brow_URL = "file:///G:/_EL/Document/data_el2/book/84-cau-truc-va-cau-vi-du-thong-dung-trong-tieng-anh-giao-tiep.pdf";
@@ -70,23 +76,30 @@ namespace appie
         //string brow_URL = "https://drive.google.com/file/d/1TG-FDU0cZ48vaJCMcAO33iNOuNqgL9BH/view";
 
         string brow_Domain;
-        bool importPlugin = false;
+        bool brow_ImportPlugin = false, 
+            brow_EnabelJS = true, 
+            brow_EnableCSS = false,
+            brow_EnableImg = false,
+            brow_AutoCache = false;
 
         TextBoxWaterMark brow_UrlTextBox;
         WebView browser;
         ControlTransparent brow_Transparent;
+        Panel brow_ShortCutBar;
 
         void f_brow_Init()
         {
             brow_Domain = brow_URL.Split('/')[2];
             browser = new WebView(brow_URL, new BrowserSettings());
             browser.Dock = DockStyle.Fill;
-            browser.RequestHandler = this;            
+            browser.RequestHandler = this;
             browser.ConsoleMessage += f_brow_onBrowserConsoleMessage;
+            browser.LoadCompleted += f_brow_onLoadCompleted;
 
-            brow_Transparent = new ControlTransparent() { Location = new Point(0, 0), Size = new Size(999,999) };
+            brow_Transparent = new ControlTransparent() { Location = new Point(0, 0), Size = new Size(999, 999) };
 
-            Panel footer = new Panel() { Dock = DockStyle.Bottom, Height = 32, BackColor = Color.WhiteSmoke, Padding = new Padding(9, 9, 9, 3) };
+            Panel toolbar = new Panel() { Dock = DockStyle.Top, Height = TOOLBAR_HEIGHT, BackColor = Color.WhiteSmoke, Padding = new Padding(3, 3, 0, 3) };
+            brow_ShortCutBar = new Panel() { Dock = DockStyle.Top, Height = SHORTCUTBAR_HEIGHT, BackColor = Color.Red, Padding = new Padding(0) };
 
             brow_UrlTextBox = new TextBoxWaterMark() { WaterMark = "HTTP://...", Dock = DockStyle.Fill, Height = 20 };
             brow_UrlTextBox.KeyDown += (se, ev) =>
@@ -96,36 +109,86 @@ namespace appie
                     f_brow_Go(brow_UrlTextBox.Text.Trim());
                 }
             };
+            brow_UrlTextBox.MouseDoubleClick += (se, ev) =>
+            {
+                brow_UrlTextBox.Text = string.Empty;
+            };
 
-            var btn = new Button() { Location = new System.Drawing.Point(0, 0), Text = "DEV", Width = 45, Height = 20, Dock = DockStyle.Right };
-            btn.Click += (se, ev) =>
+            var btn_Devtool = new Button() { Text = "Dev", Width = 45, Height = 20, Dock = DockStyle.Right };
+            btn_Devtool.Click += (se, ev) =>
             {
                 browser.ShowDevTools();
             };
-            btn.BringToFront();
 
-            footer.Controls.AddRange(new Control[] { brow_UrlTextBox, btn });
-            this.Controls.AddRange(new Control[] { brow_Transparent, browser, footer });
+            var btn_EnableJS = new Button() { Text = "JS", Width = 45, Height = 20, Dock = DockStyle.Right, BackColor = Color.OrangeRed };
+            btn_EnableJS.MouseClick += (se, ev) => {
+                brow_EnabelJS = brow_EnabelJS ? false : true;
+                if (brow_EnabelJS)
+                    btn_EnableJS.BackColor = Color.OrangeRed;
+                else
+                    btn_EnableJS.BackColor = SystemColors.Control;
+            };
+            var btn_EnableCSS = new Button() { Text = "CSS", Width = 45, Height = 20, Dock = DockStyle.Right };
+            btn_EnableCSS.MouseClick += (se, ev) => {
+                brow_EnableCSS = brow_EnableCSS ? false : true;
+                if (brow_EnableCSS)
+                    btn_EnableCSS.BackColor = Color.OrangeRed;
+                else
+                    btn_EnableCSS.BackColor = SystemColors.Control;
+            };
+            var btn_EnableImg = new Button() { Text = "Images", Width = 55, Height = 20, Dock = DockStyle.Right };
+            btn_EnableImg.MouseClick += (se, ev) => {
+                brow_EnableImg = brow_EnableImg ? false : true;
+                if (brow_EnableImg)
+                    btn_EnableImg.BackColor = Color.OrangeRed;
+                else
+                    btn_EnableImg.BackColor = SystemColors.Control;
+            };
+            var btn_EnableAutoCache = new Button() { Text = "AutoCache", Width = 77, Height = 20, Dock = DockStyle.Right };
+            btn_EnableAutoCache.MouseClick += (se, ev) => {
+                brow_AutoCache = brow_AutoCache ? false : true;
+                if (brow_AutoCache)
+                    btn_EnableAutoCache.BackColor = Color.OrangeRed;
+                else
+                    btn_EnableAutoCache.BackColor = SystemColors.Control;
+            };
+            var btn_BookMark = new Button() { Text = "BookMark", Width = 77, Height = 20, Dock = DockStyle.Right };
+
+            toolbar.Controls.AddRange(new Control[] { brow_UrlTextBox,
+                btn_Devtool , btn_EnableCSS, btn_EnableJS, btn_EnableImg, btn_EnableAutoCache,
+                new Label() { Dock = DockStyle.Right, Width = 100 },
+                btn_BookMark
+            });
+            this.Controls.AddRange(new Control[] { brow_Transparent, browser,brow_ShortCutBar, toolbar,  });
         }
-        
+
+        private void f_brow_onLoadCompleted(object sender, LoadCompletedEventArgs url)
+        {
+            string s = string.Format("LOAD_COMPLETED: ===== {0}", url.Url);
+            Debug.WriteLine(s);
+            f_brow_onDOMContentLoaded();
+        }
+
         private void f_brow_onBrowserConsoleMessage(object sender, ConsoleMessageEventArgs e)
         {
             string s = string.Format("LOG: ===== Line {0}, Source: {1}, Message: {2}", e.Line, e.Source, e.Message);
             Debug.WriteLine(s);
-            switch (e.Message) {
-                case DOM_CONTENT_LOADED:
-                    f_brow_onDOMContentLoaded();
-                    break;
-            }
         }
 
         void f_brow_Go(string url)
         {
-            if (Uri.IsWellFormedUriString(url, UriKind.RelativeOrAbsolute))
+            url = url.Trim();
+
+            if ((url.IndexOf(' ') == -1 && url.IndexOf('.') != -1) || Uri.IsWellFormedUriString(url, UriKind.Absolute))
             {
-                brow_URL = url;
-                brow_Domain = brow_URL.Split('/')[2];
-                browser.Load(brow_Domain);
+                //brow_URL = url;
+                //brow_Domain = brow_URL.Split('/')[2];
+                browser.Load(url);
+            }
+            else
+            {
+                f_brow_Go("https://www.google.com.vn/search?q=" + HttpUtility.UrlEncode(url));
+                //f_brow_Go("https://www.bing.com/search?q=" + HttpUtility.UrlEncode(url));
             }
         }
 
@@ -137,6 +200,10 @@ namespace appie
         void f_brow_onDOMContentLoaded()
         {
             brow_Transparent.crossThreadPerformSafely(() => brow_Transparent.SendToBack());
+            this.crossThreadPerformSafely(() =>
+            {
+                this.Text = string.Format("{0} | {1}", browser.Title, brow_URL);
+            });
         }
 
         #region [ IRequestHandler Members ]
@@ -148,13 +215,14 @@ namespace appie
             string url = requestResponse.Request.Url;
             if (url.StartsWith("chrome-devtools://") == false)
             {
-                if (importPlugin == false && (url.Contains(".js") || url.Contains("/js/")))
+                if (brow_ImportPlugin == false && (url.Contains(".js") || url.Contains("/js/")))
                 {
                     MemoryStream stream;
                     byte[] bytes;
                     switch (brow_Domain)
                     {
                         case DOMAIN_GOOGLE:
+                        case DOMAIN_BING:
                             stream = new System.IO.MemoryStream();
                             bytes = ASCIIEncoding.ASCII.GetBytes(@"document.addEventListener('DOMContentLoaded', function (event) { var a = document.querySelectorAll('img'); for (var i = 0; i < a.length; i++) { a[i].remove(); }; console.log('DOM_CONTENT_LOADED'); }); ");
                             stream.Write(bytes, 0, bytes.Length);
@@ -171,7 +239,7 @@ namespace appie
                             break;
                     }
                     Debug.WriteLine("----> JS === " + url);
-                    importPlugin = true;
+                    brow_ImportPlugin = true;
                     return false;
                 }
 
@@ -277,19 +345,24 @@ namespace appie
 
         bool IRequestHandler.OnBeforeBrowse(IWebBrowser browser, IRequest request, NavigationType naigationvType, bool isRedirect)
         {
-            if (request.Url.StartsWith("chrome-devtools://") == false)
-            {
-                Debug.WriteLine("GO ====> " + request.Url);
+            string url = request.Url;
+            if (url == "about:blank"
+                || url.Contains("youtube.com/embed/")
+                || url.Contains("facebook.com/plugins/"))
+                return true;
 
-                brow_URL = request.Url;
-                brow_Domain = brow_URL.Split('/')[2];
-                brow_UrlTextBox.crossThreadPerformSafely(() => brow_UrlTextBox.Text = brow_URL);
+            if (url.StartsWith("chrome-devtools://")) return false;
 
-                importPlugin = false;
-                return false;
-            }
+            Debug.WriteLine("GO ====> " + request.Url);
+
+            brow_URL = request.Url;
+            brow_Domain = brow_URL.Split('/')[2];
+            brow_UrlTextBox.crossThreadPerformSafely(() => brow_UrlTextBox.Text = brow_URL);
+
+            brow_ImportPlugin = false;
 
             f_brow_onBeforeBrowse();
+
             return false;
         }
 
