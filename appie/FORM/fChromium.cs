@@ -122,48 +122,9 @@ namespace appie
                 brow_UrlTextBox.Text = string.Empty;
             };
 
-            var btn_Devtool = new Button() { Text = "Dev", Width = 45, Height = 20, Dock = DockStyle.Right };
-            btn_Devtool.Click += (se, ev) =>
-            {
-                browser.ShowDevTools();
-            };
-
-            var btn_EnableJS = new Button() { Text = "JS", Width = 45, Height = 20, Dock = DockStyle.Right, BackColor = Color.OrangeRed };
-            btn_EnableJS.MouseClick += (se, ev) => {
-                brow_EnabelJS = brow_EnabelJS ? false : true;
-                if (brow_EnabelJS)
-                    btn_EnableJS.BackColor = Color.OrangeRed;
-                else
-                    btn_EnableJS.BackColor = SystemColors.Control;
-            };
-            var btn_EnableCSS = new Button() { Text = "CSS", Width = 45, Height = 20, Dock = DockStyle.Right };
-            btn_EnableCSS.MouseClick += (se, ev) => {
-                brow_EnableCSS = brow_EnableCSS ? false : true;
-                if (brow_EnableCSS)
-                    btn_EnableCSS.BackColor = Color.OrangeRed;
-                else
-                    btn_EnableCSS.BackColor = SystemColors.Control;
-            };
-            var btn_EnableImg = new Button() { Text = "Image", Width = 45, Height = 20, Dock = DockStyle.Right };
-            btn_EnableImg.MouseClick += (se, ev) => {
-                brow_EnableImg = brow_EnableImg ? false : true;
-                if (brow_EnableImg)
-                    btn_EnableImg.BackColor = Color.OrangeRed;
-                else
-                    btn_EnableImg.BackColor = SystemColors.Control;
-            };
-            var btn_EnableAutoCache = new Button() { Text = "AutoRequest", Width = 79, Height = 20, Dock = DockStyle.Right };
-            btn_EnableAutoCache.MouseClick += (se, ev) => {
-                brow_AutRequest = brow_AutRequest ? false : true;
-                if (brow_AutRequest)
-                    btn_EnableAutoCache.BackColor = Color.OrangeRed;
-                else
-                    btn_EnableAutoCache.BackColor = SystemColors.Control;
-            };
-            var btn_ToggleTab = new Button() { Text = "♡", Width = 19, Height = 20, Dock = DockStyle.Right };
+            var btn_ToggleTab = new Button() { Text = tab_IconToggle, Width = 19, Height = 20, Dock = DockStyle.Right };
             btn_ToggleTab.MouseClick += (se, ev) => { f_tab_Toggle(); };
             toolbar.Controls.AddRange(new Control[] { brow_UrlTextBox,
-                btn_Devtool , btn_EnableCSS, btn_EnableJS, btn_EnableImg, btn_EnableAutoCache,
                 new Label() { Dock = DockStyle.Right, Width = 100 },
                 btn_ToggleTab
             });
@@ -404,22 +365,34 @@ namespace appie
 
         #region [  === TAB === ]
 
+        #region [ TAB: MAIN ]
+
+        const string tab_IconToggle = "☰";
         FATabStrip tab_Main;
         FATabStripItem tab_Note;
         FATabStripItem tab_Link;
+        FATabStripItem tab_Setting;
 
         void f_tab_Init() {
             tab_Main = new FATabStrip() { Dock = DockStyle.Right, Width = 399, AlwaysShowClose = false, AlwaysShowMenuGlyph = false };
             tab_Link = new FATabStripItem() { Title = "Link", CanClose = false };
+            tab_Note = new FATabStripItem() { Title = "Note", CanClose = false };
+            tab_Setting = new FATabStripItem() { Title = "Setting", CanClose = false };  
 
             tab_Main.Items.AddRange(new FATabStripItem[] {
-                tab_Link
+                tab_Link,
+                tab_Note,
+                tab_Setting, 
             });
 
             this.Controls.AddRange(new Control[] {
                 new Splitter() { Dock = DockStyle.Right, MinExtra = 0, MinSize = 0 },
-                tab_Main
+                tab_Main,
             });
+             
+            f_tab_SettingInit();
+            f_tab_LinkInit();
+            f_tab_LinkNote();
         }
 
         void f_tab_Toggle() {
@@ -433,6 +406,113 @@ namespace appie
             }
         }
 
+        #endregion
+
+        #region [ TAB:LINK ]
+
+        TextBoxWaterMark tab_LinkSearchTextBox;
+        TreeView tab_LinkTreeView;
+
+        void f_tab_LinkInit() {
+            Panel barSearch = new Panel() {
+                Height = 23,
+                Dock = DockStyle.Top,
+                //BackColor = Color.Gray,
+                Padding = new Padding(9,1,0,0),
+            };
+            tab_LinkSearchTextBox = new TextBoxWaterMark() {
+                WaterMark = "Search Link",
+                Dock = DockStyle.Right,
+                Height = 19,
+                BorderStyle = BorderStyle.None,
+                WaterMarkForeColor = Color.Gray,
+                WaterMarkActiveForeColor = Color.DarkGray,
+            };
+            barSearch.Controls.AddRange(new Control[] {
+                tab_LinkSearchTextBox
+            });
+
+            tab_LinkTreeView = new TreeView() {
+                Dock = DockStyle.Fill,
+                Font = font_Title,
+                BorderStyle = BorderStyle.None,
+            };
+
+            Panel barFooter = new Panel()
+            {
+                Height = 24,
+                Dock = DockStyle.Bottom,
+                BackColor = Color.Gray,
+            };
+
+            tab_Link.Controls.AddRange(new Control[] {
+                tab_LinkTreeView,
+                barSearch,
+                barFooter,
+                new Label() { Dock = DockStyle.Left, Width = 1, BackColor = Color.LightGray }
+            });
+        }
+
+        #endregion
+
+        #region [ TAB:NOTE ]
+
+        void f_tab_LinkNote() {
+
+        }
+
+        #endregion
+
+        #region [ TAB: SETTING ]
+
+        void f_tab_SettingInit() {
+
+            var btn_Devtool = new Button() { Text = "Dev", Width = 45, Height = 20, Dock = DockStyle.Top };
+            btn_Devtool.Click += (se, ev) =>
+            {
+                browser.ShowDevTools();
+            };
+
+            var btn_EnableJS = new Button() { Text = "JS", Width = 45, Height = 20, Dock = DockStyle.Top, BackColor = Color.OrangeRed };
+            btn_EnableJS.MouseClick += (se, ev) => {
+                brow_EnabelJS = brow_EnabelJS ? false : true;
+                if (brow_EnabelJS)
+                    btn_EnableJS.BackColor = Color.OrangeRed;
+                else
+                    btn_EnableJS.BackColor = SystemColors.Control;
+            };
+            var btn_EnableCSS = new Button() { Text = "CSS", Width = 45, Height = 20, Dock = DockStyle.Top };
+            btn_EnableCSS.MouseClick += (se, ev) => {
+                brow_EnableCSS = brow_EnableCSS ? false : true;
+                if (brow_EnableCSS)
+                    btn_EnableCSS.BackColor = Color.OrangeRed;
+                else
+                    btn_EnableCSS.BackColor = SystemColors.Control;
+            };
+            var btn_EnableImg = new Button() { Text = "Image", Width = 45, Height = 20, Dock = DockStyle.Top, BackColor = Color.OrangeRed  };
+            btn_EnableImg.MouseClick += (se, ev) => {
+                brow_EnableImg = brow_EnableImg ? false : true;
+                if (brow_EnableImg)
+                    btn_EnableImg.BackColor = Color.OrangeRed;
+                else
+                    btn_EnableImg.BackColor = SystemColors.Control;
+            };
+            var btn_EnableAutoCache = new Button() { Text = "AutoRequest", Width = 79, Height = 20, Dock = DockStyle.Top };
+            btn_EnableAutoCache.MouseClick += (se, ev) => {
+                brow_AutRequest = brow_AutRequest ? false : true;
+                if (brow_AutRequest)
+                    btn_EnableAutoCache.BackColor = Color.OrangeRed;
+                else
+                    btn_EnableAutoCache.BackColor = SystemColors.Control;
+            };
+
+            tab_Setting.Controls.AddRange(new Control[] {
+                btn_Devtool , btn_EnableCSS, btn_EnableJS, btn_EnableImg, btn_EnableAutoCache,
+            });
+        }
+
+        #endregion
+         
         #endregion
     }
 
