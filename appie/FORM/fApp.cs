@@ -1,4 +1,5 @@
 ﻿using FarsiLibrary.Win;
+using Gecko;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -54,6 +55,7 @@ namespace appie
         private void f_form_Shown(object sender, EventArgs e)
         {
             this.WindowState = FormWindowState.Maximized;
+            f_brow_Go(brow_URL);
         }
 
         #endregion
@@ -66,9 +68,9 @@ namespace appie
         const int TOOLBAR_HEIGHT = 28;
         const int SHORTCUTBAR_HEIGHT = 17;
 
-        //string brow_URL = "https://www.google.com.vn";
+        string brow_URL = "https://www.google.com.vn";
         //string brow_URL = "https://dictionary.cambridge.org/grammar/british-grammar/do-or-make";
-        string brow_URL = "https://dictionary.cambridge.org";
+        //string brow_URL = "https://dictionary.cambridge.org";
         //string brow_URL = "https://www.bing.com";
         //string brow_URL = "https://www.bing.com/search?go=Submit&qs=ds&form=QBLH&q=hello";
         //string brow_URL = "https://developers.google.com/web/tools/chrome-devtools/network-performance/";
@@ -89,19 +91,25 @@ namespace appie
             brow_AutRequest = false;
 
         TextBoxWaterMark brow_UrlTextBox;
-        WebView browser;
+        GeckoWebBrowser browser;
         ControlTransparent brow_Transparent;
         Panel brow_ShortCutBar;
 
         void f_brow_Init()
         {
             brow_Domain = brow_URL.Split('/')[2];
-            browser = new WebView(brow_URL, new BrowserSettings());
+            browser = new GeckoWebBrowser();
             browser.Dock = DockStyle.Fill;
-            browser.RequestHandler = this;
-            browser.ConsoleMessage += f_brow_onBrowserConsoleMessage;
-            browser.LoadCompleted += f_brow_onLoadCompleted;
-            browser.MenuHandler = new CustomMenuHandler();
+            browser.NavigationError += (s, e) =>
+            {
+                Debug.WriteLine("StartDebugServer error: 0x" + e.ErrorCode.ToString("X"));
+                browser.Dispose();
+            };
+            browser.DocumentCompleted += (s, e) =>
+            {
+                Debug.WriteLine("StartDebugServer completed");
+                browser.Dispose();
+            };
 
             brow_Transparent = new ControlTransparent() { Location = new Point(0, 0), Size = new Size(999, 999) };
 
@@ -128,21 +136,21 @@ namespace appie
                 new Label() { Dock = DockStyle.Right, Width = 100 },
                 btn_ToggleTab
             });
-            this.Controls.AddRange(new Control[] { brow_Transparent, browser,brow_ShortCutBar, toolbar,  });
+            this.Controls.AddRange(new Control[] { brow_Transparent, browser, brow_ShortCutBar, toolbar, });
         }
 
-        private void f_brow_onLoadCompleted(object sender, LoadCompletedEventArgs url)
-        {
-            string s = string.Format("LOAD_COMPLETED: ===== {0}", url.Url);
-            Debug.WriteLine(s);
-            f_brow_onDOMContentLoaded();
-        }
+        //private void f_brow_onLoadCompleted(object sender, LoadCompletedEventArgs url)
+        //{
+        //    string s = string.Format("LOAD_COMPLETED: ===== {0}", url.Url);
+        //    Debug.WriteLine(s);
+        //    f_brow_onDOMContentLoaded();
+        //}
 
-        private void f_brow_onBrowserConsoleMessage(object sender, ConsoleMessageEventArgs e)
-        {
-            string s = string.Format("LOG: ===== Line {0}, Source: {1}, Message: {2}", e.Line, e.Source, e.Message);
-            Debug.WriteLine(s);
-        }
+        //private void f_brow_onBrowserConsoleMessage(object sender, ConsoleMessageEventArgs e)
+        //{
+        //    string s = string.Format("LOG: ===== Line {0}, Source: {1}, Message: {2}", e.Line, e.Source, e.Message);
+        //    Debug.WriteLine(s);
+        //}
 
         void f_brow_Go(string url)
         {
@@ -152,7 +160,7 @@ namespace appie
             {
                 //brow_URL = url;
                 //brow_Domain = brow_URL.Split('/')[2];
-                browser.Load(url);
+                browser.Navigate(url);
             }
             else
             {
@@ -168,62 +176,62 @@ namespace appie
 
         void f_brow_onDOMContentLoaded()
         {
-            brow_Transparent.crossThreadPerformSafely(() => brow_Transparent.SendToBack());
-            this.crossThreadPerformSafely(() =>
-            {
-                this.Text = string.Format("{0} | {1}", browser.Title, brow_URL);
-            });
+            //brow_Transparent.crossThreadPerformSafely(() => brow_Transparent.SendToBack());
+            //this.crossThreadPerformSafely(() =>
+            //{
+            //    this.Text = string.Format("{0} | {1}", browser.Title, brow_URL);
+            //});
         }
 
         #region [ IRequestHandler Members ]
 
-        bool IRequestHandler.OnBeforeResourceLoad(IWebBrowser browser, IRequestResponse requestResponse)
-        {
-            return false;
+        //bool IRequestHandler.OnBeforeResourceLoad(IWebBrowser browser, IRequestResponse requestResponse)
+        //{
+        //    return false;
 
-            //System.Diagnostics.Debug.WriteLine("OnBeforeResourceLoad");
-            //var headers = request.GetHeaders();
-            string url = requestResponse.Request.Url;
-            if (url.StartsWith("chrome-devtools://") == false)
-            {
-                if (brow_ImportPlugin == false && (url.Contains(".js") || url.Contains("/js/")))
-                {
-                    MemoryStream stream;
-                    byte[] bytes;
-                    switch (brow_Domain)
-                    {
-                        case DOMAIN_GOOGLE:
-                        case DOMAIN_BING:
-                            stream = new System.IO.MemoryStream();
-                            bytes = ASCIIEncoding.ASCII.GetBytes(@"document.addEventListener('DOMContentLoaded', function (event) { var a = document.querySelectorAll('img'); for (var i = 0; i < a.length; i++) { a[i].remove(); }; console.log('DOM_CONTENT_LOADED'); }); ");
-                            stream.Write(bytes, 0, bytes.Length);
-                            requestResponse.RespondWith(stream, "text/javascript; charset=utf-8");
-                            break;
-                        default:
-                            stream = new System.IO.MemoryStream();
-                            FileStream file = new FileStream(@"plugin.js", FileMode.Open, FileAccess.Read, FileShare.Read);
-                            bytes = new byte[file.Length];
-                            file.Read(bytes, 0, (int)file.Length);
-                            stream.Write(bytes, 0, (int)file.Length);
-                            file.Close();
-                            requestResponse.RespondWith(stream, "text/javascript; charset=utf-8");
-                            break;
-                    }
-                    Debug.WriteLine("----> JS === " + url);
-                    brow_ImportPlugin = true;
-                    return false;
-                }
+        //    //System.Diagnostics.Debug.WriteLine("OnBeforeResourceLoad");
+        //    //var headers = request.GetHeaders();
+        //    string url = requestResponse.Request.Url;
+        //    if (url.StartsWith("chrome-devtools://") == false)
+        //    {
+        //        if (brow_ImportPlugin == false && (url.Contains(".js") || url.Contains("/js/")))
+        //        {
+        //            MemoryStream stream;
+        //            byte[] bytes;
+        //            switch (brow_Domain)
+        //            {
+        //                case DOMAIN_GOOGLE:
+        //                case DOMAIN_BING:
+        //                    stream = new System.IO.MemoryStream();
+        //                    bytes = ASCIIEncoding.ASCII.GetBytes(@"document.addEventListener('DOMContentLoaded', function (event) { var a = document.querySelectorAll('img'); for (var i = 0; i < a.length; i++) { a[i].remove(); }; console.log('DOM_CONTENT_LOADED'); }); ");
+        //                    stream.Write(bytes, 0, bytes.Length);
+        //                    requestResponse.RespondWith(stream, "text/javascript; charset=utf-8");
+        //                    break;
+        //                default:
+        //                    stream = new System.IO.MemoryStream();
+        //                    FileStream file = new FileStream(@"plugin.js", FileMode.Open, FileAccess.Read, FileShare.Read);
+        //                    bytes = new byte[file.Length];
+        //                    file.Read(bytes, 0, (int)file.Length);
+        //                    stream.Write(bytes, 0, (int)file.Length);
+        //                    file.Close();
+        //                    requestResponse.RespondWith(stream, "text/javascript; charset=utf-8");
+        //                    break;
+        //            }
+        //            Debug.WriteLine("----> JS === " + url);
+        //            brow_ImportPlugin = true;
+        //            return false;
+        //        }
 
-                if (url.Contains(".js") || url.Contains("/js/")
-                    || url.Contains(brow_Domain) == false
-                    || url.Contains("font") || url.Contains(".svg") || url.Contains(".woff") || url.Contains(".ttf")
-                    || url.Contains("/image") || url.Contains(".png") || url.Contains(".jpeg") || url.Contains(".jpg") || url.Contains(".gif"))
-                {
-                    Debug.WriteLine("----> " + url);
-                    return true;
-                }
-                Debug.WriteLine(url);
-            }
+        //        if (url.Contains(".js") || url.Contains("/js/")
+        //            || url.Contains(brow_Domain) == false
+        //            || url.Contains("font") || url.Contains(".svg") || url.Contains(".woff") || url.Contains(".ttf")
+        //            || url.Contains("/image") || url.Contains(".png") || url.Contains(".jpeg") || url.Contains(".jpg") || url.Contains(".gif"))
+        //        {
+        //            Debug.WriteLine("----> " + url);
+        //            return true;
+        //        }
+        //        Debug.WriteLine(url);
+        //    }
 
             #region
 
@@ -311,56 +319,56 @@ namespace appie
 
             #endregion
 
-            return false;
-        }
+        //    return false;
+        //}
 
-        bool IRequestHandler.OnBeforeBrowse(IWebBrowser browser, IRequest request, NavigationType naigationvType, bool isRedirect)
-        {
-            string url = request.Url;
-            if (url == "about:blank"
-                || url.Contains("youtube.com/embed/")
-                || url.Contains("facebook.com/plugins/"))
-                return true;
+        //bool IRequestHandler.OnBeforeBrowse(IWebBrowser browser, IRequest request, NavigationType naigationvType, bool isRedirect)
+        //{
+        //    string url = request.Url;
+        //    if (url == "about:blank"
+        //        || url.Contains("youtube.com/embed/")
+        //        || url.Contains("facebook.com/plugins/"))
+        //        return true;
 
-            if (url.StartsWith("chrome-devtools://")) return false;
+        //    if (url.StartsWith("chrome-devtools://")) return false;
 
-            Debug.WriteLine("GO ====> " + request.Url);
+        //    Debug.WriteLine("GO ====> " + request.Url);
 
-            brow_URL = request.Url;
-            brow_Domain = brow_URL.Split('/')[2];
-            brow_UrlTextBox.crossThreadPerformSafely(() => brow_UrlTextBox.Text = brow_URL);
+        //    brow_URL = request.Url;
+        //    brow_Domain = brow_URL.Split('/')[2];
+        //    brow_UrlTextBox.crossThreadPerformSafely(() => brow_UrlTextBox.Text = brow_URL);
 
-            brow_ImportPlugin = false;
+        //    brow_ImportPlugin = false;
 
-            f_brow_onBeforeBrowse();
+        //    f_brow_onBeforeBrowse();
 
-            return false;
-        }
+        //    return false;
+        //}
 
-        void IRequestHandler.OnResourceResponse(IWebBrowser browser, string url, int status, string statusText, string mimeType, WebHeaderCollection headers)
-        {
-            //string content_type = headers.Get("Content-Type");
-            ////if (url.EndsWith(".mp4")) { }
-            ////System.Diagnostics.Debug.WriteLine("OnResourceResponse");
-            //Debug.WriteLine(content_type + " === " + url);
-        }
+        //void IRequestHandler.OnResourceResponse(IWebBrowser browser, string url, int status, string statusText, string mimeType, WebHeaderCollection headers)
+        //{
+        //    //string content_type = headers.Get("Content-Type");
+        //    ////if (url.EndsWith(".mp4")) { }
+        //    ////System.Diagnostics.Debug.WriteLine("OnResourceResponse");
+        //    //Debug.WriteLine(content_type + " === " + url);
+        //}
 
-        public bool GetDownloadHandler(IWebBrowser browser, string mimeType, string fileName, long contentLength, ref IDownloadHandler handler)
-        {
-            return false;
-        }
+        //public bool GetDownloadHandler(IWebBrowser browser, string mimeType, string fileName, long contentLength, ref IDownloadHandler handler)
+        //{
+        //    return false;
+        //}
 
-        public bool GetAuthCredentials(IWebBrowser browser, bool isProxy, string host, int port, string realm, string scheme, ref string username, ref string password)
-        {
-            return false;
-        }
+        //public bool GetAuthCredentials(IWebBrowser browser, bool isProxy, string host, int port, string realm, string scheme, ref string username, ref string password)
+        //{
+        //    return false;
+        //}
 
         #endregion
 
         void f_brow_Close()
         {
             browser.Dispose();
-            CEF.Shutdown();
+            Xpcom.Shutdown();
         }
 
         #endregion
@@ -413,7 +421,7 @@ namespace appie
         #region [ TAB:LINK ]
 
         TextBoxWaterMark tab_LinkSearchTextBox;
-        TreeView tab_LinkTreeView;
+        System.Windows.Forms.TreeView tab_LinkTreeView;
 
         void f_tab_LinkInit() {
             Panel barSearch = new Panel() {
@@ -434,7 +442,7 @@ namespace appie
                 tab_LinkSearchTextBox
             });
 
-            tab_LinkTreeView = new TreeView() {
+            tab_LinkTreeView = new System.Windows.Forms.TreeView() {
                 Dock = DockStyle.Fill,
                 Font = font_Title,
                 BorderStyle = BorderStyle.None,
@@ -472,7 +480,7 @@ namespace appie
             var btn_Devtool = new Button() { Text = "Dev", Width = 45, Height = 20, Dock = DockStyle.Top };
             btn_Devtool.Click += (se, ev) =>
             {
-                browser.ShowDevTools();
+                //browser.ShowDevTools();
             };
 
             var btn_EnableJS = new Button() { Text = "JS", Width = 45, Height = 20, Dock = DockStyle.Top, BackColor = Color.OrangeRed };

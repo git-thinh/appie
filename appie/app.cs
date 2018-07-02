@@ -1,4 +1,5 @@
-﻿using CefSharp;
+﻿//using CefSharp;
+using Gecko;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -53,28 +54,37 @@ namespace appie
             ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | (SecurityProtocolType)3072 | (SecurityProtocolType)0x00000C00 | SecurityProtocolType.Tls;
 
+            Xpcom.Initialize("Bin");
+            GeckoPreferences.User["extensions.blocklist.enabled"] = false;
+            // Uncomment the follow line to enable error page
+            GeckoPreferences.User["browser.xul.error_pages.enabled"] = true;
+            GeckoPreferences.User["gfx.font_rendering.graphite.enabled"] = true;
+            GeckoPreferences.User["full-screen-api.enabled"] = true;
+
+
+            //////var settings = new Settings();
+            ////////settings.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36";
+            //////if (!CEF.Initialize(new Settings()))
+            //////{
+            //////    ////////if (Environment.GetCommandLineArgs().Contains("--type=renderer"))
+            //////    ////////{
+            //////    ////////    Environment.Exit(0);
+            //////    ////////}
+            //////    ////////else
+            //////    ////////{
+            //////    ////////    return;
+            //////    ////////}
+            //////}
+
             jobs = new JobStore();
             Application.EnableVisualStyles();
 
-            var settings = new Settings();
-            //settings.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36";
-            if (!CEF.Initialize(new Settings()))
-            {
-                ////////if (Environment.GetCommandLineArgs().Contains("--type=renderer"))
-                ////////{
-                ////////    Environment.Exit(0);
-                ////////}
-                ////////else
-                ////////{
-                ////////    return;
-                ////////}
-            }
 
             //Application.Run(new fMedia());
             //Application.Run(new fMain());
             //Application.Run(new fEdit());
             //Application.Run(new fBrowser());
-            Application.Run(new fChromium(jobs));
+            Application.Run(new fApp(jobs));
         }
 
         public static IFORM get_Main() {
