@@ -1,22 +1,22 @@
 ﻿using FarsiLibrary.Win;
-using mshtml;
-using ProtoBuf;
-using SHDocVw;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
+using System.Web;
 using System.Windows.Forms;
 
 namespace appie
 {
-    public class fApp : fBase
+    public class fApp : fBase 
     {
+        readonly Font font_Title = new Font("Arial", 11f, FontStyle.Regular);
+        readonly Font font_TextView = new Font("Courier New", 11f, FontStyle.Regular);
+        readonly Font font_LogView = new Font("Courier New", 9f, FontStyle.Regular);
+
         private void f_event_OnReceiveMessage(IFORM form, Message m)
         {
             switch (m.JobName)
@@ -25,657 +25,497 @@ namespace appie
                     switch (m.getAction())
                     {
                         case MESSAGE_ACTION.ITEM_SEARCH:
-                            if (m.Output.Ok)
-                                if (m.Output.GetData() is oLink[])
-                                    f_history_drawNodes((oLink[])m.Output.GetData());
                             break;
                         case MESSAGE_ACTION.URL_REQUEST_CACHE:
-                            if (m.Output.Ok)
-                                if (m.Output.GetData() is string)
-                                    m_brow_web.crossThreadPerformSafely(() =>
-                                    {
-                                        m_brow_web.DocumentText = m.Output.GetData().ToString();
-                                    });
                             break;
                     }
                     break;
             }
         }
 
-        #region [ VARIABLE ]
-
-        readonly Font font_Title = new Font("Arial", 11f, FontStyle.Regular);
-        readonly Font font_TextView = new Font("Courier New", 11f, FontStyle.Regular);
-        readonly Font font_LogView = new Font("Courier New", 9f, FontStyle.Regular);
-
-        TabControl m_tab;
-        Panel m_footer;
-        TextBox m_log_Text;
-
-        #endregion
-
-        #region [ VAR: HISTORY ]
-        TextBox m_history_search_textBox;
-        TreeView m_history_items_treeView;
-        #endregion
-
-        #region [ VAR: LINK ]
-        TextBox m_link_search_textBox;
-        ListBox m_link_items_listBox;
-        #endregion
-
-        #region [ VAR: BROWSER ]
-
-        System.Windows.Forms.WebBrowser m_brow_web;
-
-        TextBox m_url_textBox;
-        Panel m_browser_Toolbar;
-        TabPage m_tab_Browser;
-        Label m_browser_MessageLabel;
-
-        HTMLDocument docMain = null;
-        WebBrowser_V1 m_browser_ax = null;
-        HTMLDocument m_browser_doc = null;
-
-        DictionaryThreadSafe<string, string> dicHtml = new DictionaryThreadSafe<string, string>();
-
-        #endregion
-
-        #region [ VAR: MEDIA ]
-
-        System.Windows.Forms.WebBrowser m_brow_media;
-
-        #endregion
-
-        #region [ VAR: SETTING ]
-
-        TextBox setting_maxThread_textBox;
-        CheckBox setting_autoFetchHistory_checkBox;
-
-        #endregion
-
-        #region [ CONTRACTOR - MAIN ]
+        #region [ === FORM === ]
 
         public fApp(IJobStore store) : base(store)
         {
+            this.Text = "English";
             this.OnReceiveMessage += f_event_OnReceiveMessage;
             this.Shown += f_form_Shown;
             this.FormClosing += f_form_Closing;
 
-            #region [ Browser UI ]
-
-            m_log_Text = new TextBox()
-            {
-                Dock = DockStyle.Fill,
-                Multiline = true,
-                BorderStyle = BorderStyle.None,
-                ScrollBars = ScrollBars.Vertical,
-            };
-            m_log_Text.MouseDoubleClick += (se, ev) => { m_log_Text.Text = string.Empty; };
-
-            m_url_textBox = new TextBox()
-            {
-                Dock = DockStyle.Fill,
-                BorderStyle = BorderStyle.None,
-                Height = 17,
-                //BackColor = Color.WhiteSmoke,
-                Text = string.Empty,
-            };
-
-            m_brow_web = new System.Windows.Forms.WebBrowser()
-            {
-                Dock = DockStyle.Fill,
-                ScriptErrorsSuppressed = false,
-                IsWebBrowserContextMenuEnabled = false,
-            };
-            m_tab = new TabControl()
-            {
-                Dock = DockStyle.Fill,
-            };
-            m_tab_Browser = new TabPage()
-            {
-                Text = "Browser",
-            };
-            m_browser_Toolbar = new Panel()
-            {
-                Dock = DockStyle.Bottom,
-                Height = 25,
-                BackColor = Color.White,
-            };
-            m_footer = new Panel()
-            {
-                Dock = DockStyle.Bottom,
-                Height = 17,
-                //BackColor = Color.Orange,
-            };
-
-            m_browser_MessageLabel = new Label() { Dock = DockStyle.Fill, AutoSize = false, TextAlign = ContentAlignment.BottomLeft };
-            Button btn_go = new Button() { Dock = DockStyle.Right, Text = "Go", Width = 69, };
-            Button btn_back = new Button() { Dock = DockStyle.Right, Text = "Back", Width = 69, };
-            Button btn_next = new Button() { Dock = DockStyle.Right, Text = "Next", Width = 69, };
-            Button btn_google = new Button() { Dock = DockStyle.Right, Text = "Google", Width = 69, };
-            Button btn_open = new Button() { Dock = DockStyle.Right, Text = "Open", Width = 69, };
-            Panel panel_address = new Panel()
-            {
-                Dock = DockStyle.Fill,
-                Padding = new Padding(0, 2, 0, 2),
-            };
-            panel_address.Controls.AddRange(new Control[] {
-                m_url_textBox,
-                new Label() { Dock = DockStyle.Top, Height = 5 },
-                btn_go,
-                btn_back,
-                btn_next,
-                btn_google,
-                btn_open,
-            });
-
-            btn_google.MouseClick += f_browser_google_MouseClick;
-            btn_open.MouseClick += (se, ev) => { f_package_openFile(); };
-
-            #endregion
-
-            #region [ TAB ]
-
-            FATabStrip tab_detail = new FATabStrip()
-            {
-                Dock = DockStyle.Right,
-                Width = 555,
-                AlwaysShowClose = false,
-                AlwaysShowMenuGlyph = false,
-            };
-            FATabStripItem tab_Log = new FATabStripItem("Log", false);
-            FATabStripItem tab_Link = new FATabStripItem("☰", false);
-            FATabStripItem tab_Word = new FATabStripItem("W", false);
-            FATabStripItem tab_WordDetail = new FATabStripItem("WD", false);
-            FATabStripItem tab_Writer = new FATabStripItem("✍", false);
-            FATabStripItem tab_BookMark = new FATabStripItem("★", false);
-            FATabStripItem tab_Search = new FATabStripItem("Find", false);
-            FATabStripItem tab_History = new FATabStripItem("History", false);
-            FATabStripItem tab_Resource = new FATabStripItem("Resource", false);
-            FATabStripItem tab_Setting = new FATabStripItem("Setting", false);
-
-            tab_Log.Controls.Add(m_log_Text);
-
-            tab_detail.Items.AddRange(new FATabStripItem[] {
-                tab_Link,
-                tab_Word,
-                tab_WordDetail,
-                tab_Writer,
-                tab_BookMark,
-                tab_Search,
-                tab_History,
-                tab_Resource,
-                tab_Log,
-                tab_Setting
-            });
-
-            #endregion
-
-            #region [ LINK ]
-
-            m_link_search_textBox = new TextBox()
-            {
-                Dock = DockStyle.Top,
-                BorderStyle = BorderStyle.FixedSingle,
-            };
-
-            m_link_items_listBox = new ListBox()
-            {
-                Dock = DockStyle.Fill,
-                BorderStyle = BorderStyle.FixedSingle,
-                Font = font_Title,
-            };
-            m_link_items_listBox.ValueMember = "Item1";
-            m_link_items_listBox.DisplayMember = "Item2";
-
-            tab_Link.Controls.AddRange(new Control[] {
-                m_link_items_listBox,
-                m_link_search_textBox,
-            });
-
-            m_link_items_listBox.SelectedIndexChanged += f_link_items_selectIndexChange;
-
-            #endregion
-
-            #region [ HISTORY ]
-
-            m_history_search_textBox = new TextBox()
-            {
-                Dock = DockStyle.Top,
-                BorderStyle = BorderStyle.FixedSingle,
-            };
-            m_history_search_textBox.KeyDown += (se, ev) =>
-            {
-                if (ev.KeyCode == Keys.Enter)
-                    this.f_sendRequestToJob(JOB_NAME.SYS_LINK, MESSAGE_ACTION.ITEM_SEARCH, m_history_search_textBox.Text.Trim());
-            };
-
-            m_history_items_treeView = new TreeView()
-            {
-                Dock = DockStyle.Fill,
-                BorderStyle = BorderStyle.FixedSingle,
-                Font = font_Title,
-            };
-
-            tab_History.Controls.AddRange(new Control[] {
-                m_history_items_treeView,
-                m_history_search_textBox,
-            });
-
-            m_history_items_treeView.MouseDoubleClick += f_history_items_selectIndexChange;
-
-            f_history_drawNodes(null);
-
-            #endregion
-
-            #region [ MEDIA ]
-
-            m_brow_media = new System.Windows.Forms.WebBrowser()
-            {
-                Dock = DockStyle.Fill,
-                ScriptErrorsSuppressed = false,
-            };
-
-            #endregion
-
-            #region [ TAB SETTING ]
-
-            setting_autoFetchHistory_checkBox = new CheckBox()
-            {
-                Dock = DockStyle.Top,
-                Text = "Auto cache by history",
-                Checked = true,
-            };
-            setting_maxThread_textBox = new TextBox()
-            {
-                Dock = DockStyle.Top,
-                Text = "9",
-            };
-
-            tab_Setting.Padding = new Padding(20);
-            tab_Setting.Controls.AddRange(new Control[] {
-                setting_autoFetchHistory_checkBox,
-                new Label(){ Dock = DockStyle.Top, Height = 9 },
-                setting_maxThread_textBox,
-                new Label(){
-                    Dock = DockStyle.Top,
-                    Text = "Max thread",
-                    TextAlign = ContentAlignment.BottomLeft,
-                },
-            });
-
-            #endregion
-
-            #region [ Add Control -> UI ]
-
-            m_browser_Toolbar.Controls.AddRange(new Control[] {
-                panel_address,
-                new Label() {
-                    Text = "Address:",
-                    Dock = DockStyle.Left,
-                    Width = 50,
-                    //BackColor = Color.Red,
-                    TextAlign = ContentAlignment.MiddleLeft
-                },
-            });
-            m_footer.Controls.AddRange(new Control[] {
-                m_browser_MessageLabel,
-            });
-            m_tab_Browser.Controls.AddRange(new Control[] {
-                m_brow_web,
-                m_browser_Toolbar,
-            });
-            m_tab.Controls.AddRange(new Control[] {
-                m_tab_Browser,
-            });
-            this.Controls.AddRange(new Control[] {
-                m_tab,
-                new Splitter() {
-                    Dock = DockStyle.Right
-                },
-                tab_detail,
-                m_footer,
-            });
-
-            #endregion            
+            f_brow_Init();
+            f_tab_Init();
         }
 
-        void f_form_Closing(object sender, FormClosingEventArgs e)
+        private void f_form_Closing(object sender, FormClosingEventArgs e)
         {
+            f_brow_Close();
         }
 
-        void f_form_Shown(object sender, EventArgs e)
+        private void f_form_Shown(object sender, EventArgs e)
         {
             this.WindowState = FormWindowState.Maximized;
-            //m_tab.Width = 999;
-
-            // Set the WebBrowser to use an instance of the ScriptManager to handle method calls to C#.
-            // wbMaster.ObjectForScripting = new ScriptManager(this);
-
-            //var axWbMainV1 = (SHDocVw.WebBrowser_V1)wbMaster.ActiveXInstance;
-            //var axWbSlaveV1 = (SHDocVw.WebBrowser_V1)wbSlave.ActiveXInstance;
-
-
-
-            m_browser_ax = (SHDocVw.WebBrowser_V1)m_brow_web.ActiveXInstance;
-            //m_browser.DocumentCompleted += (se, ev) =>
-            //{
-            //    if (m_browser.Document != null)
-            //    {
-            //        string url = m_browser.Url.ToString();
-            //        m_tab_Browser.Text = m_browser.Document.Title;
-            //        m_url_textBox.Text = url;
-            //        m_browser_MessageLabel.Text = "Page loaded";
-            //        log("DONE: " + url);
-
-            //        m_browser_doc = m_browser_ax.Document as HTMLDocument;
-            //        //DHTMLEventHandler eventHandler = new DHTMLEventHandler(docMain);
-            //        //eventHandler.Handler += new DHTMLEvent(this.f_browser_document_onMouseOver);
-            //        //((mshtml.DispHTMLDocument)docMain).onmouseover = eventHandler;
-            //    }
-            //};
-
-            //// Use WebBrowser_V1 events as BeforeNavigate2 doesn't work with WPF WebBrowser
-            //m_browser_ax.BeforeNavigate += (string URL, int Flags, string TargetFrameName, ref object PostData, string Headers, ref bool Cancel) =>
-            //{
-            //    //Cancel = true;
-            //    //axWbMainV1.Stop();
-            //    //axWbSlaveV1.Navigate(URL, Flags, TargetFrameName, PostData, Headers);
-            //};
-
-            //m_browser_ax.FrameBeforeNavigate += (string URL, int Flags, string TargetFrameName, ref object PostData, string Headers, ref bool Cancel) =>
-            //{
-            //    if (URL == "about:blank") return;
-
-            //    log("FRAME GO: " + TargetFrameName + " = " + URL);
-            //    Cancel = true;
-            //    m_browser_ax.Stop();
-            //    //axWbSlaveV1.Navigate(URL, Flags, TargetFrameName, PostData, Headers);
-            //};
-
-
-
-            //f_browser_google_MouseClick(null, null);
         }
-
 
         #endregion
 
-        #region [ HISTORY ]
+        #region [ === BROWSER === ]
 
-        void f_history_drawNodes(oLink[] links)
+        const string DOMAIN_GOOGLE = "www.google.com.vn";
+        const string DOMAIN_BING = "www.bing.com";
+        const string DOM_CONTENT_LOADED = "DOM_CONTENT_LOADED";
+        const int TOOLBAR_HEIGHT = 28;
+        const int SHORTCUTBAR_HEIGHT = 17;
+
+        //string brow_URL = "https://www.google.com.vn";
+        //string brow_URL = "https://dictionary.cambridge.org/grammar/british-grammar/do-or-make";
+        string brow_URL = "https://dictionary.cambridge.org";
+        //string brow_URL = "https://www.bing.com";
+        //string brow_URL = "https://www.bing.com/search?go=Submit&qs=ds&form=QBLH&q=hello";
+        //string brow_URL = "https://developers.google.com/web/tools/chrome-devtools/network-performance/";
+        //string brow_URL = "https://www.google.com/maps";
+        //string brow_URL = "http://web20office.com/crm/demo/system/login.php?r=/crm/demo";
+        //string brow_URL = "file:///G:/_EL/Document/data_el2/book/84-cau-truc-va-cau-vi-du-thong-dung-trong-tieng-anh-giao-tiep.pdf";
+        //string brow_URL = "https://www.youtube.com/";
+        //string brow_URL = "https://drive.google.com/open?id=1TG-FDU0cZ48vaJCMcAO33iNOuNqgL9BH";
+        //string brow_URL = "https://drive.google.com/open?id=1B_DuOqTAQOcZjuls6bw9Tnx_0nd8qpr8";
+        //string brow_URL = "https://drive.google.com/file/d/1B_DuOqTAQOcZjuls6bw9Tnx_0nd8qpr8/view";
+        //string brow_URL = "https://drive.google.com/file/d/1TG-FDU0cZ48vaJCMcAO33iNOuNqgL9BH/view";
+
+        string brow_Domain;
+        bool brow_ImportPlugin = false, 
+            brow_EnabelJS = true, 
+            brow_EnableCSS = false,
+            brow_EnableImg = false,
+            brow_AutRequest = false;
+
+        TextBoxWaterMark brow_UrlTextBox;
+        WebView browser;
+        ControlTransparent brow_Transparent;
+        Panel brow_ShortCutBar;
+
+        void f_brow_Init()
         {
-            m_history_items_treeView.crossThreadPerformSafely(() =>
+            brow_Domain = brow_URL.Split('/')[2];
+            browser = new WebView(brow_URL, new BrowserSettings());
+            browser.Dock = DockStyle.Fill;
+            browser.RequestHandler = this;
+            browser.ConsoleMessage += f_brow_onBrowserConsoleMessage;
+            browser.LoadCompleted += f_brow_onLoadCompleted;
+            browser.MenuHandler = new CustomMenuHandler();
+
+            brow_Transparent = new ControlTransparent() { Location = new Point(0, 0), Size = new Size(999, 999) };
+
+            Panel toolbar = new Panel() { Dock = DockStyle.Top, Height = TOOLBAR_HEIGHT, BackColor = SystemColors.Control, Padding = new Padding(3, 3, 0, 3) };
+            brow_ShortCutBar = new Panel() { Dock = DockStyle.Top, Height = SHORTCUTBAR_HEIGHT, BackColor = SystemColors.Control, Padding = new Padding(0) };
+
+            brow_UrlTextBox = new TextBoxWaterMark() { WaterMark = "HTTP://...", Dock = DockStyle.Fill, Height = 20, Font = font_Title, BorderStyle = BorderStyle.None,
+            BackColor = SystemColors.Control };
+            brow_UrlTextBox.KeyDown += (se, ev) =>
             {
-                m_history_items_treeView.Nodes.Clear();
-                m_history_items_treeView.Nodes.AddRange(new TreeNode[] {
-                    new TreeNode("Youtube"){ Tag = new oLink(){ Title = "Youtube", Tags= "", Link = "https://www.youtube.com/results?search_query={0}" } },
-                    new TreeNode("Google"){ Tag = new oLink(){ Title = "Google", Tags= "", Link = "https://www.google.com/search?q={0}" } },
-                    new TreeNode("Grammar By Oxford"){ Tag = new oLink(){ Title = "Grammar By Oxford", Tags= "", Link = "https://en.oxforddictionaries.com/grammar/" } },
-                    new TreeNode("British Grammar By Cambridge"){ Tag = new oLink(){ Title = "British Grammar By Cambridge", Tags= "", Link = "https://dictionary.cambridge.org/grammar/british-grammar/" } },
-                    new TreeNode("Pronuncian.com"){ Tag = new oLink(){ Title = "Pronuncian.com", Tags= "", Link = "https://pronuncian.com/pronounce-th-sounds/" } },
-                    new TreeNode("Learning-english-online.net"){ Tag = new oLink(){ Title = "Learning-english-online.net", Tags= "", Link = "https://www.learning-english-online.net/pronunciation/the-english-th/" } },
-                });
+                if (ev.KeyCode == Keys.Enter)
+                {
+                    f_brow_Go(brow_UrlTextBox.Text.Trim());
+                }
+            };
+            brow_UrlTextBox.MouseDoubleClick += (se, ev) =>
+            {
+                brow_UrlTextBox.Text = string.Empty;
+            };
+
+            var btn_ToggleTab = new Button() { Text = tab_IconToggle, Width = 19, Height = 20, Dock = DockStyle.Right };
+            btn_ToggleTab.MouseClick += (se, ev) => { f_tab_Toggle(); };
+            toolbar.Controls.AddRange(new Control[] { brow_UrlTextBox,
+                new Label() { Dock = DockStyle.Right, Width = 100 },
+                btn_ToggleTab
             });
-            if (links != null && links.Length > 0)
+            this.Controls.AddRange(new Control[] { brow_Transparent, browser,brow_ShortCutBar, toolbar,  });
+        }
+
+        private void f_brow_onLoadCompleted(object sender, LoadCompletedEventArgs url)
+        {
+            string s = string.Format("LOAD_COMPLETED: ===== {0}", url.Url);
+            Debug.WriteLine(s);
+            f_brow_onDOMContentLoaded();
+        }
+
+        private void f_brow_onBrowserConsoleMessage(object sender, ConsoleMessageEventArgs e)
+        {
+            string s = string.Format("LOG: ===== Line {0}, Source: {1}, Message: {2}", e.Line, e.Source, e.Message);
+            Debug.WriteLine(s);
+        }
+
+        void f_brow_Go(string url)
+        {
+            url = url.Trim();
+
+            if ((url.IndexOf(' ') == -1 && url.IndexOf('.') != -1) || Uri.IsWellFormedUriString(url, UriKind.Absolute))
             {
-                List<string> tags = new List<string>();
-                foreach (string[] a in links.Select(x => x.Tags.Split(','))) tags.AddRange(a);
-                tags = tags.Select(x => x.Trim()).Distinct().ToList();
-                TreeNode[] nodes = tags.Select(x => new TreeNode(x)).ToArray();
-                foreach (TreeNode node in nodes) node.Nodes.AddRange(links.Where(o => o.Tags.Contains(node.Text)).Select(o => new TreeNode(o.TitleDomain()) { Tag = o }).ToArray());
-                m_history_items_treeView.crossThreadPerformSafely(() =>
-                {
-                    m_history_items_treeView.Nodes.AddRange(nodes);
-                });
+                //brow_URL = url;
+                //brow_Domain = brow_URL.Split('/')[2];
+                browser.Load(url);
+            }
+            else
+            {
+                f_brow_Go("https://www.google.com.vn/search?q=" + HttpUtility.UrlEncode(url));
+                //f_brow_Go("https://www.bing.com/search?q=" + HttpUtility.UrlEncode(url));
             }
         }
 
-        void f_history_items_selectIndexChange(object sender, EventArgs e)
+        void f_brow_onBeforeBrowse()
         {
-            TreeNode node = m_history_items_treeView.SelectedNode;
-            if (node != null && node.Tag != null)
-            {
-                oLink link = node.Tag as oLink;
-                string url = string.Empty;
-                if (link.Title == "Youtube" || link.Title == "Google")
-                {
-                    string key = Prompt.ShowDialog("Input to search?", link.Title).Trim();
-                    if (key.Length > 0)
-                        url = string.Format(link.Link, key);
-                }
-                else url = link.Link;
-                if (url.Length > 0)
-                {
-                    m_url_textBox.Text = url;
-                    m_tab_Browser.Text = link.TitleDomain();
-                    m_brow_web.DocumentText = "<h1>LOADING: " + url + "</h1>";
+            brow_Transparent.crossThreadPerformSafely(() => brow_Transparent.BringToFront());
+        }
 
-                    this.f_sendRequestToJob(JOB_NAME.SYS_LINK, MESSAGE_ACTION.URL_REQUEST_CACHE, url);
+        void f_brow_onDOMContentLoaded()
+        {
+            brow_Transparent.crossThreadPerformSafely(() => brow_Transparent.SendToBack());
+            this.crossThreadPerformSafely(() =>
+            {
+                this.Text = string.Format("{0} | {1}", browser.Title, brow_URL);
+            });
+        }
+
+        #region [ IRequestHandler Members ]
+
+        bool IRequestHandler.OnBeforeResourceLoad(IWebBrowser browser, IRequestResponse requestResponse)
+        {
+            return false;
+
+            //System.Diagnostics.Debug.WriteLine("OnBeforeResourceLoad");
+            //var headers = request.GetHeaders();
+            string url = requestResponse.Request.Url;
+            if (url.StartsWith("chrome-devtools://") == false)
+            {
+                if (brow_ImportPlugin == false && (url.Contains(".js") || url.Contains("/js/")))
+                {
+                    MemoryStream stream;
+                    byte[] bytes;
+                    switch (brow_Domain)
+                    {
+                        case DOMAIN_GOOGLE:
+                        case DOMAIN_BING:
+                            stream = new System.IO.MemoryStream();
+                            bytes = ASCIIEncoding.ASCII.GetBytes(@"document.addEventListener('DOMContentLoaded', function (event) { var a = document.querySelectorAll('img'); for (var i = 0; i < a.length; i++) { a[i].remove(); }; console.log('DOM_CONTENT_LOADED'); }); ");
+                            stream.Write(bytes, 0, bytes.Length);
+                            requestResponse.RespondWith(stream, "text/javascript; charset=utf-8");
+                            break;
+                        default:
+                            stream = new System.IO.MemoryStream();
+                            FileStream file = new FileStream(@"plugin.js", FileMode.Open, FileAccess.Read, FileShare.Read);
+                            bytes = new byte[file.Length];
+                            file.Read(bytes, 0, (int)file.Length);
+                            stream.Write(bytes, 0, (int)file.Length);
+                            file.Close();
+                            requestResponse.RespondWith(stream, "text/javascript; charset=utf-8");
+                            break;
+                    }
+                    Debug.WriteLine("----> JS === " + url);
+                    brow_ImportPlugin = true;
+                    return false;
                 }
+
+                if (url.Contains(".js") || url.Contains("/js/")
+                    || url.Contains(brow_Domain) == false
+                    || url.Contains("font") || url.Contains(".svg") || url.Contains(".woff") || url.Contains(".ttf")
+                    || url.Contains("/image") || url.Contains(".png") || url.Contains(".jpeg") || url.Contains(".jpg") || url.Contains(".gif"))
+                {
+                    Debug.WriteLine("----> " + url);
+                    return true;
+                }
+                Debug.WriteLine(url);
+            }
+
+            #region
+
+            ////IRequest request = requestResponse.Request;
+            ////string url = request.Url, s = string.Empty;
+            //            MemoryStream stream;
+            //            byte[] bytes;
+            //            if (url.EndsWith(".mp4"))
+            //            {
+            //                string id = Path.GetFileName(url);
+            //                id = id.Substring(0, id.Length - 4);
+            //                string desUrl = string.Format("https://drive.google.com/uc?export=download&id={0}", id);
+
+            //                //stream = new System.IO.MemoryStream();
+            //                ////bytes = System.Text.ASCIIEncoding.UTF8.GetBytes("");
+
+            //                //FileStream file = new FileStream(@"E:\_cs\cef\cef_119_youtube\bin\x86\Debug\player\files\1.mp4", FileMode.Open, FileAccess.Read, FileShare.Read);
+            //                //bytes = new byte[file.Length];
+            //                //file.Read(bytes, 0, (int)file.Length);
+            //                //file.Close();
+
+            //                //stream.Write(bytes, 0, bytes.Length);
+
+            //                //requestResponse.RespondWith(stream, "video/mp4");
+
+            //                desUrl = "https://r6---sn-8qj-i5oed.googlevideo.com/videoplayback?source=youtube&ms=au%2Crdu&mt=1526202288&mv=m&mm=31%2C29&mn=sn-8qj-i5oed%2Csn-i3b7kn7d&requiressl=yes&key=yt6&itag=22&mime=video%2Fmp4&ipbits=0&signature=CFA4FBAB6DAF7D4E1E6F8643865E06BD13C9B2C9.4AE8093B9CC164EE634F1465807AE309CB9EC5C3&dur=234.289&expire=1526223993&pl=20&ratebypass=yes&pcm2cms=yes&fvip=2&lmt=1510741625396835&id=o-APLwY1H9955dAWnARW0t1FTqsoCs-_OffF4spks0P2AQ&ei=GQD4WtupH4mngQOysI3oCw&c=WEB&initcwndbps=960000&sparams=dur%2Cei%2Cid%2Cinitcwndbps%2Cip%2Cipbits%2Citag%2Clmt%2Cmime%2Cmm%2Cmn%2Cms%2Cmv%2Cpcm2cms%2Cpl%2Cratebypass%2Crequiressl%2Csource%2Cexpire&ip=14.177.123.70";
+
+            //                requestResponse.Redirect(desUrl);
+            //            }
+            //            else
+            //            {
+            //                url = url.ToLower();
+            //                #region
+            //                switch (url)
+            //                {
+            //                    case "http://i.ytimg.com/crossdomain.xml":
+            //                    case "https://drive.google.com/crossdomain.xml":
+            //                        #region
+            //                        stream = new MemoryStream();
+            //                        s = @"<?xml version=""1.0""?>
+            //<!DOCTYPE cross-domain-policy SYSTEM
+            //""http://www.adobe.com/xml/dtds/cross-domain-policy.dtd"">
+            //<cross-domain-policy>
+            //   <site-control permitted-cross-domain-policies=""all""/>
+            //   <allow-access-from domain=""*"" secure=""false""/>
+            //   <allow-http-request-headers-from domain=""*"" headers=""*"" secure=""false""/>
+            //</cross-domain-policy>";
+            //                        s = @"<cross-domain-policy><allow-access-from domain=""*"" /></cross-domain-policy>";
+
+            //                        bytes = ASCIIEncoding.UTF8.GetBytes("");
+            //                        stream.Write(bytes, 0, bytes.Length);
+            //                        requestResponse.RespondWith(stream, "text/xml");
+            //                        #endregion
+            //                        break;
+            //                    case "http://l.longtailvideo.com/5/10/logo.png":
+            //                        stream = new MemoryStream();
+            //                        bytes = new byte[] { 0 };
+            //                        stream.Write(bytes, 0, bytes.Length);
+            //                        requestResponse.RespondWith(stream, "image/png");
+            //                        break;
+            //                    case "http://www.youtube.com/apiplayer":
+            //                        stream = new System.IO.MemoryStream();
+            //                        bytes = System.Text.ASCIIEncoding.UTF8.GetBytes("");
+            //                        stream.Write(bytes, 0, bytes.Length);
+            //                        requestResponse.RespondWith(stream, "text/html; charset=utf-8");
+            //                        break;
+            //                }
+
+
+
+            //                ////if (request.Url.EndsWith("header.png"))
+            //                ////{
+            //                ////    MemoryStream stream = new System.IO.MemoryStream();
+
+            //                ////    FileStream file = new FileStream(@"C:\tmp\header.png", FileMode.Open, FileAccess.Read, FileShare.Read);
+            //                ////    byte[] bytes = new byte[file.Length];
+            //                ////    file.Read(bytes, 0, (int)file.Length);
+            //                ////    stream.Write(bytes, 0, (int)file.Length);
+            //                ////    file.Close();
+
+            //                ////    requestResponse.RespondWith(stream, "image/png");
+            //                ////}
+            //                #endregion
+            //            }
+
+            #endregion
+
+            return false;
+        }
+
+        bool IRequestHandler.OnBeforeBrowse(IWebBrowser browser, IRequest request, NavigationType naigationvType, bool isRedirect)
+        {
+            string url = request.Url;
+            if (url == "about:blank"
+                || url.Contains("youtube.com/embed/")
+                || url.Contains("facebook.com/plugins/"))
+                return true;
+
+            if (url.StartsWith("chrome-devtools://")) return false;
+
+            Debug.WriteLine("GO ====> " + request.Url);
+
+            brow_URL = request.Url;
+            brow_Domain = brow_URL.Split('/')[2];
+            brow_UrlTextBox.crossThreadPerformSafely(() => brow_UrlTextBox.Text = brow_URL);
+
+            brow_ImportPlugin = false;
+
+            f_brow_onBeforeBrowse();
+
+            return false;
+        }
+
+        void IRequestHandler.OnResourceResponse(IWebBrowser browser, string url, int status, string statusText, string mimeType, WebHeaderCollection headers)
+        {
+            //string content_type = headers.Get("Content-Type");
+            ////if (url.EndsWith(".mp4")) { }
+            ////System.Diagnostics.Debug.WriteLine("OnResourceResponse");
+            //Debug.WriteLine(content_type + " === " + url);
+        }
+
+        public bool GetDownloadHandler(IWebBrowser browser, string mimeType, string fileName, long contentLength, ref IDownloadHandler handler)
+        {
+            return false;
+        }
+
+        public bool GetAuthCredentials(IWebBrowser browser, bool isProxy, string host, int port, string realm, string scheme, ref string username, ref string password)
+        {
+            return false;
+        }
+
+        #endregion
+
+        void f_brow_Close()
+        {
+            browser.Dispose();
+            CEF.Shutdown();
+        }
+
+        #endregion
+
+        #region [  === TAB === ]
+
+        #region [ TAB: MAIN ]
+
+        const string tab_IconToggle = "☰";
+        FATabStrip tab_Main;
+        FATabStripItem tab_Note;
+        FATabStripItem tab_Link;
+        FATabStripItem tab_Setting;
+
+        void f_tab_Init() {
+            tab_Main = new FATabStrip() { Dock = DockStyle.Right, Width = 399, AlwaysShowClose = false, AlwaysShowMenuGlyph = false };
+            tab_Link = new FATabStripItem() { Title = "Link", CanClose = false };
+            tab_Note = new FATabStripItem() { Title = "Note", CanClose = false };
+            tab_Setting = new FATabStripItem() { Title = "Setting", CanClose = false };  
+
+            tab_Main.Items.AddRange(new FATabStripItem[] {
+                tab_Link,
+                tab_Note,
+                tab_Setting, 
+            });
+
+            this.Controls.AddRange(new Control[] {
+                new Splitter() { Dock = DockStyle.Right, MinExtra = 0, MinSize = 0 },
+                tab_Main,
+            });
+             
+            f_tab_SettingInit();
+            f_tab_LinkInit();
+            f_tab_LinkNote();
+        }
+
+        void f_tab_Toggle() {
+            if (tab_Main.Width != 0) {
+                tab_Main.Tag = tab_Main.Width;
+                tab_Main.Width = 0;
+            } else {
+                if (tab_Main.Tag != null)
+                    tab_Main.Width = (int)tab_Main.Tag;
+                else tab_Main.Width = 399;
             }
         }
 
         #endregion
 
-        #region
+        #region [ TAB:LINK ]
 
-        //oSetting f_setting_Get() {
-        //    return new oSetting()
-        //    {
-        //        AutoFetchHistory = setting_autoFetchHistory_checkBox.Checked,
-        //        MaxThread = int.Parse(setting_maxThread_textBox.Text.Trim()),
-        //    };
-        //}
+        TextBoxWaterMark tab_LinkSearchTextBox;
+        TreeView tab_LinkTreeView;
 
-        void f_package_openFile()
-        {
+        void f_tab_LinkInit() {
+            Panel barSearch = new Panel() {
+                Height = 23,
+                Dock = DockStyle.Top,
+                //BackColor = Color.Gray,
+                Padding = new Padding(9,1,0,0),
+            };
+            tab_LinkSearchTextBox = new TextBoxWaterMark() {
+                WaterMark = "Search Link",
+                Dock = DockStyle.Right,
+                Height = 19,
+                BorderStyle = BorderStyle.None,
+                WaterMarkForeColor = Color.Gray,
+                WaterMarkActiveForeColor = Color.DarkGray,
+            };
+            barSearch.Controls.AddRange(new Control[] {
+                tab_LinkSearchTextBox
+            });
 
-            OpenFileDialog openFileDialog = new OpenFileDialog();
+            tab_LinkTreeView = new TreeView() {
+                Dock = DockStyle.Fill,
+                Font = font_Title,
+                BorderStyle = BorderStyle.None,
+            };
 
-            openFileDialog.InitialDirectory = Path.Combine(Application.StartupPath, "package");
-            openFileDialog.Filter = "htm files (*.htm)|*.htm|All files (*.*)|*.*";
-            openFileDialog.FilterIndex = 2;
-            openFileDialog.RestoreDirectory = true;
-
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            Panel barFooter = new Panel()
             {
-                //brow_offline_mode = true;
-                //brow_offline_tools.Visible = true;
+                Height = 24,
+                Dock = DockStyle.Bottom,
+                BackColor = Color.Gray,
+            };
 
-                string fi_name = openFileDialog.FileName;
-                string name = Path.GetFileName(fi_name);
-                this.Text = fi_name;
-                //brow_URL_Text.Tag = fi_name;
-
-                //dicHtml.ReadFile(fi_name);
-
-                m_link_items_listBox.Items.Clear();
-
-                string[] a = dicHtml.Keys.ToArray();
-                string url_min = a.Select(x => new oLinkLen { Url = x, Len = x.Length }).MinBy(x => x.Len).Url;
-                if (url_min[url_min.Length - 1] != '/')
-                {
-                    string[] aa = url_min.Split('/');
-                    url_min = string.Join("/", aa.Where((x, k) => k < aa.Length - 1).ToArray()) + "/";
-                }
-                //brow_offline_url_path = url_min;
-
-                foreach (string it in a)
-                {
-                    string tit = it.Replace(url_min, string.Empty).Replace('-', ' ');
-                    if (tit.Length > 0)
-                        tit = tit[0].ToString().ToUpper() + tit.Substring(1);
-                    m_link_items_listBox.Items.Add(new Tuple<string, string>(it, tit));
-                }
-            }
+            tab_Link.Controls.AddRange(new Control[] {
+                tab_LinkTreeView,
+                barSearch,
+                barFooter,
+                new Label() { Dock = DockStyle.Left, Width = 1, BackColor = Color.LightGray }
+            });
         }
 
-        void f_browser_loadHTML(string title, string htm)
-        {
-            if (htm == null) htm = string.Empty;
+        #endregion
 
-            m_tab_Browser.Text = title;
+        #region [ TAB:NOTE ]
 
-            //string htm = File.ReadAllText("demo3.html");
-            string page = format_HTML(htm);
-            page = File.ReadAllText("browser.html") + page;
-            log(page);
-            m_brow_web.DocumentText = page;
-            File.WriteAllText("result_.html", page);
+        void f_tab_LinkNote() {
+
         }
 
-        void f_link_items_selectIndexChange(object sender, EventArgs e)
-        {
-            var it = m_link_items_listBox.SelectedItem as Tuple<string, string>;
-            if (it != null
-                && dicHtml.ContainsKey(it.Item1))
+        #endregion
+
+        #region [ TAB: SETTING ]
+
+        void f_tab_SettingInit() {
+
+            var btn_Devtool = new Button() { Text = "Dev", Width = 45, Height = 20, Dock = DockStyle.Top };
+            btn_Devtool.Click += (se, ev) =>
             {
-                m_url_textBox.Text = it.Item1;
-                string val;
-                dicHtml.TryGetValue(it.Item1, out val);
-                f_browser_loadHTML(it.Item2, val);
-            }
+                browser.ShowDevTools();
+            };
+
+            var btn_EnableJS = new Button() { Text = "JS", Width = 45, Height = 20, Dock = DockStyle.Top, BackColor = Color.OrangeRed };
+            btn_EnableJS.MouseClick += (se, ev) => {
+                brow_EnabelJS = brow_EnabelJS ? false : true;
+                if (brow_EnabelJS)
+                    btn_EnableJS.BackColor = Color.OrangeRed;
+                else
+                    btn_EnableJS.BackColor = SystemColors.Control;
+            };
+            var btn_EnableCSS = new Button() { Text = "CSS", Width = 45, Height = 20, Dock = DockStyle.Top };
+            btn_EnableCSS.MouseClick += (se, ev) => {
+                brow_EnableCSS = brow_EnableCSS ? false : true;
+                if (brow_EnableCSS)
+                    btn_EnableCSS.BackColor = Color.OrangeRed;
+                else
+                    btn_EnableCSS.BackColor = SystemColors.Control;
+            };
+            var btn_EnableImg = new Button() { Text = "Image", Width = 45, Height = 20, Dock = DockStyle.Top, BackColor = Color.OrangeRed  };
+            btn_EnableImg.MouseClick += (se, ev) => {
+                brow_EnableImg = brow_EnableImg ? false : true;
+                if (brow_EnableImg)
+                    btn_EnableImg.BackColor = Color.OrangeRed;
+                else
+                    btn_EnableImg.BackColor = SystemColors.Control;
+            };
+            var btn_EnableAutoCache = new Button() { Text = "AutoRequest", Width = 79, Height = 20, Dock = DockStyle.Top };
+            btn_EnableAutoCache.MouseClick += (se, ev) => {
+                brow_AutRequest = brow_AutRequest ? false : true;
+                if (brow_AutRequest)
+                    btn_EnableAutoCache.BackColor = Color.OrangeRed;
+                else
+                    btn_EnableAutoCache.BackColor = SystemColors.Control;
+            };
+
+            tab_Setting.Controls.AddRange(new Control[] {
+                btn_Devtool , btn_EnableCSS, btn_EnableJS, btn_EnableImg, btn_EnableAutoCache,
+            });
         }
 
-        void log(string text, bool clean = false)
-        {
-            if (clean) m_log_Text.Text = string.Empty;
-            m_log_Text.Text += Environment.NewLine + Environment.NewLine + text;
-        }
-
-        void f_browser_Navigate(string url = "")
-        {
-            url = "https://www.google.com.vn/";
-            url = "https://www.google.com/search?q=english+pronunciation";
-            url = "https://pronuncian.com/";
-
-            log("GO: " + url);
-            m_brow_web.Navigate(url);
-        }
-
-        void f_browser_google_MouseClick(object sender, MouseEventArgs e)
-        {
-            const string url = "https://pronuncian.com/";
-            // const string url = "https://pronuncian.com/podcasts/";
-            // const string url = "https://pronuncian.com/podcasts/episode219";
-
-            //string para_url = m_url_textBox.Text.Trim();
-            //HttpWebRequest w = (HttpWebRequest)WebRequest.Create(new Uri(para_url));
-            //w.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36";
-            //w.BeginGetResponse(asyncResult =>
-            //{
-            //    HttpWebResponse rs = (HttpWebResponse)w.EndGetResponse(asyncResult); //add a break point here 
-            //    string url = rs.ResponseUri.ToString();
-
-            //    if (rs.StatusCode == HttpStatusCode.OK)
-            //    {
-            //        string htm = string.Empty;
-            //        using (StreamReader sr = new StreamReader(rs.GetResponseStream(), Encoding.UTF8))
-            //            htm = sr.ReadToEnd();
-            //        rs.Close();
-            //        if (!string.IsNullOrEmpty(htm))
-            //        {
-            //            string page = htm;
-            //            m_browser.crossThreadPerformSafely(() =>
-            //            {
-            //                m_browser.DocumentText = page;
-            //            });
-            //        }
-            //    }
-            //}, w);
-
-            string htm = File.ReadAllText("demo3.html");
-            string page = format_HTML(htm);
-            page = File.ReadAllText("browser.html") + page;
-            log(page);
-            m_brow_web.DocumentText = page;
-            File.WriteAllText("result_.html", page);
-        }
-
-        void f_browser_document_onMouseOver(IHTMLEventObj e)
-        {
-            log("MOUSE_OVER DOM: " + e.srcElement.tagName + " === " + e.srcElement.outerHTML);
-        }
-
-        string format_HTML(string s)
-        {
-            string si = string.Empty;
-            s = Regex.Replace(s, @"<script[^>]*>[\s\S]*?</script>", string.Empty);
-            //s = Regex.Replace(s, @"<style[^>]*>[\s\S]*?</style>", string.Empty);
-            s = Regex.Replace(s, @"<noscript[^>]*>[\s\S]*?</noscript>", string.Empty);
-            s = Regex.Replace(s, @"(?s)(?<=<!--).+?(?=-->)", string.Empty).Replace("<!---->", string.Empty);
-
-            //s = Regex.Replace(s, @"<noscript[^>]*>[\s\S]*?</noscript>", string.Empty);
-            //s = Regex.Replace(s, @"<noscript[^>]*>[\s\S]*?</noscript>", string.Empty);
-            //s = Regex.Replace(s, @"</?(?i:embed|object|frameset|frame|iframe|meta|link)(.|\n|\s)*?>", string.Empty, RegexOptions.Singleline | RegexOptions.IgnoreCase);
-            s = Regex.Replace(s, @"</?(?i:base|nav|form|input|fieldset|button|iframe|link|symbol|path|canvas|use|ins|svg|embed|object|frameset|frame|meta)(.|\n|\s)*?>", string.Empty, RegexOptions.Singleline | RegexOptions.IgnoreCase);
-
-            // Remove attribute style="padding:10px;..."
-            s = Regex.Replace(s, @"<([^>]*)(\sstyle="".+?""(\s|))(.*?)>", string.Empty);
-            s = s.Replace(@">"">", ">");
-
-            string[] lines = s.Split(new char[] { '\r', '\n' }, StringSplitOptions.None).Select(x => x.Trim()).Where(x => x.Length > 0).ToArray();
-            s = string.Join(Environment.NewLine, lines);
-
-            int pos = s.ToLower().IndexOf("<body");
-            if (pos > 0)
-            {
-                s = s.Substring(pos + 5);
-                pos = s.IndexOf('>') + 1;
-                s = s.Substring(pos, s.Length - pos).Trim();
-            }
-
-            s = s
-                .Replace(@" data-src=""", @" src=""")
-                .Replace(@"src=""//", @"src=""http://");
-
-            var mts = Regex.Matches(s, "<img.+?src=[\"'](.+?)[\"'].*?>", RegexOptions.IgnoreCase);
-            if (mts.Count > 0)
-            {
-                foreach (Match mt in mts)
-                {
-                    s = s.Replace(mt.ToString(), string.Format("{0}{1}{2}", "<p class=box_img___>", mt.ToString(), "</p>"));
-                }
-            }
-
-            return s;
-
-            //HtmlDocument doc = new HtmlDocument();
-            //doc.LoadHtml(s);
-            //string tagName = string.Empty, tagVal = string.Empty;
-            //foreach (var node in doc.DocumentNode.SelectNodes("//*"))
-            //{
-            //    if (node.InnerText == null || node.InnerText.Trim().Length == 0)
-            //    {
-            //        node.Remove();
-            //        continue;
-            //    }
-
-            //    tagName = node.Name.ToUpper();
-            //    if (tagName == "A")
-            //        tagVal = node.GetAttributeValue("href", string.Empty);
-            //    else if (tagName == "IMG")
-            //        tagVal = node.GetAttributeValue("src", string.Empty);
-
-            //    //node.Attributes.RemoveAll();
-            //    node.Attributes.RemoveAll_NoRemoveClassName();
-
-            //    if (tagVal != string.Empty)
-            //    {
-            //        if (tagName == "A") node.SetAttributeValue("href", tagVal);
-            //        else if (tagName == "IMG") node.SetAttributeValue("src", tagVal);
-            //    }
-            //}
-
-            //si = doc.DocumentNode.OuterHtml;
-            ////string[] lines = si.Split(new char[] { '\r', '\n' }, StringSplitOptions.None).Where(x => x.Trim().Length > 0).ToArray();
-            //string[] lines = si.Split(new char[] { '\r', '\n' }, StringSplitOptions.None).Select(x => x.Trim()).Where(x => x.Length > 0).ToArray();
-            //si = string.Join(Environment.NewLine, lines);
-            //return si;
-        }
-
+        #endregion
+         
         #endregion
     }
+     
 }
