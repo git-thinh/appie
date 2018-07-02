@@ -68,7 +68,9 @@ namespace appie
         const int TOOLBAR_HEIGHT = 28;
         const int SHORTCUTBAR_HEIGHT = 17;
 
-        string brow_URL = "https://www.google.com.vn";
+        //string brow_URL = "https://www.google.com.vn";
+        //string brow_URL = "https://dictionary.cambridge.org/grammar/british-grammar/do-or-make";
+        string brow_URL = "https://dictionary.cambridge.org";
         //string brow_URL = "https://www.bing.com";
         //string brow_URL = "https://www.bing.com/search?go=Submit&qs=ds&form=QBLH&q=hello";
         //string brow_URL = "https://developers.google.com/web/tools/chrome-devtools/network-performance/";
@@ -179,6 +181,8 @@ namespace appie
 
         bool IRequestHandler.OnBeforeResourceLoad(IWebBrowser browser, IRequestResponse requestResponse)
         {
+            return false;
+
             //System.Diagnostics.Debug.WriteLine("OnBeforeResourceLoad");
             //var headers = request.GetHeaders();
             string url = requestResponse.Request.Url;

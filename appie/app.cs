@@ -46,11 +46,18 @@ namespace appie
 
         static IJobStore jobs;
 
-        public static void RUN() {
+        public static void RUN()
+        {
+            System.Net.ServicePointManager.DefaultConnectionLimit = 1000;
+            // active SSL 1.1, 1.2, 1.3 for WebClient request HTTPS
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | (SecurityProtocolType)3072 | (SecurityProtocolType)0x00000C00 | SecurityProtocolType.Tls;
+
             jobs = new JobStore();
             Application.EnableVisualStyles();
 
-
+            var settings = new Settings();
+            //settings.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36";
             if (!CEF.Initialize(new Settings()))
             {
                 ////////if (Environment.GetCommandLineArgs().Contains("--type=renderer"))
